@@ -2288,12 +2288,6 @@
         "description": "Search query"
       },
 
-      "child_id": {
-        "name": "child_id",
-        "in": "path",
-        "required": true,
-        "schema": { "type": "integer" }
-      },
       "filter_age_group_id": {
         "name": "age_group_id",
         "in": "query",
@@ -2345,6 +2339,12 @@
         "schema": { "type": "integer" }
       },
 
+      "child_id": {
+        "name": "child_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
       "age_group_id": {
         "name": "age_group_id",
         "in": "path",
