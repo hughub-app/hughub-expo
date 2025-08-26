@@ -29,7 +29,6 @@ export default function HomeScreen() {
             Track your progress with beautiful charts and insights
           </Text>
 
-          {/* Today's Summary */}
           <Card className="mb-6">
             <CardHeader>
               <CardTitle>
@@ -45,7 +44,7 @@ export default function HomeScreen() {
                   subtitle="750/1000 cal"
                   size={90}
                 />
-                <RingChart
+                {/* <RingChart
                   progress={0.60}
                   color="#00D4AA"
                   title="Exercise"
@@ -58,19 +57,17 @@ export default function HomeScreen() {
                   title="Stand"
                   subtitle="9/12 hrs"
                   size={90}
-                />
+                /> */}
               </View>
             </CardContent>
           </Card>
 
-          {/* Quick Chart Preview */}
-          <LineChart
+          {/* <LineChart
             data={sampleLineData}
             title="Weekly Steps"
             color="#007AFF"
-          />
+          /> */}
 
-          {/* Action Buttons */}
           <View className="mt-6 space-y-3">
             <Button className="w-full">
               <Text>Start Workout</Text>

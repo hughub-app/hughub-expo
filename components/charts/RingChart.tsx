@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { View } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -6,19 +6,20 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import Svg, { Circle } from 'react-native-svg';
+import Svg, { G, Circle } from 'react-native-svg';
 import { Text } from '@/components/ui/text';
 
 const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 interface RingChartProps {
-  progress: number; // 0 to 1
+  progress: number; // 0..1
   size?: number;
   strokeWidth?: number;
   color?: string;
   backgroundColor?: string;
   title?: string;
   subtitle?: string;
+  startAngleDeg?: number; // default -90 to start at 12 o'clock
 }
 
 export function RingChart({
@@ -28,70 +29,78 @@ export function RingChart({
   color = '#FF006E',
   backgroundColor = '#F0F0F0',
   title,
-  subtitle
+  subtitle,
+  startAngleDeg = -90,
 }: RingChartProps) {
   const animatedProgress = useSharedValue(0);
-  
-  const radius = (size - strokeWidth) / 2;
-  const circumference = 2 * Math.PI * radius;
-  
+
+  // useMemo so worklet reads stable numbers
+  const radius = useMemo(() => (size - strokeWidth) / 2, [size, strokeWidth]);
+  const circumference = useMemo(() => 2 * Math.PI * radius, [radius]);
+
   useEffect(() => {
     animatedProgress.value = withTiming(progress, {
       duration: 1500,
       easing: Easing.out(Easing.cubic),
     });
-  }, [progress, animatedProgress]);
+  }, [progress]);
 
-  const animatedProps = useAnimatedProps(() => {
-    const strokeDashoffset = circumference * (1 - animatedProgress.value);
+  const aProps = useAnimatedProps(() => {
+    // show a cap at 0..1 just in case
+    const clamped = Math.min(1, Math.max(0, animatedProgress.value));
     return {
-      strokeDashoffset,
+      strokeDashoffset: circumference * (1 - clamped),
     };
   });
 
   return (
     <View className="items-center">
-      <View className="relative items-center justify-center">
-        <Svg width={size} height={size} className="transform -rotate-90">
-          {/* Background Circle */}
-          <Circle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            stroke={backgroundColor}
-            strokeWidth={strokeWidth}
-            fill="transparent"
-          />
-          {/* Progress Circle */}
-          <AnimatedCircle
-            cx={size / 2}
-            cy={size / 2}
-            r={radius}
-            stroke={color}
-            strokeWidth={strokeWidth}
-            fill="transparent"
-            strokeDasharray={circumference}
-            strokeLinecap="round"
-            {...animatedProps}
-          />
+      <View className="relative items-center justify-center" style={{ width: size, height: size }}>
+        <Svg width={size} height={size}>
+          {/* Rotate the whole group to start at 12 o’clock */}
+          <G originX={size / 2} originY={size / 2} rotation={startAngleDeg}>
+            {/* Track */}
+            <Circle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke={backgroundColor}
+              strokeWidth={strokeWidth}
+              fill="none"
+            />
+            {/* Progress */}
+            <AnimatedCircle
+              cx={size / 2}
+              cy={size / 2}
+              r={radius}
+              stroke={color}
+              strokeWidth={strokeWidth}
+              fill="none"
+              strokeLinecap="round"
+              // IMPORTANT: array, not a single number
+              strokeDasharray={[circumference, circumference]}
+              // IMPORTANT: pass via animatedProps (don’t spread)
+              animatedProps={aProps}
+            />
+          </G>
         </Svg>
-        
-        {/* Center Content */}
-        <View className="absolute items-center justify-center">
+
+        {/* Center content */}
+        <View className="absolute items-center justify-center" style={{ inset: 0 }}>
           <Text className="text-2xl font-bold text-gray-800">
             {Math.round(progress * 100)}%
           </Text>
-          {subtitle && (
+          {subtitle ? (
             <Text className="text-xs text-gray-500 mt-1">{subtitle}</Text>
-          )}
+          ) : null}
         </View>
       </View>
-      
-      {title && (
+
+      {title ? (
         <Text className="text-sm font-medium text-gray-700 mt-3 text-center">
           {title}
         </Text>
-      )}
+      ) : null}
     </View>
   );
 }

@@ -78,7 +78,7 @@ export default function ChartsScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1 px-4">
-        <View className="pt-4 pb-6">
+        {/* <View className="pt-4 pb-6">
           <Text className="text-3xl font-bold text-gray-900 mb-2">
             Your Charts
           </Text>
@@ -86,13 +86,11 @@ export default function ChartsScreen() {
             Detailed insights into your health and fitness
           </Text>
 
-          {/* Activity Rings */}
           <MultiRingChart
             rings={activityRings}
             title="Today's Activity"
           />
 
-          {/* Chart Selection */}
           <View className="mt-6 mb-4">
             <Text className="text-lg font-semibold text-gray-800 mb-3">
               Weekly Trends
@@ -125,14 +123,12 @@ export default function ChartsScreen() {
             </View>
           </View>
 
-          {/* Dynamic Chart */}
           <LineChart
             data={currentChart.data}
             title={currentChart.title}
             color={currentChart.color}
           />
 
-          {/* Quick Stats */}
           <View className="mt-6 bg-white rounded-xl p-4 shadow-sm">
             <Text className="text-lg font-semibold text-gray-800 mb-3">
               Quick Stats
@@ -152,7 +148,7 @@ export default function ChartsScreen() {
               </View>
             </View>
           </View>
-        </View>
+        </View> */}
       </ScrollView>
     </SafeAreaView>
   );
