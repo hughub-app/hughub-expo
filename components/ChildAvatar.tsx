@@ -18,7 +18,7 @@ interface ChildAvatarProps {
 
 export const ChildAvatar: React.FC<ChildAvatarProps> = ({
   url,
-  size = 36,
+  size = 42,
   borderRadius,
 }) => {
   // If no url, pick a random cartoon avatar once
