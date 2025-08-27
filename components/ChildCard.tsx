@@ -4,14 +4,18 @@ import { Text } from "./ui/text";
 import { Child } from "@/lib/api/endpoints/children";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { getAge } from "@/lib/utils";
+import { ChildAvatar } from "./ChildAvatar";
 
 export default function ChildCard({ child }: { child: Child }) {
   const age = getAge(new Date(child.date_of_birth));
   return (
     <Card>
       <CardHeader>
-        <View className="justify-between flex-row">
+        <View className="justify-between items-center` flex-row">
+            <View className="flex-row gap-2 items-center">
+              <ChildAvatar />
           <Text className="font-bold">{child.name}</Text>
+            </View>
           <Text>{age} years old</Text>
         </View>
       </CardHeader>
@@ -26,7 +30,7 @@ export default function ChildCard({ child }: { child: Child }) {
               <Text className="!text-5xl mb-2">🥺</Text>
               <Text>40%</Text>
             </View>
-            <Text>Weekly Average Mood</Text>
+            <Text className="text-center">Weekly Average Mood</Text>
           </Card>
         </View>
       </CardContent>
