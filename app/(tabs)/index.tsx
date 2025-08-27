@@ -1,13 +1,14 @@
-import React from 'react';
-import { View, ScrollView } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Text } from '@/components/ui/text';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { RingChart } from '@/components/charts/RingChart';
-import { LineChart } from '@/components/charts/LineChart';
-import { mockChildren } from '@/mocks/mockChildren';
-import ChildCard from '@/components/ChildCard';
+import React from "react";
+import { View, ScrollView, Pressable } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Text } from "@/components/ui/text";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { RingChart } from "@/components/charts/RingChart";
+import { LineChart } from "@/components/charts/LineChart";
+import { mockChildren } from "@/mocks/mockChildren";
+import ChildCard from "@/components/ChildCard";
+import { Link } from "expo-router";
 
 const sampleLineData = [
   { x: 1, y: 2 },
@@ -31,12 +32,12 @@ export default function HomeScreen() {
             Track your progress with beautiful charts and insights
           </Text>
 
-          <View className='gap-4'>
-            {
-              mockChildren.map((child, cIdx) => (
-                <ChildCard key={cIdx} child={child} />
-              ))
-            }
+          <View className="gap-4">
+            {mockChildren.map((child, cIdx) => (
+              <Link href={`/diet/${child.child_id}`} key={cIdx}>
+                <ChildCard child={child} />
+              </Link>
+            ))}
           </View>
 
           {/* <Card className="mb-6">

@@ -10,7 +10,7 @@ import { Calendar } from "lucide-react-native";
 export default function ChildCard({ child }: { child: Child }) {
   const age = getAge(new Date(child.date_of_birth));
   return (
-    <Card>
+    <Card className="w-full">
       <CardHeader>
         <View className="">
           <View className="flex-row gap-4 items-center">
