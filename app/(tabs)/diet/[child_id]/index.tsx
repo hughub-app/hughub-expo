@@ -6,6 +6,7 @@ import { mockChildren } from "@/mocks/mockChildren";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NutritionLabels from "@/components/diets/NutritionLabels";
+import NutritionRings from "@/components/diets/NutritionRings";
 
 type Params = { child_id?: string | string[] };
 
@@ -46,15 +47,24 @@ export default function DietByChildPage() {
         <ScrollView className="container mx-auto">
           <View className="flex-1 p-4 gap-4">
             <Text className="!text-3xl font-bold">{child?.name}'s Diet</Text>
-            <View className="flex-row">
-              <Rings
-                rings={[
-                  { color: "#FF0000", value: 50 },
-                  { color: "#00FF00", value: 30 },
-                  { color: "#0000FF", value: 20 },
-                ]}
+            <View className="flex-row gap-6 justify-center items-center">
+              <NutritionRings
+                values={{
+                  dairy: 2,
+                  protein: 3,
+                  grains: 4,
+                  veggies: 5,
+                  fruits: 2,
+                }}
+                target={{
+                  dairy: 6,
+                  protein: 5,
+                  grains: 5,
+                  veggies: 6,
+                  fruits: 3,
+                }}
               />
-              <NutritionLabels/>
+              <NutritionLabels />
             </View>
             <Text className="text-xl font-semibold">Child ID: {childId}</Text>
 
