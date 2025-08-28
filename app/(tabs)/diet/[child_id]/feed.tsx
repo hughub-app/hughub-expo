@@ -14,11 +14,11 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { mockIngredients } from "@/mocks/mockIngredients";
-import IngredientCard from "@/components/menus/IngredientCard";
+import IngredientCard from "@/components/feed/IngredientCard";
 import { Ingredient } from "@/types";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react-native";
-import { AddIngredientDialog } from "@/components/menus/AddIngredientDialog";
+import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";
 
 type Params = { child_id?: string | string[] };
 
