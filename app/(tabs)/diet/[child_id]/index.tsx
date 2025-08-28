@@ -1,4 +1,4 @@
-import { Stack, useLocalSearchParams, useRouter } from "expo-router";
+import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
 import { View, ActivityIndicator, ScrollView } from "react-native";
 import React, { useMemo } from "react";
 import Rings from "@/components/charts/Rings";
@@ -7,6 +7,7 @@ import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NutritionLabels from "@/components/diets/NutritionLabels";
 import NutritionRings from "@/components/diets/NutritionRings";
+import { Button } from "@/components/ui/button";
 
 type Params = { child_id?: string | string[] };
 
@@ -74,10 +75,11 @@ export default function DietByChildPage() {
                 TODO: Show today’s meals, nutrients, and quick actions here.
               </Text>
             </View>
-
-            <View className="items-center justify-center py-6">
-              <ActivityIndicator />
-            </View>
+            <Link href={`/diet/${childId}/feed`} asChild>
+              <Button>
+                <Text>Feed</Text>
+              </Button>
+            </Link>
           </View>
         </ScrollView>
       </SafeAreaView>
