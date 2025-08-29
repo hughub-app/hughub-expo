@@ -10,6 +10,7 @@ import { LineChart } from "@/components/charts/LineChart";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RingChart } from "@/components/charts/RingChart";
+import Emoji from "@/components/emoji";
 
 export default function ChildScreen() {
   const { child_id } = useLocalSearchParams<{ child_id: string }>();
@@ -48,26 +49,25 @@ export default function ChildScreen() {
               />
 
               {/* Mood Static Card */}
-              <View
-                style={{
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  paddingTop: 16,
-                }}
-              >
+              <View className="flex-row space-x-6 top-6">
                 {/* Weekly Average Card */}
-                <Card style={{ flex: 1, marginRight: 8, alignItems: "center" }}>
-                  <CardHeader>
-                    <CardTitle className="text-3xl">Weekly Average</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Text className="text-lg text-gray-800">
-                      Average Mood: 3.5/5
-                    </Text>
-                  </CardContent>
+                <Card className="flex-1 mr-2 items-center">
+                  <View className="flex-row justify-center align-middle h-fit">
+                    <Emoji type="laugh" />
+                    <View>
+                      <CardHeader>
+                        <CardTitle className="text-3xl">Weekly Average</CardTitle>
+                      </CardHeader>
+                      <CardContent>
+                          <Text className="text-lg text-gray-800">
+                            Average Mood: 3.5/5
+                          </Text>                    
+                      </CardContent>
+                    </View>
+                  </View>
                 </Card>
                 {/* Lastest Mood */}
-                <Card style={{ flex: 1, marginLeft: 8, alignItems: "center" }}>
+                <Card className="flex-1 ml-2 items-center">
                   <CardHeader>
                     <CardTitle className="text-3xl">Latest Mood</CardTitle>
                   </CardHeader>
@@ -84,7 +84,7 @@ export default function ChildScreen() {
               <Text className="text-2xl font-semibold text-gray-900 mt-8">
                 Maya's Thoughts
               </Text>
-              <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <View className="flex-row item items-center">
                 <Badge
                   variant="outline"
                   className="mt-4 ml-2 text-2xl font-semibold text-gray-900"
@@ -119,7 +119,7 @@ export default function ChildScreen() {
                   // })
                 }
               >
-                <Text>View Details</Text>
+                <Text>Get Mood</Text>
               </Button>
             </CardContent>
           </Card>
