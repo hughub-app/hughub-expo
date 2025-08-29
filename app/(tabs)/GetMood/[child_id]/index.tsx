@@ -40,6 +40,7 @@ const GetMoodPage = () => {
       <BackButton onPress={() => router.push(`/child/${child_id}/index`)} />
       
       <ScrollView>
+        <View className="ml-8 mr-8">
         <View className='flex-row justify-between align-middle m-3' >
           <Text className="text-xl">Taking Care</Text>
           <Button className='text-white bg-gray-700' onPress={handleCardChange}>Change Card</Button>
@@ -77,6 +78,7 @@ const GetMoodPage = () => {
         />
 
         <Button className="mt-10 text-white" onPress={handleSave}>Save</Button>
+      </View>
       </ScrollView>
     </SafeAreaView>
   );

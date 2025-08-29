@@ -112,12 +112,12 @@ export default function ChildScreen() {
               <Button
                 className="mt-4"
                 onPress={
-                  () => {}
-                  // router.push({
-                  //   pathname: '/child/view_detail',
-                  //   params: { child_id },
-                  // })
-                }
+                  () => {
+                  router.push({
+                    pathname: '/GetMood/[child_id]',
+                    params: { child_id },
+                  })
+                }}
               >
                 <Text>Get Mood</Text>
               </Button>
