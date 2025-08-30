@@ -1,11 +1,11 @@
-import { Ingredient, IngredientType } from "../types";
+import { CategoryType, Ingredient, IngredientType } from "../types";
 
 export const mockIngredients: Ingredient[] = [
   {
     id: "1",
     emoji: "🍎",
     name: "Apple",
-    amount: "1",
+    amount: 1,
     units: ["piece", "grams"],
     nutritionsPer100g: {
       protein: 0.3,
@@ -13,12 +13,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 0.2,
     },
     types: [IngredientType.Fruit],
+    servingPer100g: 1,
+    category: CategoryType.Fruit,
   },
   {
     id: "2",
     emoji: "🥦",
     name: "Broccoli",
-    amount: "200",
+    amount: 200,
     units: ["grams"],
     nutritionsPer100g: {
       protein: 2.8,
@@ -26,12 +28,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 0.4,
     },
     types: [IngredientType.Vegetable],
+    servingPer100g: 0.5,
+    category: CategoryType.Vegetable,
   },
   {
     id: "3",
     emoji: "🍗",
     name: "Chicken Breast",
-    amount: "150",
+    amount: 150,
     units: ["grams", "pieces"],
     nutritionsPer100g: {
       protein: 31,
@@ -39,12 +43,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 3.6,
     },
     types: [IngredientType.Meat],
+    servingPer100g: 0.5,
+    category: CategoryType.Protein,
   },
   {
     id: "4",
     emoji: "🥔",
     name: "Potato",
-    amount: "2",
+    amount: 2,
     units: ["pieces", "grams"],
     nutritionsPer100g: {
       protein: 2,
@@ -52,12 +58,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 0.1,
     },
     types: [IngredientType.Vegetable],
+    servingPer100g: 0.7,
+    category: CategoryType.Grain,
   },
   {
     id: "5",
     emoji: "🍞",
     name: "Whole Wheat Bread",
-    amount: "2",
+    amount: 2,
     units: ["slices", "grams"],
     nutritionsPer100g: {
       protein: 9,
@@ -65,12 +73,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 3.5,
     },
     types: [IngredientType.Grain],
+    servingPer100g: 2,
+    category: CategoryType.Grain,
   },
   {
     id: "6",
     emoji: "🥚",
     name: "Egg",
-    amount: "1",
+    amount: 1,
     units: ["piece", "grams"],
     nutritionsPer100g: {
       protein: 13,
@@ -78,12 +88,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 11,
     },
     types: [IngredientType.Protein],
+    servingPer100g: 2,
+    category: CategoryType.Protein,
   },
   {
     id: "7",
     emoji: "🥛",
     name: "Milk",
-    amount: "250",
+    amount: 250,
     units: ["ml", "grams"],
     nutritionsPer100g: {
       protein: 3.4,
@@ -91,12 +103,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 1,
     },
     types: [IngredientType.Dairy],
+    servingPer100g: 2,
+    category: CategoryType.Dairy,
   },
   {
     id: "8",
     emoji: "🍅",
     name: "Tomato",
-    amount: "100",
+    amount: 100,
     units: ["grams", "pieces"],
     nutritionsPer100g: {
       protein: 0.9,
@@ -104,12 +118,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 0.2,
     },
     types: [IngredientType.Vegetable],
+    servingPer100g: 1,
+    category: CategoryType.Vegetable,
   },
   {
     id: "9",
     emoji: "🥜",
     name: "Peanut",
-    amount: "30",
+    amount: 30,
     units: ["grams"],
     nutritionsPer100g: {
       protein: 25.8,
@@ -117,12 +133,14 @@ export const mockIngredients: Ingredient[] = [
       fat: 49.2,
     },
     types: [IngredientType.Nut],
+    servingPer100g: 2,
+    category: CategoryType.Grain,
   },
   {
     id: "10",
     emoji: "🍚",
     name: "Rice",
-    amount: "100",
+    amount: 100,
     units: ["grams"],
     nutritionsPer100g: {
       protein: 2.7,
@@ -130,5 +148,7 @@ export const mockIngredients: Ingredient[] = [
       fat: 0.3,
     },
     types: [IngredientType.Grain],
+    servingPer100g: 2,
+    category: CategoryType.Grain,
   }
 ];

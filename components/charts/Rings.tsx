@@ -12,6 +12,7 @@ type Ring = {
   progress?: number;
   value?: number;
   goal?: number;
+  projection?: number;
   color: string;
   thickness?: number;
 };
@@ -70,8 +71,19 @@ export default function Rings({
                     )
                   );
 
+            const projection = Math.max(
+                    0,
+                    Math.min(
+                      1,
+                      ((ring.value ?? 0) + (ring.projection ?? 0)) /
+                        (ring.goal && ring.goal > 0 ? ring.goal : 1)
+                    )
+                  )
+
             const targetOffset = C * (1 - p);
+            const projectionOffset = C * (1 - projection);
             const dashOffset = useSharedValue(C);
+            const projectionDashOffset = useSharedValue(C);
 
             useEffect(() => {
               dashOffset.value = withTiming(targetOffset, {
@@ -80,15 +92,26 @@ export default function Rings({
               });
             }, [targetOffset]);
 
+            useEffect(() => {
+              projectionDashOffset.value = withTiming(projectionOffset, {
+                duration: durationMs + 100,
+                easing: Easing.out(Easing.cubic),
+              });
+            }, [projectionOffset]);
+
             const animatedProps = useAnimatedProps(() => ({
               strokeDashoffset: dashOffset.value,
+            }));
+
+            const animatedProjectionProps = useAnimatedProps(() => ({
+              strokeDashoffset: projectionDashOffset.value,
             }));
 
             const shadowProps = {
               cx,
               cy,
               r,
-              stroke: "rgba(0,0,0,0.18)",
+              stroke: ring.color,
               strokeWidth: t,
               strokeLinecap: "round" as const,
               strokeDasharray: [C, C],
@@ -98,7 +121,7 @@ export default function Rings({
 
             return (
               <G key={i}>
-                <Circle
+                {/* <Circle
                   cx={cx}
                   cy={cy}
                   r={r}
@@ -106,9 +129,22 @@ export default function Rings({
                   strokeOpacity={trackOpacity}
                   strokeWidth={t}
                   fill="none"
-                />
+                /> */}
 
-                <Circle {...shadowProps} />
+                <Circle {...shadowProps} strokeWidth={2}  strokeDasharray={[]}/>
+              {/* Animated projection */}
+                <AnimatedCircle
+                  cx={cx}
+                  cy={cy}
+                  r={r}
+                  stroke={ring.color}
+                  strokeWidth={t}
+                  strokeOpacity={0.5}
+                  strokeLinecap="round"
+                  fill="none"
+                  strokeDasharray={[C, C]}
+                  animatedProps={animatedProjectionProps}
+                />
 
                 <AnimatedCircle
                   cx={cx}

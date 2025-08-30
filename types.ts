@@ -1,3 +1,11 @@
+export enum CategoryType {
+  Vegetable = "vegetable",
+  Protein = "protein",
+  Fruit = "fruit",
+  Grain = "grain",
+  Dairy = "dairy",
+}
+
 export enum IngredientType {
   Vegetable = "vegetable",
   Grain = "grain",
@@ -15,15 +23,25 @@ export type Ingredient = {
   id: string;
   emoji: string;
   name: string;
-  amount: string;
+  amount: number;
   units: string[];
   nutritionsPer100g?: {
     protein: number;
     carbs: number;
     fat: number;
   };
+  servingPer100g: number;
   types: IngredientType[];
+  category: CategoryType;
 };
+
+export type Intake = {
+  [CategoryType.Vegetable]: number;
+  [CategoryType.Protein]: number;
+  [CategoryType.Fruit]: number;
+  [CategoryType.Grain]: number;
+  [CategoryType.Dairy]: number;
+}
 
 export type DietSuggestion = {
   description: string;

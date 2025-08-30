@@ -53,16 +53,16 @@ export default function DietByChildPage() {
                 values={{
                   dairy: 2,
                   protein: 3,
-                  grains: 4,
-                  veggies: 5,
-                  fruits: 2,
+                  grain: 4,
+                  vegetable: 5,
+                  fruit: 2,
                 }}
                 target={{
                   dairy: 6,
                   protein: 5,
-                  grains: 5,
-                  veggies: 6,
-                  fruits: 3,
+                  grain: 5,
+                  vegetable: 6,
+                  fruit: 3,
                 }}
               />
               <NutritionLabels />

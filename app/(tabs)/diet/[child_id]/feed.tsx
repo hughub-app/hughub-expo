@@ -93,6 +93,14 @@ export default function Feed() {
         visible={isConfirming}
         onClose={() => setIsConfirming(false)}
         onConfirm={handleFinalConfirm}
+        ingredients={ingredients}
+        intake={{
+          vegetable: 0.4,
+          protein: 0.9,
+          fruit: 0.56,
+          grain: 1,
+          dairy: 0.4
+        }}
       />
       <SafeAreaView className="flex-1 bg-gray-50">
         <ScrollView>
