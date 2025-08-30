@@ -23,7 +23,7 @@ const sampleLineData = [
 
 export default function HomeScreen() {
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1">
       <ScrollView>
         <PageContainer>
           <Text className="text-3xl font-bold text-gray-900 mb-2">

@@ -39,7 +39,7 @@ export const AddIngredientDialog: React.FC<AddIngredientDialogProps> = ({
         <DialogHeader>
           <DialogTitle>Add Ingredient</DialogTitle>
           <DialogDescription>
-            Enter the name of the ingredient you want to add.
+            Select the ingredients you want to add.
           </DialogDescription>
         </DialogHeader>
         <AddIngredientForm

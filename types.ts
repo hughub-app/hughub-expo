@@ -35,7 +35,7 @@ export type Ingredient = {
   category: CategoryType;
 };
 
-export type Intake = {
+export type Intakes = {
   [CategoryType.Vegetable]: number;
   [CategoryType.Protein]: number;
   [CategoryType.Fruit]: number;

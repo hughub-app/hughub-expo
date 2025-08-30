@@ -8,6 +8,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import NutritionLabels from "@/components/diets/NutritionLabels";
 import NutritionRings from "@/components/diets/NutritionRings";
 import { Button } from "@/components/ui/button";
+import PageContainer from "@/components/PageContainer";
+import BackButton from "@/components/BackButton";
 
 type Params = { child_id?: string | string[] };
 
@@ -45,17 +47,18 @@ export default function DietByChildPage() {
         }}
       /> */}
       <SafeAreaView>
-        <ScrollView className="container mx-auto">
+        <PageContainer>
+          <BackButton fallbackUrl={`/(tabs)/child/${childId}`}/>
           <View className="flex-1 p-4 gap-4">
             <Text className="!text-3xl font-bold">{child?.name}'s Diet</Text>
             <View className="flex-row gap-6 justify-center items-center">
               <NutritionRings
-                values={{
-                  dairy: 2,
-                  protein: 3,
-                  grain: 4,
-                  vegetable: 5,
-                  fruit: 2,
+                values={child?.todayIntakes || {
+                  vegetable: 0,
+                  protein: 0,
+                  fruit: 0,
+                  grain: 0,
+                  dairy: 0,
                 }}
                 target={{
                   dairy: 6,
@@ -81,7 +84,7 @@ export default function DietByChildPage() {
               </Button>
             </Link>
           </View>
-        </ScrollView>
+        </PageContainer>
       </SafeAreaView>
     </>
   );

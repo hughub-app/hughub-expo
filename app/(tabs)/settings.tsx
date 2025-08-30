@@ -41,7 +41,7 @@ export default function SettingsScreen() {
   ];
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
+    <SafeAreaView className="flex-1">
       <ScrollView className="flex-1 px-4">
         <View className="pt-4 pb-6">
           <Text className="text-3xl font-bold text-gray-900 mb-2">

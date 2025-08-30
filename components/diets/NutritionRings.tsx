@@ -1,6 +1,6 @@
 import React from "react";
 import Rings from "../charts/Rings";
-import { Intake } from "@/types";
+import { Intakes } from "@/types";
 
 export default function NutritionRings({
   values: {
@@ -19,9 +19,9 @@ export default function NutritionRings({
   },
   projection,
 }: {
-  values: Intake;
-  target: Intake;
-  projection?: Intake;
+  values: Intakes;
+  target: Intakes;
+  projection?: Intakes;
 }) {
   return (
     <Rings

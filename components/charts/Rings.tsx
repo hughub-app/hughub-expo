@@ -31,8 +31,8 @@ const AnimatedCircle = Animated.createAnimatedComponent(Circle);
 
 export default function Rings({
   size = 240,
-  thickness = 22,
-  gap = 8,
+  thickness = 16,
+  gap = 4,
   durationMs = 900,
   rotateStartDeg = -90,
   rings,

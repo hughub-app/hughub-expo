@@ -94,15 +94,9 @@ export default function Feed() {
         onClose={() => setIsConfirming(false)}
         onConfirm={handleFinalConfirm}
         ingredients={ingredients}
-        intake={{
-          vegetable: 0.4,
-          protein: 0.9,
-          fruit: 0.56,
-          grain: 1,
-          dairy: 0.4
-        }}
+        childIntake={child.todayIntakes}
       />
-      <SafeAreaView className="flex-1 bg-gray-50">
+      <SafeAreaView className="flex-1">
         <ScrollView>
           <PageContainer>
             <BackButton fallbackUrl={`/(tabs)/diet/${child.child_id}`} />
