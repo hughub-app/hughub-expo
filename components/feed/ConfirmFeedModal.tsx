@@ -17,6 +17,7 @@ import {
 import { Button } from "../ui/button";
 import { SuccessDialog } from "../SuccessDialog";
 import { router } from "expo-router";
+import PageContainer from "../PageContainer";
 
 interface ConfirmFeedModalProps {
   visible: boolean;
@@ -44,7 +45,7 @@ export default function ConfirmFeedModal({
     >
       <ModalHeader title="After this meal..." onClose={onClose} />
       <ScrollView>
-        <View className="container mx-auto p-4">
+        <PageContainer>
           <Text className="!text-xl font-bold mb-4">
             {child.name} will have
           </Text>
@@ -89,7 +90,7 @@ export default function ConfirmFeedModal({
           <Button onPress={onConfirm} className="mt-4">
             <Text>Yep! Sounds good!</Text>
           </Button>
-        </View>
+        </PageContainer>
       </ScrollView>
     </Modal>
   );

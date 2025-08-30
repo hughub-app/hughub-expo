@@ -9,12 +9,12 @@ import { Button } from "../ui/button";
 import {uniq} from 'lodash'
 
 type AddIngredientFormProps = {
-  onAddIngredients: (ingredient: Ingredient[]) => void;
+  onAddIngredientIds: (ingredientIds: string[]) => void;
   addedIngredientIds: string[];
 };
 
 export default function AddIngredientForm({
-  onAddIngredients,
+  onAddIngredientIds,
   addedIngredientIds,
 }: AddIngredientFormProps) {
   const [searchTerm, setSearchTerm] = React.useState("");
@@ -25,22 +25,18 @@ export default function AddIngredientForm({
     ing.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const [newIngredients, setNewIngredients] = React.useState<Ingredient[]>([]);
+  const [newIngredientIds, setNewIngredientIds] = React.useState<string[]>(addedIngredientIds);
 
   function handleToggleIngredient(ingredient: Ingredient) {
-    if (newIngredients.find((ni) => ni.id === ingredient.id)) {
-      setNewIngredients(newIngredients.filter((ni) => ni.id !== ingredient.id));
+    if (newIngredientIds.includes(ingredient.id)) {
+      setNewIngredientIds(newIngredientIds.filter(id => id !== ingredient.id));
     } else {
-      setNewIngredients([...newIngredients, ingredient]);
+      setNewIngredientIds([...newIngredientIds, ingredient.id]);
     }
   }
 
   function handleConfirm() {
-    const existingAddedIngredients = allIngredients.filter((ing) =>
-      addedIngredientIds.includes(ing.id)
-    );
-    const allNewIngredients = uniq([...existingAddedIngredients, ...newIngredients])
-    onAddIngredients(allNewIngredients);
+    onAddIngredientIds(newIngredientIds);
   }
 
   return (
@@ -55,10 +51,7 @@ export default function AddIngredientForm({
           <AddIngredientCard
             ingredient={ingredient}
             onPress={handleToggleIngredient}
-            isChecked={[
-              ...newIngredients.map((ni) => ni.id),
-              ...addedIngredientIds,
-            ].includes(ingredient.id)}
+            isChecked={newIngredientIds.includes(ingredient.id)}
           />
         ))}
       </View>

@@ -17,14 +17,14 @@ import { Plus } from "lucide-react-native";
 type AddIngredientDialogProps = {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onAddIngredients: (ingredients: Ingredient[]) => void;
+  onAddIngredientIds: (ingredientIds: string[]) => void;
   addedIngredientIds?: string[];
 };
 
 export const AddIngredientDialog: React.FC<AddIngredientDialogProps> = ({
   open,
   onOpenChange,
-  onAddIngredients: onAddIngredient,
+  onAddIngredientIds,
   addedIngredientIds = [],
 }) => {
   return (
@@ -43,8 +43,9 @@ export const AddIngredientDialog: React.FC<AddIngredientDialogProps> = ({
           </DialogDescription>
         </DialogHeader>
         <AddIngredientForm
-          onAddIngredients={(ingredients) => {
-            onAddIngredient(ingredients);
+          onAddIngredientIds={(ingredientIds) => {
+            onAddIngredientIds(ingredientIds);
+            onOpenChange(false)
           }}
           addedIngredientIds={addedIngredientIds}
         />

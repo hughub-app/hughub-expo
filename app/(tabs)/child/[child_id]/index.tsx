@@ -11,6 +11,8 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RingChart } from "@/components/charts/RingChart";
 import Emoji from "@/components/emoji";
+import PageContainer from "@/components/PageContainer";
+import BackButton from "@/components/BackButton";
 
 export default function ChildScreen() {
   const { child_id } = useLocalSearchParams<{ child_id: string }>();
@@ -30,10 +32,8 @@ export default function ChildScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView className="flex-1 px-4">
-        <View className="pt-4 pb-6">
-          <Text className="text-3xl font-bold text-gray-900 mb-2">
-            Child ID: {child_id}
-          </Text>
+        <PageContainer>
+          <BackButton fallbackUrl="/" />
 
           {/* Emotional Wellbeing Section */}
           <Card className="mb-6">
@@ -56,12 +56,14 @@ export default function ChildScreen() {
                     <Emoji type="laugh" />
                     <View>
                       <CardHeader>
-                        <CardTitle className="text-3xl">Weekly Average</CardTitle>
+                        <CardTitle className="text-3xl">
+                          Weekly Average
+                        </CardTitle>
                       </CardHeader>
                       <CardContent>
-                          <Text className="text-lg text-gray-800">
-                            Average Mood: 3.5/5
-                          </Text>                    
+                        <Text className="text-lg text-gray-800">
+                          Average Mood: 3.5/5
+                        </Text>
                       </CardContent>
                     </View>
                   </View>
@@ -111,12 +113,11 @@ export default function ChildScreen() {
               {/* View Details Button */}
               <Button
                 className="mt-4"
-                onPress={
-                  () => {
+                onPress={() => {
                   router.push({
-                    pathname: '/GetMood/[child_id]',
+                    pathname: "/GetMood/[child_id]",
                     params: { child_id },
-                  })
+                  });
                 }}
               >
                 <Text>Get Mood</Text>
@@ -133,30 +134,28 @@ export default function ChildScreen() {
               <Text className="mt-4 ml-2 text-xl font-bold text-gray-800 mb-2">
                 Today's Intakes
               </Text>
-                <RingChart
-                    progress={0.75}
-                    color="#FF8C00"
-                    size={200}  
-                    strokeWidth={20}
-                    title="Macronutrient Distribution"
-                    />  
-            
+              <RingChart
+                progress={0.75}
+                color="#FF8C00"
+                size={200}
+                strokeWidth={20}
+                title="Macronutrient Distribution"
+              />
+
               <Button
                 onPress={() => {
-                  // router.push({
-                  //   pathname: '/child/diet_detail',
-                  //   params: { child_id },
-                  // })
+                  router.push({
+                    pathname: "/diet/[child_id]",
+                    params: { child_id },
+                  });
                 }}
               >
                 <Text>View Diet Details</Text>
               </Button>
-            </CardContent>  
-            </Card>
-
-        </View>
+            </CardContent>
+          </Card>
+        </PageContainer>
       </ScrollView>
     </SafeAreaView>
   );
 }
-

@@ -21,6 +21,8 @@ import { PlusIcon } from "lucide-react-native";
 import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";
 import ConfirmFeedModal from "@/components/feed/ConfirmFeedModal";
 import { SuccessDialog } from "@/components/SuccessDialog";
+import PageContainer from "@/components/PageContainer";
+import BackButton from "@/components/BackButton";
 
 type Params = { child_id?: string | string[] };
 
@@ -59,6 +61,12 @@ export default function Feed() {
   const [isConfirming, setIsConfirming] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
+  function handleAddIngredientIds(ingredientIds: string[]) {
+    setIngredients([
+      ...mockIngredients.filter((i) => ingredientIds.includes(i.id)),
+    ]);
+  }
+
   function handleConfirm() {
     setIsConfirming(true);
   }
@@ -87,37 +95,42 @@ export default function Feed() {
         onConfirm={handleFinalConfirm}
       />
       <SafeAreaView className="flex-1 bg-gray-50">
-        <ScrollView className="container mx-auto p-4">
-          <Text className="!text-3xl font-bold">Feed {child.name}</Text>
-          <Select className="mt-4">
-            <SelectTrigger className="!w-full">
-              <SelectValue placeholder="Select meal type" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Meal Type</SelectLabel>
-                <SelectItem label="Breakfast" value="breakfast"/>
-                <SelectItem label="Lunch" value="lunch"/>
-                <SelectItem label="Dinner" value="dinner"/>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <View className="mt-4 gap-2">
-            {
-              ingredients.map((ingredient) => (
-                <IngredientCard key={ingredient.name} ingredient={ingredient} />
-              ))
-            }
-            <AddIngredientDialog
-              open={isAddingIngredients}
-              onOpenChange={setIsAddingIngredients}
-              onAddIngredients={setIngredients}
-              addedIngredientIds={ingredients.map((i) => i.id)}
-            />
-          </View>
-          <Button className="mt-4" onPress={handleConfirm}>
-            <Text>Feed the Child!</Text>
-          </Button>
+        <ScrollView>
+          <PageContainer>
+            <BackButton fallbackUrl={`/(tabs)/diet/${child.child_id}`} />
+            <Text className="!text-3xl font-bold">Feed {child.name}</Text>
+            <Select className="mt-4">
+              <SelectTrigger className="!w-full">
+                <SelectValue placeholder="Select meal type" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Meal Type</SelectLabel>
+                  <SelectItem label="Breakfast" value="breakfast"/>
+                  <SelectItem label="Lunch" value="lunch"/>
+                  <SelectItem label="Dinner" value="dinner"/>
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <View className="mt-4">
+              <View className="grid md:grid-cols-2 gap-2 mb-4">
+                {
+                  ingredients.map((ingredient) => (
+                    <IngredientCard key={ingredient.name} ingredient={ingredient} />
+                  ))
+                }
+              </View>
+              <AddIngredientDialog
+                open={isAddingIngredients}
+                onOpenChange={setIsAddingIngredients}
+                onAddIngredientIds={handleAddIngredientIds}
+                addedIngredientIds={ingredients.map((i) => i.id)}
+              />
+            </View>
+            <Button className="mt-4" onPress={handleConfirm}>
+              <Text>Feed the Child!</Text>
+            </Button>
+          </PageContainer>
         </ScrollView>
       </SafeAreaView>
     </>
