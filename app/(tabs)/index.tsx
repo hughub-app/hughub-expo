@@ -9,6 +9,7 @@ import { LineChart } from "@/components/charts/LineChart";
 import { mockChildren } from "@/mocks/mockChildren";
 import ChildCard from "@/components/ChildCard";
 import { Link } from "expo-router";
+import PageContainer from "@/components/PageContainer";
 
 const sampleLineData = [
   { x: 1, y: 2 },
@@ -23,8 +24,8 @@ const sampleLineData = [
 export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1 bg-gray-50">
-      <ScrollView className="flex-1 px-4">
-        <View className="pt-4 pb-6">
+      <ScrollView>
+        <PageContainer>
           <Text className="text-3xl font-bold text-gray-900 mb-2">
             Welcome to Your Health Dashboard
           </Text>
@@ -34,7 +35,7 @@ export default function HomeScreen() {
 
           <View className="gap-4">
             {mockChildren.map((child, cIdx) => (
-              <Link href={`/diet/${child.child_id}`} key={cIdx}>
+              <Link href={`/child/${child.child_id}`} key={cIdx}>
                 <ChildCard child={child} />
               </Link>
             ))}
@@ -87,7 +88,7 @@ export default function HomeScreen() {
               <Text>View All Data</Text>
             </Button>
           </View> */}
-        </View>
+        </PageContainer>
       </ScrollView>
     </SafeAreaView>
   );
