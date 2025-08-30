@@ -1,6 +1,6 @@
 import { ScrollView, View } from "react-native";
 import React, { useMemo, useState } from "react";
-import { useLocalSearchParams } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { mockChildren } from "@/mocks/mockChildren";
@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react-native";
 import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";
 import ConfirmFeedModal from "@/components/feed/ConfirmFeedModal";
+import { SuccessDialog } from "@/components/SuccessDialog";
 
 type Params = { child_id?: string | string[] };
 
@@ -54,21 +55,36 @@ export default function Feed() {
 
   const [ingredients, setIngredients] = useState<Ingredient[]>(mockIngredients.slice(0, 2));
 
-  const allIngredients = mockIngredients;
-
   const [isAddingIngredients, setIsAddingIngredients] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
+  const [hasConfirmed, setHasConfirmed] = useState(false);
 
   function handleConfirm() {
     setIsConfirming(true);
   }
 
+  function handleFinalConfirm() {
+    setIsConfirming(false)
+    setHasConfirmed(true);
+  }
+
   return (
     <>
+      <SuccessDialog
+        open={hasConfirmed}
+        onOpenChange={setHasConfirmed}
+        title="Awesome!"
+        description={`${child.name} has been fed!`}
+        buttonText="Yay!"
+        onConfirm={() => {
+          router.replace(`/(tabs)/diet/${child.child_id}`);
+        }}
+      />
       <ConfirmFeedModal
         child={child}
         visible={isConfirming}
         onClose={() => setIsConfirming(false)}
+        onConfirm={handleFinalConfirm}
       />
       <SafeAreaView className="flex-1 bg-gray-50">
         <ScrollView className="container mx-auto p-4">

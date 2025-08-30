@@ -43,6 +43,7 @@
     "expo-symbols": "~0.4.3",
     "expo-system-ui": "~5.0.5",
     "expo-web-browser": "~14.1.5",
+    "lodash": "^4.17.21",
     "lucide-react-native": "^0.541.0",
     "nativewind": "^4.1.23",
     "openapi-fetch": "^0.14.0",
@@ -69,6 +70,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
+    "@types/lodash": "^4.17.20",
     "@types/react": "~19.0.10",
     "react-native-worklets": "^0.4.1",
     "typescript": "~5.8.3"

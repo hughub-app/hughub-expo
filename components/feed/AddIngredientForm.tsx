@@ -6,6 +6,7 @@ import { Text } from "../ui/text";
 import { Input } from "../ui/input";
 import AddIngredientCard from "./AddIngredientCard";
 import { Button } from "../ui/button";
+import {uniq} from 'lodash'
 
 type AddIngredientFormProps = {
   onAddIngredients: (ingredient: Ingredient[]) => void;
@@ -35,7 +36,11 @@ export default function AddIngredientForm({
   }
 
   function handleConfirm() {
-    onAddIngredients(newIngredients);
+    const existingAddedIngredients = allIngredients.filter((ing) =>
+      addedIngredientIds.includes(ing.id)
+    );
+    const allNewIngredients = uniq([...existingAddedIngredients, ...newIngredients])
+    onAddIngredients(allNewIngredients);
   }
 
   return (

@@ -8,17 +8,27 @@ import { Child } from "@/lib/api/endpoints/children";
 import NutritionLabels from "../diets/NutritionLabels";
 import { mockDietSuggestions } from "@/mocks/mockDietSuggestions";
 import DietSuggestionCard from "./DietSuggestionCard";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "../ui/accordion";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "../ui/accordion";
+import { Button } from "../ui/button";
+import { SuccessDialog } from "../SuccessDialog";
+import { router } from "expo-router";
 
 interface ConfirmFeedModalProps {
   visible: boolean;
   onClose: () => void;
-  child: Child
+  onConfirm: () => void;
+  child: Child;
 }
 
 export default function ConfirmFeedModal({
   visible,
   onClose,
+  onConfirm,
   child,
 }: ConfirmFeedModalProps) {
   const dietSuggestions = React.useMemo(() => {
@@ -35,7 +45,9 @@ export default function ConfirmFeedModal({
       <ModalHeader title="After this meal..." onClose={onClose} />
       <ScrollView>
         <View className="container mx-auto p-4">
-          <Text className="!text-xl font-bold mb-4">{child.name} will have</Text>
+          <Text className="!text-xl font-bold mb-4">
+            {child.name} will have
+          </Text>
           <View className="flex-row justify-center gap-8 mb-8">
             <NutritionRings
               values={{
@@ -55,24 +67,28 @@ export default function ConfirmFeedModal({
             />
             <NutritionLabels />
           </View>
-          {
-            dietSuggestions.length > 0 && (
-              <Accordion type='single' collapsible>
-                <AccordionItem value='item-1'>
-                  <AccordionTrigger>
+          {dietSuggestions.length > 0 && (
+            <Accordion type="single" collapsible>
+              <AccordionItem value="item-1">
+                <AccordionTrigger>
                   <Text className="!text-xl font-bold mb-4">Suggestions</Text>
-                  </AccordionTrigger>
-                  <AccordionContent>
-                    <View className="gap-2">
-                      {dietSuggestions.map((suggestion, index) => (
-                        <DietSuggestionCard key={index} dietSuggestion={suggestion} />
-                      ))}
-                    </View>
-                  </AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            )
-          }
+                </AccordionTrigger>
+                <AccordionContent>
+                  <View className="gap-2">
+                    {dietSuggestions.map((suggestion, index) => (
+                      <DietSuggestionCard
+                        key={index}
+                        dietSuggestion={suggestion}
+                      />
+                    ))}
+                  </View>
+                </AccordionContent>
+              </AccordionItem>
+            </Accordion>
+          )}
+          <Button onPress={onConfirm} className="mt-4">
+            <Text>Yep! Sounds good!</Text>
+          </Button>
         </View>
       </ScrollView>
     </Modal>
