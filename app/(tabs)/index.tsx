@@ -10,6 +10,7 @@ import { mockChildren } from "@/mocks/mockChildren";
 import ChildCard from "@/components/ChildCard";
 import { Link } from "expo-router";
 import PageContainer from "@/components/PageContainer";
+import { PageHead } from "@/components/PageHead";
 
 const sampleLineData = [
   { x: 1, y: 2 },
@@ -24,6 +25,10 @@ const sampleLineData = [
 export default function HomeScreen() {
   return (
     <SafeAreaView className="flex-1">
+      <PageHead
+        title="Home"
+        description="Welcome to HugHub!"
+      />
       <ScrollView>
         <PageContainer>
           <Text className="text-3xl font-bold text-gray-900 mb-2">

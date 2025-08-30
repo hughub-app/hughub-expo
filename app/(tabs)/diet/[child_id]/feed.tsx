@@ -23,6 +23,7 @@ import ConfirmFeedModal from "@/components/feed/ConfirmFeedModal";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
+import { PageHead } from "@/components/PageHead";
 
 type Params = { child_id?: string | string[] };
 
@@ -78,6 +79,7 @@ export default function Feed() {
 
   return (
     <>
+      <PageHead title={`Log Meal for ${child?.name}`} description={`Time to feed ${child?.name}`} />
       <SuccessDialog
         open={hasConfirmed}
         onOpenChange={setHasConfirmed}

@@ -13,10 +13,14 @@ import { RingChart } from "@/components/charts/RingChart";
 import Emoji from "@/components/emoji";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
+import { PageHead } from "@/components/PageHead";
+import { mockChildren } from "@/mocks/mockChildren";
 
 export default function ChildScreen() {
   const { child_id } = useLocalSearchParams<{ child_id: string }>();
   const router = useRouter();
+
+  const child = mockChildren.find((c) => c.child_id === Number(child_id));
 
   // mock mood data for past week
   const mockMoodData = [
@@ -31,6 +35,7 @@ export default function ChildScreen() {
 
   return (
     <SafeAreaView className="flex-1">
+      <PageHead title={`${child?.name}`} description={`${child?.name}`} />
       <ScrollView className="flex-1 px-4">
         <PageContainer>
           <BackButton fallbackUrl="/" />

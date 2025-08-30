@@ -9,10 +9,14 @@ import Emoji from "@/components/emoji";
 import { Input } from "@/components/ui/input";
 import BackButton from "@/components/BackButton";
 import PageContainer from "@/components/PageContainer";
+import { PageHead } from "@/components/PageHead";
+import { mockChildren } from "@/mocks/mockChildren";
 
 const GetMoodPage = () => {
   const router = useRouter();
   const { child_id } = useLocalSearchParams();
+
+  const child = mockChildren.find((c) => c.child_id === Number(child_id));
 
   const [selectedEmotion, setSelectedEmotion] = useState<
     "laugh" | "smile" | "meh" | "frown" | "angry" | null
@@ -47,6 +51,7 @@ const GetMoodPage = () => {
 
   return (
     <SafeAreaView>
+      <PageHead title={`Log Mood for ${child?.name}`} description={`Log ${child?.name}'s mood and thoughts`} />
       <ScrollView>
         <PageContainer>
           <BackButton fallbackUrl={`/(tabs)/child/${child_id}/index`} />

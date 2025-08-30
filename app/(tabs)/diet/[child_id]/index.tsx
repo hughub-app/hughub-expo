@@ -10,6 +10,7 @@ import NutritionRings from "@/components/diets/NutritionRings";
 import { Button } from "@/components/ui/button";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
+import { PageHead } from "@/components/PageHead";
 
 type Params = { child_id?: string | string[] };
 
@@ -46,20 +47,26 @@ export default function DietByChildPage() {
           headerBackTitle: "Back",
         }}
       /> */}
+      <PageHead
+        title={`${child?.name}'s Diet`}
+        description={`${child?.name}'s Diet`}
+      />
       <SafeAreaView>
         <PageContainer>
-          <BackButton fallbackUrl={`/(tabs)/child/${childId}`}/>
+          <BackButton fallbackUrl={`/(tabs)/child/${childId}`} />
           <View className="flex-1 p-4 gap-4">
             <Text className="!text-3xl font-bold">{child?.name}'s Diet</Text>
             <View className="flex-row gap-6 justify-center items-center">
               <NutritionRings
-                values={child?.todayIntakes || {
-                  vegetable: 0,
-                  protein: 0,
-                  fruit: 0,
-                  grain: 0,
-                  dairy: 0,
-                }}
+                values={
+                  child?.todayIntakes || {
+                    vegetable: 0,
+                    protein: 0,
+                    fruit: 0,
+                    grain: 0,
+                    dairy: 0,
+                  }
+                }
                 target={{
                   dairy: 6,
                   protein: 5,
