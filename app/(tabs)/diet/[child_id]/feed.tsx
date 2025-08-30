@@ -1,5 +1,5 @@
 import { ScrollView, View } from "react-native";
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { useLocalSearchParams } from "expo-router";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -19,6 +19,7 @@ import { Ingredient } from "@/types";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react-native";
 import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";
+import ConfirmFeedModal from "@/components/feed/ConfirmFeedModal";
 
 type Params = { child_id?: string | string[] };
 
@@ -51,46 +52,58 @@ export default function Feed() {
     );
   }
 
-  const [ingredients, setIngredients] = React.useState<Ingredient[]>(mockIngredients.slice(0, 2));
+  const [ingredients, setIngredients] = useState<Ingredient[]>(mockIngredients.slice(0, 2));
 
   const allIngredients = mockIngredients;
 
-  const [isAddingIngredients, setIsAddingIngredients] = React.useState(false);
+  const [isAddingIngredients, setIsAddingIngredients] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
+
+  function handleConfirm() {
+    setIsConfirming(true);
+  }
 
   return (
-    <SafeAreaView className="flex-1 bg-gray-50">
-      <ScrollView className="container mx-auto p-4">
-        <Text className="!text-3xl font-bold">Feed {child.name}</Text>
-        <Select className="mt-4">
-          <SelectTrigger className="!w-full">
-            <SelectValue placeholder="Select meal type" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Meal Type</SelectLabel>
-              <SelectItem label="Breakfast" value="breakfast"/>
-              <SelectItem label="Lunch" value="lunch"/>
-              <SelectItem label="Dinner" value="dinner"/>
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-        <View className="mt-4 gap-2">
-          {
-            ingredients.map((ingredient) => (
-              <IngredientCard key={ingredient.name} ingredient={ingredient} />
-            ))
-          }
-          <AddIngredientDialog
-            open={isAddingIngredients}
-            onOpenChange={setIsAddingIngredients}
-            onAddIngredients={setIngredients}
-            addedIngredientIds={ingredients.map((i) => i.id)}
-          />
-        </View>
-        <Button className="mt-4">
-          <Text>Feed the Child!</Text>
-        </Button>
-      </ScrollView>
-    </SafeAreaView>
+    <>
+      <ConfirmFeedModal
+        child={child}
+        visible={isConfirming}
+        onClose={() => setIsConfirming(false)}
+      />
+      <SafeAreaView className="flex-1 bg-gray-50">
+        <ScrollView className="container mx-auto p-4">
+          <Text className="!text-3xl font-bold">Feed {child.name}</Text>
+          <Select className="mt-4">
+            <SelectTrigger className="!w-full">
+              <SelectValue placeholder="Select meal type" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectGroup>
+                <SelectLabel>Meal Type</SelectLabel>
+                <SelectItem label="Breakfast" value="breakfast"/>
+                <SelectItem label="Lunch" value="lunch"/>
+                <SelectItem label="Dinner" value="dinner"/>
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+          <View className="mt-4 gap-2">
+            {
+              ingredients.map((ingredient) => (
+                <IngredientCard key={ingredient.name} ingredient={ingredient} />
+              ))
+            }
+            <AddIngredientDialog
+              open={isAddingIngredients}
+              onOpenChange={setIsAddingIngredients}
+              onAddIngredients={setIngredients}
+              addedIngredientIds={ingredients.map((i) => i.id)}
+            />
+          </View>
+          <Button className="mt-4" onPress={handleConfirm}>
+            <Text>Feed the Child!</Text>
+          </Button>
+        </ScrollView>
+      </SafeAreaView>
+    </>
   );
 }

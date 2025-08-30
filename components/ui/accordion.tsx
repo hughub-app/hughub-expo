@@ -3,6 +3,7 @@ import { TextClassContext } from '@/components/ui/text';
 import { cn } from '@/lib/utils';
 import * as AccordionPrimitive from '@rn-primitives/accordion';
 import { ChevronDown } from 'lucide-react-native';
+import React from 'react';
 import { Platform, Pressable, View } from 'react-native';
 import Animated, {
   FadeOutUp,

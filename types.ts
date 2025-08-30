@@ -24,3 +24,8 @@ export type Ingredient = {
   };
   types: IngredientType[];
 };
+
+export type DietSuggestion = {
+  description: string;
+  ingredients: Ingredient[];
+}
