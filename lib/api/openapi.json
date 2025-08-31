@@ -16,9 +16,543 @@
     { "name": "FoodGroupRequirements" },
     { "name": "FoodItems" },
     { "name": "CompositionValues" },
-    { "name": "FoodGuideMaps" }
+    { "name": "FoodGuideMaps" },
+    {
+      "name": "DietaryGuidelines"
+    },
+    {
+      "name": "Ingredients"
+    },
+    {
+      "name": "Recipes"
+    },
+    {
+      "name": "RecipeIngredients"
+    }
   ],
   "paths": {
+    "/dietary-guidelines": {
+      "get": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "List dietary guidelines",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/filter_age_group" },
+          { "$ref": "#/components/parameters/filter_gender" },
+          { "$ref": "#/components/parameters/filter_min_age" },
+          { "$ref": "#/components/parameters/filter_max_age" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_DietaryGuideline"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Create dietary guideline",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DietaryGuidelineCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DietaryGuideline" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/dietary-guidelines/{guideline_id}": {
+      "get": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Get dietary guideline",
+        "parameters": [{ "$ref": "#/components/parameters/guideline_id" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DietaryGuideline" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Update dietary guideline",
+        "parameters": [
+          { "$ref": "#/components/parameters/guideline_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DietaryGuidelineUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DietaryGuideline" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Delete dietary guideline",
+        "parameters": [
+          { "$ref": "#/components/parameters/guideline_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/ingredients": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "List ingredients",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_ingredient_category" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_Ingredient"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Ingredients"],
+        "summary": "Create ingredient",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/IngredientCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Ingredient" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/ingredients/{ingredient_id}": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "Get ingredient",
+        "parameters": [{ "$ref": "#/components/parameters/ingredient_id" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Ingredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["Ingredients"],
+        "summary": "Update ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/nutrient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/IngredientUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Ingredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Ingredients"],
+        "summary": "Delete ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/nutrient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+    "/recipes": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "List recipes",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_recipe_type" },
+          { "$ref": "#/components/parameters/filter_cuisine_type" },
+          { "$ref": "#/components/parameters/filter_dietary_preferences" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_Recipe" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Recipes"],
+        "summary": "Create recipe",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RecipeCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Recipe" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/recipes/{recipe_id}": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Get recipe",
+        "parameters": [{ "$ref": "#/components/parameters/recipe_id" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Recipe" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["Recipes"],
+        "summary": "Update recipe",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RecipeUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Recipe" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Recipes"],
+        "summary": "Delete recipe",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+    "/recipe-ingredients": {
+      "get": {
+        "tags": ["RecipeIngredients"],
+        "summary": "List recipe ingredients",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          {
+            "name": "recipe_id",
+            "in": "query",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "ingredient_id",
+            "in": "query",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_RecipeIngredient"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Create recipe ingredient",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RecipeIngredient" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/recipe-ingredients/{recipe_ingredient_id}": {
+      "get": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Get recipe ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_ingredient_id" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RecipeIngredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Update recipe ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_ingredient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RecipeIngredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Delete recipe ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_ingredient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
     "/children": {
       "get": {
         "tags": ["Children"],
@@ -1661,6 +2195,222 @@
         "required": ["page", "limit", "total", "pages"]
       },
 
+      "DietaryGuideline": {
+        "type": "object",
+        "properties": {
+          "guideline_id": { "type": "integer", "readOnly": true },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "age_group": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" },
+          "min_age": { "type": "integer" },
+          "max_age": { "type": "integer" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["guideline_id", "age_group", "min_age", "max_age"]
+      },
+      "DietaryGuidelineCreate": {
+        "type": "object",
+        "properties": {
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "age_group": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" },
+          "min_age": { "type": "integer" },
+          "max_age": { "type": "integer" }
+        },
+        "required": ["age_group", "min_age", "max_age"]
+      },
+      "DietaryGuidelineUpdate": {
+        "type": "object",
+        "allOf": [{ "$ref": "#/components/schemas/DietaryGuidelineCreate" }]
+      },
+      "Paginated_DietaryGuideline": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DietaryGuideline" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "Ingredient": {
+        "type": "object",
+        "properties": {
+          "ingredient_id": { "type": "integer", "readOnly": true },
+          "ingredient_name": { "type": "string" },
+          "category": { "type": "string" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["ingredient_id", "ingredient_name", "category"]
+      },
+      "IngredientCreate": {
+        "type": "object",
+        "properties": {
+          "ingredient_name": { "type": "string" },
+          "category": { "type": "string" }
+        },
+        "required": ["ingredient_name", "category"]
+      },
+      "IngredientUpdate": {
+        "type": "object",
+        "properties": {
+          "ingredient_name": { "type": "string" },
+          "category": { "type": "string" }
+        }
+      },
+      "Paginated_Ingredient": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Ingredient" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "recipe_id": { "type": "integer", "readOnly": true },
+          "recipe_name": { "type": "string" },
+          "recipe_type": { "type": "string" },
+          "cuisine_type": { "type": "string" },
+          "dietary_preferences": { "type": "string" },
+          "cooking_steps": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["recipe_id", "recipe_name"]
+      },
+      "RecipeCreate": {
+        "type": "object",
+        "properties": {
+          "recipe_name": { "type": "string" },
+          "recipe_type": { "type": "string" },
+          "cuisine_type": { "type": "string" },
+          "dietary_preferences": { "type": "string" },
+          "cooking_steps": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" }
+        },
+        "required": ["recipe_name"]
+      },
+      "RecipeUpdate": {
+        "type": "object",
+        "allOf": [{ "$ref": "#/components/schemas/RecipeCreate" }]
+      },
+      "Paginated_Recipe": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Recipe" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "RecipeIngredient": {
+        "type": "object",
+        "properties": {
+          "recipe_ingredient_id": { "type": "integer", "readOnly": true },
+          "recipe_id": { "type": "integer" },
+          "ingredient_id": { "type": "integer" },
+          "grams": { "type": "integer" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "recipe_ingredient_id",
+          "recipe_id",
+          "ingredient_id",
+          "grams"
+        ]
+      },
+      "RecipeIngredientCreate": {
+        "type": "object",
+        "properties": {
+          "recipe_id": { "type": "integer" },
+          "ingredient_id": { "type": "integer" },
+          "grams": { "type": "integer" }
+        },
+        "required": ["recipe_id", "ingredient_id", "grams"]
+      },
+      "RecipeIngredientUpdate": {
+        "type": "object",
+        "properties": {
+          "recipe_id": { "type": "integer" },
+          "ingredient_id": { "type": "integer" },
+          "grams": { "type": "integer" }
+        }
+      },
+      "Paginated_RecipeIngredient": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RecipeIngredient" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
       "Child": {
         "type": "object",
         "properties": {
@@ -2286,6 +3036,69 @@
         "in": "query",
         "schema": { "type": "string" },
         "description": "Search query"
+      },
+
+      "guideline_id": {
+        "name": "guideline_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "ingredient_id": {
+        "name": "ingredient_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "recipe_id": {
+        "name": "recipe_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "recipe_ingredient_id": {
+        "name": "recipe_ingredient_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+
+      "filter_age_group": {
+        "name": "age_group",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_min_age": {
+        "name": "min_age",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+      "filter_max_age": {
+        "name": "max_age",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+
+      "filter_recipe_type": {
+        "name": "recipe_type",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_cuisine_type": {
+        "name": "cuisine_type",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_dietary_preferences": {
+        "name": "dietary_preferences",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+
+      "filter_ingredient_category": {
+        "name": "category",
+        "in": "query",
+        "schema": { "type": "string" }
       },
 
       "filter_age_group_id": {

@@ -4,6 +4,688 @@
  */
 
 export interface paths {
+    "/dietary-guidelines": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List dietary guidelines */
+        get: {
+            parameters: {
+                query?: {
+                    page?: components["parameters"]["page"];
+                    limit?: components["parameters"]["limit"];
+                    /** @description Field to sort by */
+                    sort?: components["parameters"]["sort"];
+                    order?: components["parameters"]["order"];
+                    age_group?: components["parameters"]["filter_age_group"];
+                    gender?: components["parameters"]["filter_gender"];
+                    min_age?: components["parameters"]["filter_min_age"];
+                    max_age?: components["parameters"]["filter_max_age"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
+                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
+                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Paginated_DietaryGuideline"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create dietary guideline */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["DietaryGuidelineCreate"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        Location?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["DietaryGuideline"];
+                    };
+                };
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/dietary-guidelines/{guideline_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get dietary guideline */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    guideline_id: components["parameters"]["guideline_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["DietaryGuideline"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete dietary guideline */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    guideline_id: components["parameters"]["guideline_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update dietary guideline */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    guideline_id: components["parameters"]["guideline_id"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["DietaryGuidelineUpdate"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["DietaryGuideline"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        trace?: never;
+    };
+    "/ingredients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List ingredients */
+        get: {
+            parameters: {
+                query?: {
+                    page?: components["parameters"]["page"];
+                    limit?: components["parameters"]["limit"];
+                    /** @description Field to sort by */
+                    sort?: components["parameters"]["sort"];
+                    order?: components["parameters"]["order"];
+                    /** @description Search query */
+                    q?: components["parameters"]["q"];
+                    category?: components["parameters"]["filter_ingredient_category"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
+                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
+                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Paginated_Ingredient"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create ingredient */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["IngredientCreate"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        Location?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Ingredient"];
+                    };
+                };
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/ingredients/{ingredient_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get ingredient */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    ingredient_id: components["parameters"]["ingredient_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Ingredient"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete ingredient */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    nutrient_id: components["parameters"]["nutrient_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update ingredient */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    nutrient_id: components["parameters"]["nutrient_id"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["IngredientUpdate"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Ingredient"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        trace?: never;
+    };
+    "/recipes": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List recipes */
+        get: {
+            parameters: {
+                query?: {
+                    page?: components["parameters"]["page"];
+                    limit?: components["parameters"]["limit"];
+                    /** @description Field to sort by */
+                    sort?: components["parameters"]["sort"];
+                    order?: components["parameters"]["order"];
+                    /** @description Search query */
+                    q?: components["parameters"]["q"];
+                    recipe_type?: components["parameters"]["filter_recipe_type"];
+                    cuisine_type?: components["parameters"]["filter_cuisine_type"];
+                    dietary_preferences?: components["parameters"]["filter_dietary_preferences"];
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
+                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
+                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Paginated_Recipe"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create recipe */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RecipeCreate"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        Location?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Recipe"];
+                    };
+                };
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/recipes/{recipe_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recipe */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    recipe_id: components["parameters"]["recipe_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Recipe"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete recipe */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    recipe_id: components["parameters"]["recipe_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update recipe */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    recipe_id: components["parameters"]["recipe_id"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RecipeUpdate"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Recipe"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        trace?: never;
+    };
+    "/recipe-ingredients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** List recipe ingredients */
+        get: {
+            parameters: {
+                query?: {
+                    page?: components["parameters"]["page"];
+                    limit?: components["parameters"]["limit"];
+                    /** @description Field to sort by */
+                    sort?: components["parameters"]["sort"];
+                    order?: components["parameters"]["order"];
+                    recipe_id?: number;
+                    ingredient_id?: number;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
+                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
+                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Paginated_RecipeIngredient"];
+                    };
+                };
+            };
+        };
+        put?: never;
+        /** Create recipe ingredient */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RecipeIngredientCreate"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        Location?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RecipeIngredient"];
+                    };
+                };
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/recipe-ingredients/{recipe_ingredient_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /** Get recipe ingredient */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    recipe_ingredient_id: components["parameters"]["recipe_ingredient_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RecipeIngredient"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+            };
+        };
+        put?: never;
+        post?: never;
+        /** Delete recipe ingredient */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    recipe_ingredient_id: components["parameters"]["recipe_ingredient_id"];
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description No Content */
+                204: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+            };
+        };
+        options?: never;
+        head?: never;
+        /** Update recipe ingredient */
+        patch: {
+            parameters: {
+                query?: never;
+                header?: {
+                    "If-Match"?: components["parameters"]["IfMatch"];
+                };
+                path: {
+                    recipe_ingredient_id: components["parameters"]["recipe_ingredient_id"];
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["RecipeIngredientUpdate"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        ETag?: string;
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RecipeIngredient"];
+                    };
+                };
+                404: components["responses"]["NotFound"];
+                409: components["responses"]["PreconditionFailed"];
+                422: components["responses"]["ValidationError"];
+            };
+        };
+        trace?: never;
+    };
     "/children": {
         parameters: {
             query?: never;
@@ -2119,6 +2801,119 @@ export interface components {
             total: number;
             pages: number;
         };
+        DietaryGuideline: {
+            readonly guideline_id: number;
+            /** @enum {string|null} */
+            gender?: "M" | "F" | null;
+            age_group: string;
+            servings_veg_legumes_beans?: number;
+            servings_fruit?: number;
+            servings_grain?: number;
+            servings_meat_fish_eggs_nuts_seeds?: number;
+            servings_milk_yoghurt_cheese?: number;
+            min_age: number;
+            max_age: number;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** Format: date-time */
+            readonly updatedAt?: string;
+        };
+        DietaryGuidelineCreate: {
+            /** @enum {string|null} */
+            gender?: "M" | "F" | null;
+            age_group: string;
+            servings_veg_legumes_beans?: number;
+            servings_fruit?: number;
+            servings_grain?: number;
+            servings_meat_fish_eggs_nuts_seeds?: number;
+            servings_milk_yoghurt_cheese?: number;
+            min_age: number;
+            max_age: number;
+        };
+        DietaryGuidelineUpdate: components["schemas"]["DietaryGuidelineCreate"];
+        Paginated_DietaryGuideline: {
+            items: components["schemas"]["DietaryGuideline"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        Ingredient: {
+            readonly ingredient_id: number;
+            ingredient_name: string;
+            category: string;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** Format: date-time */
+            readonly updatedAt?: string;
+        };
+        IngredientCreate: {
+            ingredient_name: string;
+            category: string;
+        };
+        IngredientUpdate: {
+            ingredient_name?: string;
+            category?: string;
+        };
+        Paginated_Ingredient: {
+            items: components["schemas"]["Ingredient"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        Recipe: {
+            readonly recipe_id: number;
+            recipe_name: string;
+            recipe_type?: string;
+            cuisine_type?: string;
+            dietary_preferences?: string;
+            cooking_steps?: string;
+            servings_veg_legumes_beans?: number;
+            servings_fruit?: number;
+            servings_grain?: number;
+            servings_meat_fish_eggs_nuts_seeds?: number;
+            servings_milk_yoghurt_cheese?: number;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** Format: date-time */
+            readonly updatedAt?: string;
+        };
+        RecipeCreate: {
+            recipe_name: string;
+            recipe_type?: string;
+            cuisine_type?: string;
+            dietary_preferences?: string;
+            cooking_steps?: string;
+            servings_veg_legumes_beans?: number;
+            servings_fruit?: number;
+            servings_grain?: number;
+            servings_meat_fish_eggs_nuts_seeds?: number;
+            servings_milk_yoghurt_cheese?: number;
+        };
+        RecipeUpdate: components["schemas"]["RecipeCreate"];
+        Paginated_Recipe: {
+            items: components["schemas"]["Recipe"][];
+            meta: components["schemas"]["PageMeta"];
+        };
+        RecipeIngredient: {
+            readonly recipe_ingredient_id: number;
+            recipe_id: number;
+            ingredient_id: number;
+            grams: number;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** Format: date-time */
+            readonly updatedAt?: string;
+        };
+        RecipeIngredientCreate: {
+            recipe_id: number;
+            ingredient_id: number;
+            grams: number;
+        };
+        RecipeIngredientUpdate: {
+            recipe_id?: number;
+            ingredient_id?: number;
+            grams?: number;
+        };
+        Paginated_RecipeIngredient: {
+            items: components["schemas"]["RecipeIngredient"][];
+            meta: components["schemas"]["PageMeta"];
+        };
         Child: {
             readonly child_id: number;
             name: string;
@@ -2469,7 +3264,17 @@ export interface components {
         order: "asc" | "desc";
         /** @description Search query */
         q: string;
-        child_id: number;
+        guideline_id: number;
+        ingredient_id: number;
+        recipe_id: number;
+        recipe_ingredient_id: number;
+        filter_age_group: string;
+        filter_min_age: number;
+        filter_max_age: number;
+        filter_recipe_type: string;
+        filter_cuisine_type: string;
+        filter_dietary_preferences: string;
+        filter_ingredient_category: string;
         filter_age_group_id: number;
         filter_gender: "M" | "F";
         filter_category: string;
@@ -2480,6 +3285,7 @@ export interface components {
         filter_food_group_id: number;
         filter_classification: string;
         filter_food_id: number;
+        child_id: number;
         age_group_id: number;
         age_range_id: number;
         nutrient_id: number;
