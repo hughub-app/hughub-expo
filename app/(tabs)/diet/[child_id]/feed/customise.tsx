@@ -24,10 +24,11 @@ import { SuccessDialog } from "@/components/SuccessDialog";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
+import { mockRecipes } from "@/mocks/mockRecipes";
 
 type Params = { child_id?: string | string[] };
 
-export default function Feed() {
+export default function CustomiseMenu() {
   const params = useLocalSearchParams<Params>();
 
   // Force param into a single string
@@ -79,7 +80,7 @@ export default function Feed() {
 
   return (
     <>
-      <PageHead title={`Log Meal for ${child?.name}`} description={`Time to feed ${child?.name}`} />
+      <PageHead title={`Custom Meal for ${child?.name}`} description={`Time to feed ${child?.name}`} />
       <SuccessDialog
         open={hasConfirmed}
         onOpenChange={setHasConfirmed}
