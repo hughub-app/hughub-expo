@@ -13,9 +13,9 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
-import { mockIngredients } from "@/mocks/mockIngredients";
+import { mockMenuIngredients } from "@/mocks/mockMenuIngredients";
 import IngredientCard from "@/components/feed/IngredientCard";
-import { Ingredient } from "@/types";
+import { MenuIngredient } from "@/types";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react-native";
 import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";
@@ -58,8 +58,8 @@ export default function Feed() {
     );
   }
 
-  const [ingredients, setIngredients] = useState<Ingredient[]>(
-    mockIngredients.slice(0, 2)
+  const [ingredients, setIngredients] = useState<MenuIngredient[]>(
+    mockMenuIngredients.slice(0, 2)
   );
 
   const [isAddingIngredients, setIsAddingIngredients] = useState(false);
@@ -68,7 +68,7 @@ export default function Feed() {
 
   function handleAddIngredientIds(ingredientIds: string[]) {
     setIngredients([
-      ...mockIngredients.filter((i) => ingredientIds.includes(i.id)),
+      ...mockMenuIngredients.filter((i) => ingredientIds.includes(i.id)),
     ]);
   }
 

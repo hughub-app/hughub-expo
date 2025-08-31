@@ -6,7 +6,7 @@ export enum CategoryType {
   Dairy = "dairy",
 }
 
-export enum IngredientType {
+export enum MenuIngredientType {
   Vegetable = "vegetable",
   Grain = "grain",
   Dairy = "dairy",
@@ -19,7 +19,7 @@ export enum IngredientType {
   Other = "other",
 }
 
-export type Ingredient = {
+export type MenuIngredient = {
   id: string;
   emoji: string;
   name: string;
@@ -31,7 +31,7 @@ export type Ingredient = {
     fat: number;
   };
   servingPer100g: number;
-  types: IngredientType[];
+  types: MenuIngredientType[];
   category: CategoryType;
 };
 
@@ -45,5 +45,5 @@ export type Intakes = {
 
 export type DietSuggestion = {
   description: string;
-  ingredients: Ingredient[];
+  ingredients: MenuIngredient[];
 }

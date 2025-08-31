@@ -11,7 +11,7 @@ import { Button } from "../ui/button";
 import { Text } from "../ui/text";
 import { View } from "react-native";
 import AddIngredientForm from "./AddIngredientForm";
-import { Ingredient } from "@/types";
+import { MenuIngredient } from "@/types";
 import { Plus } from "lucide-react-native";
 
 type AddIngredientDialogProps = {

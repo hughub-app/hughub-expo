@@ -1,4 +1,4 @@
-import { Ingredient } from "@/types";
+import { MenuIngredient } from "@/types";
 import React from "react";
 import { Text } from "../ui/text";
 import { Card } from "../ui/card";
@@ -7,8 +7,8 @@ import { cn } from "@/lib/utils";
 import { CheckCircle } from "lucide-react-native";
 
 type AddIngredientCardProps = {
-  ingredient: Ingredient;
-  onPress: (ingredient: Ingredient) => void;
+  ingredient: MenuIngredient;
+  onPress: (ingredient: MenuIngredient) => void;
   isChecked: boolean;
 };
 

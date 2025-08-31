@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import React from "react";
 import { Text } from "../ui/text";
-import { Ingredient } from "@/types";
+import { MenuIngredient } from "@/types";
 import { Input } from "../ui/input";
 import {
   Select,
@@ -17,7 +17,7 @@ import { Button } from "../ui/button";
 import { ArrowLeftRight, XIcon } from "lucide-react-native";
 
 type IngredientCardProps = {
-  ingredient: Ingredient;
+  ingredient: MenuIngredient;
 };
 
 export default function IngredientCard({ ingredient }: IngredientCardProps) {

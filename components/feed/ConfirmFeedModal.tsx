@@ -16,14 +16,14 @@ import {
 } from "../ui/accordion";
 import { Button } from "../ui/button";
 import PageContainer from "../PageContainer";
-import { CategoryType, Ingredient, Intakes } from "@/types";
+import { CategoryType, MenuIngredient, Intakes } from "@/types";
 
 interface ConfirmFeedModalProps {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
   child: Child;
-  ingredients: Ingredient[];
+  ingredients: MenuIngredient[];
   childIntake?: Intakes
 }
 

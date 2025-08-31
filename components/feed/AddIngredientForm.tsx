@@ -1,7 +1,7 @@
 import { View } from "react-native";
 import React from "react";
-import { Ingredient } from "@/types";
-import { mockIngredients } from "@/mocks/mockIngredients";
+import { MenuIngredient } from "@/types";
+import { mockMenuIngredients } from "@/mocks/mockMenuIngredients";
 import { Text } from "../ui/text";
 import { Input } from "../ui/input";
 import AddIngredientCard from "./AddIngredientCard";
@@ -19,7 +19,7 @@ export default function AddIngredientForm({
 }: AddIngredientFormProps) {
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const allIngredients = mockIngredients;
+  const allIngredients = mockMenuIngredients;
 
   const filteredIngredients = allIngredients.filter((ing) =>
     ing.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -27,7 +27,7 @@ export default function AddIngredientForm({
 
   const [newIngredientIds, setNewIngredientIds] = React.useState<string[]>(addedIngredientIds);
 
-  function handleToggleIngredient(ingredient: Ingredient) {
+  function handleToggleIngredient(ingredient: MenuIngredient) {
     if (newIngredientIds.includes(ingredient.id)) {
       setNewIngredientIds(newIngredientIds.filter(id => id !== ingredient.id));
     } else {
