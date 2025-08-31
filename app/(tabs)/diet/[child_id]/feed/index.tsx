@@ -68,7 +68,7 @@ export default function Feed() {
 
   function handleAddIngredientIds(ingredientIds: string[]) {
     setIngredients([
-      ...mockMenuIngredients.filter((i) => ingredientIds.includes(i.id)),
+      ...mockMenuIngredients.filter((i) => ingredientIds.includes(i.id.toString())),
     ]);
   }
 

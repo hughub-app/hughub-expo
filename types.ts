@@ -20,19 +20,19 @@ export enum MenuIngredientType {
 }
 
 export type MenuIngredient = {
-  id: string;
-  emoji: string;
+  id: string | number;
+  emoji?: string;
   name: string;
   amount: number;
-  units: string[];
+  units?: string[];
   nutritionsPer100g?: {
     protein: number;
     carbs: number;
     fat: number;
   };
-  servingPer100g: number;
-  types: MenuIngredientType[];
-  category: CategoryType;
+  servingPer100g?: number;
+  types?: MenuIngredientType[];
+  category?: CategoryType;
 };
 
 export type Intakes = {
