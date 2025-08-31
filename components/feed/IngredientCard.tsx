@@ -70,11 +70,11 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onFin
         </View>
       </View>
       <View className="grid grid-cols-2 gap-2">
-        <Button onPress={() => onSkip(ingredient.ingredient_id)}>
+        <Button onPress={() => onSkip?.(ingredient.ingredient_id)}>
           <XIcon className="text-white" />
           <Text>Skip</Text>
         </Button>
-        <Button onPress={() => onFindAlternative(ingredient.ingredient_id)}>
+        <Button onPress={() => onFindAlternative?.(ingredient.ingredient_id)}>
           <ArrowLeftRight className="text-white" />
           <Text>Find Alternative</Text>
         </Button>
