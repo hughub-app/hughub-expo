@@ -29,7 +29,7 @@ export interface StackedBarProps {
 const StackedBar: React.FC<StackedBarProps> = ({
   segments,
   total,
-  heightPx = 12,
+  // heightPx = 12,
   radiusPx = 6,
   trackClass = "bg-gray-200",
   className = "",
@@ -62,7 +62,7 @@ const StackedBar: React.FC<StackedBarProps> = ({
   return (
     <View
       className={[
-        `relative overflow-hidden ${trackClass} h-[${heightPx}px] rounded-[${radiusPx}px]`,
+        `relative overflow-hidden ${trackClass} h-3 rounded-full`,
         className,
       ].join(" ")}
       accessibilityRole="progressbar"

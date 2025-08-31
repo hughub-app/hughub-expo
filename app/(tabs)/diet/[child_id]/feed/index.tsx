@@ -130,7 +130,7 @@ export default function Feed() {
               <View className="grid md:grid-cols-2 gap-2 mb-4">
                 {recipes.map((recipe) => (
                   <Link
-                    href={`/(tabs)/diet/${child.child_id}/feed/recipe/${recipe.recipe_id}`}
+                    href={`/diet/${child.child_id}/feed/${recipe.recipe_id}`}
                   >
                     <RecipeCard key={recipe.recipe_id} recipe={recipe} />
                   </Link>
