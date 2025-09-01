@@ -16,6 +16,7 @@ import { Button } from "../ui/button";
 import { ArrowLeftRight, Undo2, XIcon } from "lucide-react-native";
 import { Ingredient } from "@/lib/api/endpoints/ingredients";
 import { cn } from "@/lib/utils";
+import { SwitchIngredientDialog } from "./SwitchIngredientDialog";
 
 type IngredientCardProps = {
   ingredient: Ingredient;
@@ -23,12 +24,12 @@ type IngredientCardProps = {
   units?: string[];
   onSkip?: (ingredientId: number) => void;
   onRestore?: (ingredientId: number) => void;
-  onFindAlternative?: (ingredientId: number) => void;
+  onSelectAlternative: (newIngredientId: number) => void;
   onChangeAmount: (ingredientId: number, amount: number) => void;
   skipped?: boolean;
 };
 
-export default function IngredientCard({ ingredient, grams, units, onSkip, onFindAlternative, onChangeAmount, onRestore, skipped }: IngredientCardProps) {
+export default function IngredientCard({ ingredient, grams, units, onSkip, onSelectAlternative, onChangeAmount, onRestore, skipped }: IngredientCardProps) {
   const [amount, setAmount] = React.useState((grams || 0).toString());
   const [selectedUnit, setSelectedUnit] = React.useState(units?.[0] || 'grams');
   function handleChangeAmount(amount: string) {
@@ -80,10 +81,15 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onFin
           }
           <Text>{skipped ? 'Restore' : 'Skip'}</Text>
         </Button>
-        <Button onPress={() => onFindAlternative?.(ingredient.ingredient_id)} disabled={skipped}>
-          <ArrowLeftRight className="text-white" />
-          <Text>Find Alternative</Text>
-        </Button>
+        <SwitchIngredientDialog
+          ingredient={ingredient}
+          onSelectIngredient={onSelectAlternative}
+        >
+          <Button onPress={() => onSelectAlternative?.(ingredient.ingredient_id)} disabled={skipped}>
+            <ArrowLeftRight className="text-white" />
+            <Text>Find Alternative</Text>
+          </Button>
+        </SwitchIngredientDialog>
       </View>
     </Card>
   );

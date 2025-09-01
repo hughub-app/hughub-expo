@@ -4,7 +4,6 @@ import { Text } from "../ui/text";
 import { Input } from "../ui/input";
 import AddIngredientCard from "./AddIngredientCard";
 import { Button } from "../ui/button";
-import {uniq} from 'lodash'
 import { mockIngredients } from "@/mocks/mockIngredients";
 import { Ingredient } from "@/lib/api/endpoints/ingredients";
 
@@ -23,7 +22,7 @@ export default function AddIngredientForm({
 
   const filteredIngredients = allIngredients.filter((ing) =>
     ing.ingredient_name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  ).slice(0, 9);
 
   const [newIngredientIds, setNewIngredientIds] = React.useState<string[]>(addedIngredientIds);
 

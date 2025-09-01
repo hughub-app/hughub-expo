@@ -22,6 +22,7 @@ import NutritionLabels from "@/components/diets/NutritionLabels";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { SuccessDialog } from "@/components/SuccessDialog";
+import { Ingredient } from "@/lib/api/endpoints/ingredients";
 
 export default function RecipePage() {
   const { child_id, recipe_id } = useLocalSearchParams<{
@@ -187,6 +188,19 @@ export default function RecipePage() {
     );
   }
 
+  function handleSelectAlternative(oldIngredientId: number, newIngredientId: number) {
+    const newIngredient = mockIngredients.find((i) => i.ingredient_id === newIngredientId);
+    if (newIngredient) {
+      setMenuIngredients((prev) =>
+        prev.map((ing) =>
+          ing.ingredient.ingredient_id === oldIngredientId
+            ? { ...ing, ingredient: newIngredient }
+            : ing
+        )
+      );
+    }
+  }
+
   return (
     <SafeAreaView className="flex-1">
       <SuccessDialog
@@ -234,6 +248,7 @@ export default function RecipePage() {
                           // onSkip={handleSkip}
                           // onFindAlternative={handleFindAlternative}
                           onChangeAmount={handleChangeAmount}
+                          onSelectAlternative={(newIngredientId) => handleSelectAlternative(mi.ingredient.ingredient_id, newIngredientId)}
                           onSkip={handleSkip}
                           onRestore={handleRestore}
                           skipped={mi.skipped}

@@ -13,7 +13,6 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
-import IngredientCard from "@/components/feed/IngredientCard";
 import { Button } from "@/components/ui/button";
 import { PlusIcon } from "lucide-react-native";
 import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";

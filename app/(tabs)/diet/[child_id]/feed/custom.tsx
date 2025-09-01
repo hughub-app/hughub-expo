@@ -56,7 +56,9 @@ export default function CustomiseMenu() {
     );
   }
 
-  const [ingredients, setIngredients] = useState<Ingredient[]>(mockIngredients.slice(0, 2));
+  const [ingredients, setIngredients] = useState<Ingredient[]>(
+    mockIngredients.slice(0, 2)
+  );
 
   const [isAddingIngredients, setIsAddingIngredients] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
@@ -64,7 +66,9 @@ export default function CustomiseMenu() {
 
   function handleAddIngredientIds(ingredientIds: string[]) {
     setIngredients(
-      mockIngredients.filter((i) => ingredientIds.includes(i.ingredient_id.toString()))
+      mockIngredients.filter((i) =>
+        ingredientIds.includes(i.ingredient_id.toString())
+      )
     );
   }
 
@@ -73,13 +77,30 @@ export default function CustomiseMenu() {
   }
 
   function handleFinalConfirm() {
-    setIsConfirming(false)
+    setIsConfirming(false);
     setHasConfirmed(true);
   }
 
+
+    function handleSelectAlternative(oldIngredientId: number, newIngredientId: number) {
+      const newIngredient = mockIngredients.find((i) => i.ingredient_id === newIngredientId);
+      if (newIngredient) {
+        setIngredients((prev: Ingredient[]) =>
+          prev.map((ing: Ingredient) =>
+            ing.ingredient_id === oldIngredientId
+              ? newIngredient
+              : ing
+          )
+        );
+      }
+    }
+
   return (
     <>
-      <PageHead title={`Custom Meal for ${child?.name}`} description={`Time to feed ${child?.name}`} />
+      <PageHead
+        title={`Custom Meal for ${child?.name}`}
+        description={`Time to feed ${child?.name}`}
+      />
       <SuccessDialog
         open={hasConfirmed}
         onOpenChange={setHasConfirmed}
@@ -110,27 +131,38 @@ export default function CustomiseMenu() {
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>Meal Type</SelectLabel>
-                  <SelectItem label="Breakfast" value="breakfast"/>
-                  <SelectItem label="Lunch" value="lunch"/>
-                  <SelectItem label="Dinner" value="dinner"/>
+                  <SelectItem label="Breakfast" value="breakfast" />
+                  <SelectItem label="Lunch" value="lunch" />
+                  <SelectItem label="Dinner" value="dinner" />
                 </SelectGroup>
               </SelectContent>
             </Select>
             <View className="mt-4">
               <View className="grid md:grid-cols-2 gap-2 mb-4">
-                {
-                  ingredients.map((ingredient) => (
-                    <IngredientCard key={ingredient.ingredient_id} ingredient={ingredient} grams={0} onChangeAmount={function (ingredientId: number, amount: number): void {
+                {ingredients.map((ingredient) => (
+                  <IngredientCard
+                    key={ingredient.ingredient_id}
+                    ingredient={ingredient}
+                    grams={0}
+                    onSelectAlternative={(newIngredientId) =>
+                      handleSelectAlternative(ingredient.ingredient_id, newIngredientId)
+                    }
+                    onChangeAmount={function (
+                      ingredientId: number,
+                      amount: number
+                    ): void {
                       throw new Error("Function not implemented.");
-                    } } />
-                  ))
-                }
+                    }}
+                  />
+                ))}
               </View>
               <AddIngredientDialog
                 open={isAddingIngredients}
                 onOpenChange={setIsAddingIngredients}
                 onAddIngredientIds={handleAddIngredientIds}
-                addedIngredientIds={ingredients.map((i) => i.ingredient_id.toString())}
+                addedIngredientIds={ingredients.map((i) =>
+                  i.ingredient_id.toString()
+                )}
               />
             </View>
             <Button className="mt-4" onPress={handleConfirm}>
