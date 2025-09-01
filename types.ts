@@ -47,3 +47,11 @@ export type DietSuggestion = {
   description: string;
   ingredients: MenuIngredient[];
 }
+
+export enum IngredientType {
+  Vegetable = "Vegetables & legumes/beans",
+  Protein = "meat, fish, eggs, nuts and seeds",
+  Fruit = "fruit",
+  Grain = "Grain",
+  Dairy = "Milk, yoghurt and cheese",
+}

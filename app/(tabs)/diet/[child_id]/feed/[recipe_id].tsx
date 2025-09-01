@@ -14,6 +14,12 @@ import {
 import { mockRecipeIngredients } from "@/mocks/mockRecipeIngredients";
 import { mockIngredients } from "@/mocks/mockIngredients";
 import IngredientCard from "@/components/feed/IngredientCard";
+import { CategoryType, IngredientType } from "@/types";
+import { capitalCase } from "change-case";
+import NutritionRings from "@/components/diets/NutritionRings";
+import { mockChildren } from "@/mocks/mockChildren";
+import NutritionLabels from "@/components/diets/NutritionLabels";
+import { Button } from "@/components/ui/button";
 
 export default function RecipePage() {
   const { child_id, recipe_id } = useLocalSearchParams<{
@@ -22,14 +28,17 @@ export default function RecipePage() {
   }>();
 
   const recipe = mockRecipes.find((r) => r.recipe_id === Number(recipe_id));
+  const child = mockChildren.find((c) => c.child_id === Number(child_id));
 
-  if (!recipe) {
+  if (!recipe || !child) {
     return (
       <View>
         <Text>Recipe not found</Text>
       </View>
     );
   }
+
+  const todayIntakes = child.todayIntakes;
 
   const steps = recipe.cooking_steps ? recipe.cooking_steps.split("\n") : [];
   const recipeIngredients = mockRecipeIngredients.filter(
@@ -58,49 +67,172 @@ export default function RecipePage() {
     );
   }
 
+  function handleSkip(ingredientId: number) {
+    setMenuIngredients((prev) =>
+      prev.filter((ing) => ing.ingredient.ingredient_id !== ingredientId)
+    );
+  }
+
+  const totalGramsPerIngredientType = Object.values(CategoryType).reduce(
+    (acc, category) => {
+      acc[category] = ingredientsWithGrams
+        .filter(
+          (ig) =>
+            ig.ingredient.category ===
+            IngredientType[
+              capitalCase(
+                category as unknown as keyof typeof IngredientType
+              ) as keyof typeof IngredientType
+            ]
+        )
+        .reduce((sum, ig) => sum + ig.grams, 0);
+      return acc;
+    },
+    {} as Record<CategoryType, number>
+  );
+
+  const totalGramsPerIngredientTypeState = Object.values(CategoryType).reduce(
+    (acc, category) => {
+      acc[category] = menuIngredients
+        .filter(
+          (ig) =>
+            ig.ingredient.category ===
+            IngredientType[
+              capitalCase(
+                category as unknown as keyof typeof IngredientType
+              ) as keyof typeof IngredientType
+            ]
+        )
+        .reduce((sum, ig) => sum + ig.grams, 0);
+      return acc;
+    },
+    {} as Record<CategoryType, number>
+  );
+
+  function calcServing(
+    servings: number | undefined,
+    type: CategoryType,
+    totalGrams: Record<CategoryType, number>,
+    stateGrams: Record<CategoryType, number>
+  ): number {
+    const base = servings || 0;
+    const denominator = totalGrams[type];
+    const ratio = denominator === 0 ? 0 : stateGrams[type] / denominator;
+    const result = base * ratio;
+    return isNaN(result) ? 0 : result;
+  }
+
+  const servingPerIngredientType = {
+    [CategoryType.Vegetable]: calcServing(
+      recipe.servings_veg_legumes_beans,
+      CategoryType.Vegetable,
+      totalGramsPerIngredientType,
+      totalGramsPerIngredientTypeState
+    ),
+    [CategoryType.Protein]: calcServing(
+      recipe.servings_meat_fish_eggs_nuts_seeds,
+      CategoryType.Protein,
+      totalGramsPerIngredientType,
+      totalGramsPerIngredientTypeState
+    ),
+    [CategoryType.Fruit]: calcServing(
+      recipe.servings_fruit,
+      CategoryType.Fruit,
+      totalGramsPerIngredientType,
+      totalGramsPerIngredientTypeState
+    ),
+    [CategoryType.Grain]: calcServing(
+      recipe.servings_grain,
+      CategoryType.Grain,
+      totalGramsPerIngredientType,
+      totalGramsPerIngredientTypeState
+    ),
+    [CategoryType.Dairy]: calcServing(
+      recipe.servings_milk_yoghurt_cheese,
+      CategoryType.Dairy,
+      totalGramsPerIngredientType,
+      totalGramsPerIngredientTypeState
+    ),
+  };
+
+  // const projections = Object.values(CategoryType).reduce((acc, category) => {
+  //   acc[category] =
+  //     (todayIntakes?.[category] || 0) + (servingPerIngredientType[category] || 0);
+  //   return acc;
+  // }, {} as Record<CategoryType, number>);
+
+  // console.log('Today Intakes:', todayIntakes);
+  // console.log('Projections:', projections);
+
   return (
     <SafeAreaView className="flex-1">
       <ScrollView>
         <PageContainer>
           <BackButton fallbackUrl={`/(tabs)/diet/${child_id}/feed`} />
-          <Text className="!text-2xl font-bold">{recipe.recipe_name}</Text>
-          <View className="grid md:grid-cols-2">
-            <Accordion type="multiple" collapsible>
-              <AccordionItem value="steps">
-                <AccordionTrigger>
-                  <Text className="!text-xl font-bold mb-4">Steps</Text>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <View className="gap-2">
-                    {steps.map((step, index) => (
-                      <Text key={index} className="!text-base">
-                        {step}
-                      </Text>
-                    ))}
-                  </View>
-                </AccordionContent>
-              </AccordionItem>
-              <AccordionItem value="ingredients">
-                <AccordionTrigger>
-                  <Text className="!text-xl font-bold mb-4">Ingredients</Text>
-                </AccordionTrigger>
-                <AccordionContent>
-                  <View className="gap-2">
-                    {menuIngredients.map((ingredient) => (
-                      <IngredientCard
-                        key={ingredient.ingredient.ingredient_id}
-                        ingredient={ingredient.ingredient}
-                        grams={ingredient.grams}
-                        // onSkip={handleSkip}
-                        // onFindAlternative={handleFindAlternative}
-                        onChangeAmount={handleChangeAmount}
-                      />
-                    ))}
-                  </View>
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+          <Text className="!text-2xl font-bold mb-4">{recipe.recipe_name}</Text>
+          <View className="grid md:grid-cols-2 gap-4">
+            <View className="order-2 md:order-1">
+              <Accordion type="multiple" collapsible>
+                <AccordionItem value="steps">
+                  <AccordionTrigger>
+                    <Text className="!text-xl font-bold mb-4">Steps</Text>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <View className="gap-2">
+                      {steps.map((step, index) => (
+                        <Text key={index} className="!text-base">
+                          {step}
+                        </Text>
+                      ))}
+                    </View>
+                  </AccordionContent>
+                </AccordionItem>
+                <AccordionItem value="ingredients">
+                  <AccordionTrigger>
+                    <Text className="!text-xl font-bold mb-4">Ingredients</Text>
+                  </AccordionTrigger>
+                  <AccordionContent>
+                    <View className="gap-2">
+                      {menuIngredients.map((ingredient) => (
+                        <IngredientCard
+                          key={ingredient.ingredient.ingredient_id}
+                          ingredient={ingredient.ingredient}
+                          grams={ingredient.grams}
+                          // onSkip={handleSkip}
+                          // onFindAlternative={handleFindAlternative}
+                          onChangeAmount={handleChangeAmount}
+                        />
+                      ))}
+                    </View>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </View>
+            <View className="order-1 md:order-2">
+              <View className="flex-row justify-center gap-4 ">
+                {todayIntakes && (
+                  <NutritionRings
+                    values={todayIntakes}
+                    projection={servingPerIngredientType}
+                    target={{
+                      vegetable: 6,
+                      protein: 5,
+                      fruit: 6,
+                      grain: 4,
+                      dairy: 4,
+                    }}
+                  />
+                )}
+                <NutritionLabels />
+              </View>
+              <Button className="hidden md:flex mt-8">
+                <Text>Looks good!</Text>
+              </Button>
+            </View>
           </View>
+          <Button className="md:hidden">
+            <Text>Looks good!</Text>
+          </Button>
         </PageContainer>
       </ScrollView>
     </SafeAreaView>

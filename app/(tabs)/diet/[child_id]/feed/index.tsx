@@ -137,9 +137,13 @@ export default function Feed() {
                 ))}
               </View>
             </View>
-            <Button className="mt-4" onPress={handleConfirm}>
-              <Text>Feed the Child!</Text>
-            </Button>
+            <Link
+              href={`/diet/${child.child_id}/feed/custom`}
+            >
+              <Button className="mt-4">
+                <Text>Add New Recipe</Text>
+              </Button>
+            </Link>
           </PageContainer>
         </ScrollView>
       </SafeAreaView>

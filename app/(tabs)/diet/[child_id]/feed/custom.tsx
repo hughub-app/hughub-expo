@@ -25,6 +25,8 @@ import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
 import { mockRecipes } from "@/mocks/mockRecipes";
+import { Ingredient } from "@/lib/api/endpoints/ingredients";
+import { mockIngredients } from "@/mocks/mockIngredients";
 
 type Params = { child_id?: string | string[] };
 
@@ -57,16 +59,16 @@ export default function CustomiseMenu() {
     );
   }
 
-  const [ingredients, setIngredients] = useState<MenuIngredient[]>(mockMenuIngredients.slice(0, 2));
+  const [ingredients, setIngredients] = useState<Ingredient[]>(mockIngredients.slice(0, 2));
 
   const [isAddingIngredients, setIsAddingIngredients] = useState(false);
   const [isConfirming, setIsConfirming] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
   function handleAddIngredientIds(ingredientIds: string[]) {
-    setIngredients([
-      ...mockMenuIngredients.filter((i) => ingredientIds.includes(i.id)),
-    ]);
+    setIngredients(
+      mockIngredients.filter((i) => ingredientIds.includes(i.ingredient_id.toString()))
+    );
   }
 
   function handleConfirm() {
@@ -121,7 +123,9 @@ export default function CustomiseMenu() {
               <View className="grid md:grid-cols-2 gap-2 mb-4">
                 {
                   ingredients.map((ingredient) => (
-                    <IngredientCard key={ingredient.name} ingredient={ingredient} />
+                    <IngredientCard key={ingredient.ingredient_id} ingredient={ingredient} grams={0} onChangeAmount={function (ingredientId: number, amount: number): void {
+                      throw new Error("Function not implemented.");
+                    } } />
                   ))
                 }
               </View>

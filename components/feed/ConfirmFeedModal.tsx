@@ -17,13 +17,14 @@ import {
 import { Button } from "../ui/button";
 import PageContainer from "../PageContainer";
 import { CategoryType, MenuIngredient, Intakes } from "@/types";
+import { Ingredient } from "@/lib/api/endpoints/ingredients";
 
 interface ConfirmFeedModalProps {
   visible: boolean;
   onClose: () => void;
   onConfirm: () => void;
   child: Child;
-  ingredients: MenuIngredient[];
+  ingredients: Ingredient[];
   childIntake?: Intakes
 }
 
@@ -39,15 +40,15 @@ export default function ConfirmFeedModal({
     acc[category] = childIntake?.[category] ?? 0;
     return acc;
   }, {} as Record<CategoryType, number>);
-  const projectionPerCategory = Object.values(CategoryType).reduce((acc, category) => {
-    acc[category] =
-      (childIntake?.[category] ?? 0) +
-      intakesPerCategory[category] +
-      ingredients
-      .filter((b) => b.category === category)
-      .reduce((sum, b) => sum + (b.servingPer100g * (b.amount / 100)), 0);
-    return acc;
-  }, {} as Record<CategoryType, number>);
+  // const projectionPerCategory = Object.values(CategoryType).reduce((acc, category) => {
+  //   acc[category] =
+  //     (childIntake?.[category] ?? 0) +
+  //     intakesPerCategory[category] +
+  //     ingredients
+  //     .filter((b) => b.category === category)
+  //     .reduce((sum, b) => sum + (b.servingPer100g * (b.amount / 100)), 0);
+  //   return acc;
+  // }, {} as Record<CategoryType, number>);
   const dietSuggestions = React.useMemo(() => {
     const shuffled = [...mockDietSuggestions].sort(() => Math.random() - 0.5);
     return shuffled.slice(0, 2);
@@ -68,7 +69,7 @@ export default function ConfirmFeedModal({
           <View className="flex-row justify-center gap-8 mb-8">
             <NutritionRings
               values={intakesPerCategory}
-              projection={projectionPerCategory}
+              // projection={projectionPerCategory}
               target={{
                 vegetable: 3,
                 protein: 2,

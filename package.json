@@ -28,6 +28,7 @@
     "@rn-primitives/types": "^1.2.0",
     "@shopify/react-native-skia": "^2.2.4",
     "axios": "^1.11.0",
+    "change-case": "^5.4.4",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "expo": "^53.0.20",

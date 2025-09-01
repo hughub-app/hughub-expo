@@ -5,7 +5,6 @@ import { Text } from "../ui/text";
 import StackedBar from "../StackedBar";
 
 export default function RecipeCard({ recipe }: { recipe: Recipe }) {
-    console.log(recipe.servings_veg_legumes_beans)
   return (
     <Card className="w-full">
       <CardContent className="!p-4">
