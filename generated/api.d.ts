@@ -2839,6 +2839,7 @@ export interface components {
             readonly ingredient_id: number;
             ingredient_name: string;
             category: string;
+            emoji?: string;
             /** Format: date-time */
             readonly createdAt?: string;
             /** Format: date-time */
@@ -2847,9 +2848,11 @@ export interface components {
         IngredientCreate: {
             ingredient_name: string;
             category: string;
+            emoji?: string;
         };
         IngredientUpdate: {
             ingredient_name?: string;
+            emoji?: string;
             category?: string;
         };
         Paginated_Ingredient: {

@@ -36,7 +36,7 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onFin
     <Card className="p-4">
       <View className="flex-row justify-between items-center mb-2">
         <View className="flex-row items-center gap-2 mb-2">
-          {/* <Text className="text-lg">{ingredient.emoji}</Text> */}
+          <Text className="text-lg">{ingredient.emoji}</Text>
           <Text>{ingredient.ingredient_name}</Text>
         </View>
         <View className="flex-row gap-2 items-center">

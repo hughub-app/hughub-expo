@@ -2258,6 +2258,7 @@
           "ingredient_id": { "type": "integer", "readOnly": true },
           "ingredient_name": { "type": "string" },
           "category": { "type": "string" },
+          "emoji": { "type": "string" },
           "createdAt": {
             "type": "string",
             "format": "date-time",
@@ -2275,7 +2276,8 @@
         "type": "object",
         "properties": {
           "ingredient_name": { "type": "string" },
-          "category": { "type": "string" }
+          "category": { "type": "string" },
+          "emoji": { "type": "string" }
         },
         "required": ["ingredient_name", "category"]
       },
@@ -2283,6 +2285,7 @@
         "type": "object",
         "properties": {
           "ingredient_name": { "type": "string" },
+          "emoji": { "type": "string" },
           "category": { "type": "string" }
         }
       },
