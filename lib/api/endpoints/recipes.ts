@@ -1,28 +1,18 @@
-import { makeCrud } from '../crud';
-import type { paths, components } from '@/generated/api';
+import { makeReadResource } from "../crud";
+import type { paths, components } from "@/generated/api";
 
-export type Recipe = components['schemas']['Recipe'];
-export type RecipeCreate = components['schemas']['RecipeCreate'];
-export type RecipeUpdate = components['schemas']['RecipeUpdate'];
-export type Paginated_Recipe = components['schemas']['Paginated_Recipe'];
+export type Recipe = components["schemas"]["Recipe"];
+export type RecipeList = Recipe[];
 export type RecipesQuery =
-  paths['/recipes']['get']['parameters']['query']; // typed query
+  paths["/recipes"]["get"]["parameters"]["query"];
 
-const crud = makeCrud<
+const ro = makeReadResource<
   Recipe,
-  RecipeCreate,
-  RecipeUpdate,
-  Paginated_Recipe,
+  RecipeList,
   RecipesQuery,
   number
 >({
-  basePath: '/recipes',
-  byIdPath: '/recipes/{recipe_id}',
-  idParam: 'recipe_id',
+  basePath: "/recipes/ingredients",
 });
 
-export const listRecipes = crud.list;
-export const createRecipe = crud.create;
-export const getRecipe = crud.get;
-export const updateRecipe = crud.update;
-export const deleteRecipe = crud.remove;
+export const listRecipes = ro.list;
