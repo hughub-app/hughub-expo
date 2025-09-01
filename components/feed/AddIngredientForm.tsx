@@ -1,12 +1,12 @@
 import { View } from "react-native";
 import React from "react";
-import { MenuIngredient } from "@/types";
-import { mockMenuIngredients } from "@/mocks/mockMenuIngredients";
 import { Text } from "../ui/text";
 import { Input } from "../ui/input";
 import AddIngredientCard from "./AddIngredientCard";
 import { Button } from "../ui/button";
 import {uniq} from 'lodash'
+import { mockIngredients } from "@/mocks/mockIngredients";
+import { Ingredient } from "@/lib/api/endpoints/ingredients";
 
 type AddIngredientFormProps = {
   onAddIngredientIds: (ingredientIds: string[]) => void;
@@ -19,19 +19,19 @@ export default function AddIngredientForm({
 }: AddIngredientFormProps) {
   const [searchTerm, setSearchTerm] = React.useState("");
 
-  const allIngredients = mockMenuIngredients;
+  const allIngredients = mockIngredients;
 
   const filteredIngredients = allIngredients.filter((ing) =>
-    ing.name.toLowerCase().includes(searchTerm.toLowerCase())
+    ing.ingredient_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const [newIngredientIds, setNewIngredientIds] = React.useState<string[]>(addedIngredientIds);
 
-  function handleToggleIngredient(ingredient: MenuIngredient) {
-    if (newIngredientIds.includes(ingredient.id)) {
-      setNewIngredientIds(newIngredientIds.filter(id => id !== ingredient.id));
+  function handleToggleIngredient(ingredient: Ingredient) {
+    if (newIngredientIds.includes(ingredient.ingredient_id.toString())) {
+      setNewIngredientIds(newIngredientIds.filter(id => id !== ingredient.ingredient_id.toString()));
     } else {
-      setNewIngredientIds([...newIngredientIds, ingredient.id]);
+      setNewIngredientIds([...newIngredientIds, ingredient.ingredient_id.toString()]);
     }
   }
 
@@ -51,7 +51,7 @@ export default function AddIngredientForm({
           <AddIngredientCard
             ingredient={ingredient}
             onPress={handleToggleIngredient}
-            isChecked={newIngredientIds.includes(ingredient.id)}
+            isChecked={newIngredientIds.includes(ingredient.ingredient_id.toString())}
           />
         ))}
       </View>

@@ -13,19 +13,22 @@ import {
 } from "../ui/select";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
-import { ArrowLeftRight, XIcon } from "lucide-react-native";
+import { ArrowLeftRight, Undo2, XIcon } from "lucide-react-native";
 import { Ingredient } from "@/lib/api/endpoints/ingredients";
+import { cn } from "@/lib/utils";
 
 type IngredientCardProps = {
   ingredient: Ingredient;
   grams: number;
   units?: string[];
   onSkip?: (ingredientId: number) => void;
+  onRestore?: (ingredientId: number) => void;
   onFindAlternative?: (ingredientId: number) => void;
   onChangeAmount: (ingredientId: number, amount: number) => void;
+  skipped?: boolean;
 };
 
-export default function IngredientCard({ ingredient, grams, units, onSkip, onFindAlternative, onChangeAmount }: IngredientCardProps) {
+export default function IngredientCard({ ingredient, grams, units, onSkip, onFindAlternative, onChangeAmount, onRestore, skipped }: IngredientCardProps) {
   const [amount, setAmount] = React.useState((grams || 0).toString());
   const [selectedUnit, setSelectedUnit] = React.useState(units?.[0] || 'grams');
   function handleChangeAmount(amount: string) {
@@ -33,8 +36,8 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onFin
     onChangeAmount(ingredient.ingredient_id, Number(amount));
   }
   return (
-    <Card className="p-4">
-      <View className="flex-row justify-between items-center mb-2">
+    <Card className={cn("p-4")}>
+      <View className={cn("flex-row justify-between items-center mb-2", skipped && 'opacity-50')}>
         <View className="flex-row items-center gap-2 mb-2">
           <Text className="text-lg">{ingredient.emoji}</Text>
           <Text>{ingredient.ingredient_name}</Text>
@@ -44,6 +47,7 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onFin
             onChangeText={handleChangeAmount}
             value={amount.toString() || '0'}
             keyboardType="numeric"
+            readOnly={skipped}
           />
           {
             !units ? (
@@ -70,11 +74,13 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onFin
         </View>
       </View>
       <View className="grid grid-cols-2 gap-2">
-        <Button onPress={() => onSkip?.(ingredient.ingredient_id)}>
-          <XIcon className="text-white" />
-          <Text>Skip</Text>
+        <Button onPress={() => skipped ? onRestore?.(ingredient.ingredient_id) : onSkip?.(ingredient.ingredient_id)}>
+          {
+            skipped ? <Undo2 className="text-white" /> : <XIcon className="text-white" />
+          }
+          <Text>{skipped ? 'Restore' : 'Skip'}</Text>
         </Button>
-        <Button onPress={() => onFindAlternative?.(ingredient.ingredient_id)}>
+        <Button onPress={() => onFindAlternative?.(ingredient.ingredient_id)} disabled={skipped}>
           <ArrowLeftRight className="text-white" />
           <Text>Find Alternative</Text>
         </Button>

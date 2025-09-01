@@ -13,11 +13,8 @@ import {
   SelectValue,
   SelectItem,
 } from "@/components/ui/select";
-import { mockMenuIngredients } from "@/mocks/mockMenuIngredients";
 import IngredientCard from "@/components/feed/IngredientCard";
-import { MenuIngredient } from "@/types";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react-native";
 import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";
 import ConfirmFeedModal from "@/components/feed/ConfirmFeedModal";
 import { SuccessDialog } from "@/components/SuccessDialog";
@@ -133,7 +130,7 @@ export default function CustomiseMenu() {
                 open={isAddingIngredients}
                 onOpenChange={setIsAddingIngredients}
                 onAddIngredientIds={handleAddIngredientIds}
-                addedIngredientIds={ingredients.map((i) => i.id)}
+                addedIngredientIds={ingredients.map((i) => i.ingredient_id.toString())}
               />
             </View>
             <Button className="mt-4" onPress={handleConfirm}>

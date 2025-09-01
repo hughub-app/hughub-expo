@@ -54,6 +54,7 @@ export default function RecipePage() {
     grams:
       recipeIngredients.find((ri) => ri.ingredient_id === ing.ingredient_id)
         ?.grams || 0,
+    skipped: false
   }));
 
   const [menuIngredients, setMenuIngredients] =
@@ -69,12 +70,6 @@ export default function RecipePage() {
     );
   }
 
-  function handleSkip(ingredientId: number) {
-    setMenuIngredients((prev) =>
-      prev.filter((ing) => ing.ingredient.ingredient_id !== ingredientId)
-    );
-  }
-
   const totalGramsPerIngredientType = Object.values(CategoryType).reduce(
     (acc, category) => {
       acc[category] = ingredientsWithGrams
@@ -85,7 +80,7 @@ export default function RecipePage() {
               capitalCase(
                 category as unknown as keyof typeof IngredientType
               ) as keyof typeof IngredientType
-            ]
+            ] && !ig.skipped
         )
         .reduce((sum, ig) => sum + ig.grams, 0);
       return acc;
@@ -103,7 +98,7 @@ export default function RecipePage() {
               capitalCase(
                 category as unknown as keyof typeof IngredientType
               ) as keyof typeof IngredientType
-            ]
+            ] && !ig.skipped
         )
         .reduce((sum, ig) => sum + ig.grams, 0);
       return acc;
@@ -172,6 +167,26 @@ export default function RecipePage() {
     setHasConfirmed(true);
   }
 
+  function handleSkip(ingredientId: number) {
+    setMenuIngredients((prev) =>
+      prev.map((ing) =>
+        ing.ingredient.ingredient_id === ingredientId
+          ? { ...ing, skipped: true }
+          : ing
+      )
+    );
+  }
+
+  function handleRestore(ingredientId: number) {
+    setMenuIngredients((prev) =>
+      prev.map((ing) =>
+        ing.ingredient.ingredient_id === ingredientId
+          ? { ...ing, skipped: false }
+          : ing
+      )
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1">
       <SuccessDialog
@@ -211,14 +226,17 @@ export default function RecipePage() {
                   </AccordionTrigger>
                   <AccordionContent>
                     <View className="gap-2">
-                      {menuIngredients.map((ingredient) => (
+                      {menuIngredients.map((mi) => (
                         <IngredientCard
-                          key={ingredient.ingredient.ingredient_id}
-                          ingredient={ingredient.ingredient}
-                          grams={ingredient.grams}
+                          key={mi.ingredient.ingredient_id}
+                          ingredient={mi.ingredient}
+                          grams={mi.grams}
                           // onSkip={handleSkip}
                           // onFindAlternative={handleFindAlternative}
                           onChangeAmount={handleChangeAmount}
+                          onSkip={handleSkip}
+                          onRestore={handleRestore}
+                          skipped={mi.skipped}
                         />
                       ))}
                     </View>
