@@ -75,9 +75,9 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onSel
         </View>
       </View>
       <View className="grid grid-cols-2 gap-2">
-        <Button onPress={() => skipped ? onRestore?.(ingredient.ingredient_id) : onSkip?.(ingredient.ingredient_id)}>
+        <Button variant='outline' onPress={() => skipped ? onRestore?.(ingredient.ingredient_id) : onSkip?.(ingredient.ingredient_id)}>
           {
-            skipped ? <Undo2 className="text-white" /> : <XIcon className="text-white" />
+            skipped ? <Undo2 /> : <XIcon />
           }
           <Text>{skipped ? 'Restore' : 'Skip'}</Text>
         </Button>

@@ -224,7 +224,7 @@ export default function RecipePage() {
           <Text className="!text-2xl font-bold mb-4">{recipe.recipe_name}</Text>
           <View className="grid md:grid-cols-2 gap-4">
             <View className="order-2 md:order-1">
-              <Accordion type="multiple" collapsible>
+              <Accordion type="multiple" collapsible defaultValue={["steps"]}>
                 <AccordionItem value="steps">
                   <AccordionTrigger>
                     <Text className="!text-xl font-bold mb-4">Steps</Text>
@@ -239,7 +239,7 @@ export default function RecipePage() {
                     </View>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="ingredients">
+                <AccordionItem value="ingredients" op>
                   <AccordionTrigger>
                     <Text className="!text-xl font-bold mb-4">Ingredients</Text>
                   </AccordionTrigger>
