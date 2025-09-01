@@ -1,12 +1,12 @@
-import { api, withAuth } from './client';
-import type { components } from '@/generated/api';
+// crud.ts
+import { api, withAuth } from "./client";
+import type { components } from "@/generated/api";
 
-/** Shared error extractor so we don't duplicate it */
-export type ErrorSchema = components['schemas']['Error'];
+export type ErrorSchema = components["schemas"]["Error"];
 export async function toErrorMessage(resp: Response): Promise<string> {
   try {
-    const ct = resp.headers.get('content-type') || '';
-    if (ct.includes('application/json')) {
+    const ct = resp.headers.get("content-type") || "";
+    if (ct.includes("application/json")) {
       const body = (await resp.json()) as Partial<ErrorSchema>;
       if (body?.message) return `${body.message} (${resp.status})`;
     } else {
@@ -19,46 +19,121 @@ export async function toErrorMessage(resp: Response): Promise<string> {
 
 type Auth = { token?: string };
 
-/** Options to wire a resource into the factory */
-export type CrudOptions<
-  TItem,
-  TCreate,
-  TUpdate,
-  TPaginated,
-  TListQuery,
+/* -------------------------- READ-ONLY RESOURCES -------------------------- */
+
+export type ReadOptions<
+  TListQuery extends Record<string, any> | undefined,
   TId extends number | string
 > = {
-  /** e.g. '/nutrients' */
-  basePath: `/` | `/${string}`;
-  /** e.g. '/nutrients/{nutrient_id}' */
-  byIdPath: `/` | `/${string}`;
-  /** param name in the byId path, e.g. 'nutrient_id' or 'child_id' */
-  idParam: string;
-  /** Optional: name of Location header on create (typically 'Location') */
-  locationHeader?: string;
+  /** e.g. '/recipes/ingredients' */
+  basePath: string;
+  /** provide both of these to enable get(id) */
+  byIdPath?: string;      // e.g. '/children/{child_id}'
+  idParam?: string;       // e.g. 'child_id'
 };
 
-/** Factory returns strongly-typed CRUD functions.
- * Note: We rely on your OpenAPI spec for runtime shape, and cast to the generic types here.
- * If you also use Zod, validate inside each function after `res.response.ok`.
- */
-export function makeCrud<
+export type ReadResource<
   TItem,
-  TCreate extends object,
-  TUpdate extends object,
-  TPaginated,
+  TList,
   TListQuery extends Record<string, any> | undefined,
-  TId extends number | string = number
->(opts: CrudOptions<TItem, TCreate, TUpdate, TPaginated, TListQuery, TId>) {
-  const { basePath, byIdPath, idParam, locationHeader = 'Location' } = opts;
+  TId extends number | string
+> = {
+  list(query?: TListQuery, auth?: Auth): Promise<TList>;
+  get?: (id: TId, auth?: Auth) => Promise<{ item: TItem; etag?: string }>;
+};
 
-  async function list(query?: TListQuery, auth?: Auth): Promise<TPaginated> {
+export function makeReadResource<
+  TItem,
+  TList = TItem[],
+  TListQuery extends Record<string, any> | undefined = undefined,
+  TId extends number | string = number
+>(opts: ReadOptions<TListQuery, TId>): ReadResource<TItem, TList, TListQuery, TId> {
+  const { basePath, byIdPath, idParam } = opts;
+
+  async function list(query?: TListQuery, auth?: Auth): Promise<TList> {
     const res = await api.GET(basePath as any, {
       params: query ? { query: query as any } : undefined,
       ...(auth ? withAuth(auth.token) : {}),
     });
     if (!res.response.ok) throw new Error(await toErrorMessage(res.response));
-    return res.data as TPaginated;
+    return res.data as TList;
+  }
+
+  let get:
+    | ((id: TId, auth?: Auth) => Promise<{ item: TItem; etag?: string }>)
+    | undefined;
+
+  if (byIdPath && idParam) {
+    get = async (id: TId, auth?: Auth) => {
+      const res = await api.GET(byIdPath as any, {
+        params: { path: { [idParam]: id } as any },
+        ...(auth ? withAuth(auth.token) : {}),
+      });
+      if (!res.response.ok) throw new Error(await toErrorMessage(res.response));
+      const etag = res.response.headers.get("ETag") ?? undefined;
+      return { item: res.data as TItem, etag };
+    };
+  }
+
+  return { list, get };
+}
+
+/* ------------------------------- FULL CRUD ------------------------------- */
+
+export type CrudOptions<
+  TListQuery extends Record<string, any> | undefined,
+  TId extends number | string
+> = ReadOptions<TListQuery, TId> & {
+  useEtag?: boolean;
+  locationHeader?: string;
+};
+
+export type CrudResource<
+  TItem,
+  TCreate extends object,
+  TUpdate extends object,
+  TList,
+  TListQuery extends Record<string, any> | undefined,
+  TId extends number | string
+> = {
+  list(query?: TListQuery, auth?: Auth): Promise<TList>;
+  create(body: TCreate, auth?: Auth): Promise<{ item: TItem; location?: string }>;
+  get(id: TId, auth?: Auth): Promise<{ item: TItem; etag?: string }>;
+  update(
+    id: TId,
+    body: TUpdate,
+    opts?: { etag?: string; token?: string }
+  ): Promise<{ item: TItem; etag?: string }>;
+  remove(id: TId, opts?: { etag?: string; token?: string }): Promise<void>;
+};
+
+export function makeCrud<
+  TItem,
+  TCreate extends object,
+  TUpdate extends object,
+  TList = TItem[],
+  TListQuery extends Record<string, any> | undefined = undefined,
+  TId extends number | string = number
+>(opts: CrudOptions<TListQuery, TId>): CrudResource<TItem, TCreate, TUpdate, TList, TListQuery, TId> {
+  const {
+    basePath,
+    byIdPath,
+    idParam,
+    useEtag = false,
+    locationHeader = "Location",
+  } = opts;
+
+  if (!byIdPath || !idParam) {
+    throw new Error("CRUD resources require byIdPath and idParam.");
+  }
+
+  async function list(query?: TListQuery, auth?: Auth): Promise<TList> {
+    const res = await api.GET(basePath as any, {
+      params: query ? { query: query as any } : undefined,
+      ...(auth ? withAuth(auth.token) : {}),
+    });
+    if (!res.response.ok) throw new Error(await toErrorMessage(res.response));
+    return res.data as TList;
   }
 
   async function create(
@@ -79,33 +154,42 @@ export function makeCrud<
     auth?: Auth
   ): Promise<{ item: TItem; etag?: string }> {
     const res = await api.GET(byIdPath as any, {
-      params: { path: { [idParam]: id } as any },
+      params: { path: { [idParam as string]: id } as any },
       ...(auth ? withAuth(auth.token) : {}),
     });
     if (!res.response.ok) throw new Error(await toErrorMessage(res.response));
-    const etag = res.response.headers.get('ETag') ?? undefined;
+    const etag = res.response.headers.get("ETag") ?? undefined;
     return { item: res.data as TItem, etag };
   }
 
   async function update(
     id: TId,
     body: TUpdate,
-    opts: { etag: string; token?: string }
+    opts?: { etag?: string; token?: string }
   ): Promise<{ item: TItem; etag?: string }> {
-    const res = await api.PATCH(byIdPath as any, {
-      params: { path: { [idParam]: id } as any },
+    const authHdr = opts?.token ? withAuth(opts.token).headers ?? {} : {};
+    const headers = useEtag && opts?.etag ? { "If-Match": opts.etag, ...authHdr } : authHdr;
+
+    const common = {
+      params: { path: { [idParam as string]: id } as any },
       body: body as any,
-      headers: { 'If-Match': opts.etag, ...(withAuth(opts.token).headers ?? {}) },
-    });
+      headers,
+    } as const;
+
+    const res = await api.PUT(byIdPath as any, common as any);
+
     if (!res.response.ok) throw new Error(await toErrorMessage(res.response));
-    const newEtag = res.response.headers.get('ETag') ?? undefined;
+    const newEtag = res.response.headers.get("ETag") ?? undefined;
     return { item: res.data as TItem, etag: newEtag };
   }
 
-  async function remove(id: TId, opts: { etag: string; token?: string }) {
+  async function remove(id: TId, opts?: { etag?: string; token?: string }) {
+    const authHdr = opts?.token ? withAuth(opts.token).headers ?? {} : {};
+    const headers = useEtag && opts?.etag ? { "If-Match": opts.etag, ...authHdr } : authHdr;
+
     const res = await api.DELETE(byIdPath as any, {
-      params: { path: { [idParam]: id } as any },
-      headers: { 'If-Match': opts.etag, ...(withAuth(opts.token).headers ?? {}) },
+      params: { path: { [idParam as string]: id } as any },
+      headers,
     });
     if (!res.response.ok) throw new Error(await toErrorMessage(res.response));
   }

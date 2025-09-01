@@ -4,26 +4,22 @@
  */
 
 export interface paths {
-    "/dietary-guidelines": {
+    "/recipes/recommend": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List dietary guidelines */
+        /**
+         * Recommend recipes
+         * @description Returns a list of recommended recipes.
+         */
         get: {
             parameters: {
                 query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    age_group?: components["parameters"]["filter_age_group"];
-                    gender?: components["parameters"]["filter_gender"];
-                    min_age?: components["parameters"]["filter_min_age"];
-                    max_age?: components["parameters"]["filter_max_age"];
+                    /** @description Max items to return */
+                    limit?: number;
                 };
                 header?: never;
                 path?: never;
@@ -31,318 +27,118 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Recommended recipes */
                 200: {
                     headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Paginated_DietaryGuideline"];
+                        "application/json": components["schemas"]["Recipe"][];
                     };
                 };
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
-        /** Create dietary guideline */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["DietaryGuidelineCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["DietaryGuideline"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-            };
-        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/dietary-guidelines/{guideline_id}": {
+    "/recipes/dietary-guidelines": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get dietary guideline */
+        /**
+         * Get dietary guidelines with filters
+         * @description Get dietary guidelines with optional filters.
+         */
         get: {
             parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    guideline_id: components["parameters"]["guideline_id"];
+                query?: {
+                    /** @description Comma-separated guideline IDs, e.g., 1,2,3 */
+                    ids?: string;
+                    /** @description Filter by gender */
+                    gender?: "M" | "F";
+                    /** @description Filter by age (min_age ≤ age ≤ max_age) */
+                    age?: number;
                 };
+                header?: never;
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Dietary guidelines */
                 200: {
                     headers: {
-                        ETag?: string;
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["DietaryGuideline"];
+                        "application/json": components["schemas"]["DietaryGuideline"][];
                     };
                 };
-                404: components["responses"]["NotFound"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
         post?: never;
-        /** Delete dietary guideline */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    guideline_id: components["parameters"]["guideline_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update dietary guideline */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    guideline_id: components["parameters"]["guideline_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["DietaryGuidelineUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["DietaryGuideline"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-            };
-        };
-        trace?: never;
-    };
-    "/ingredients": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List ingredients */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                    category?: components["parameters"]["filter_ingredient_category"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_Ingredient"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create ingredient */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["IngredientCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Ingredient"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-            };
-        };
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/ingredients/{ingredient_id}": {
+    "/recipes/ingredients": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get ingredient */
+        /**
+         * Get all ingredients with optional filters
+         * @description Get ingredients filtered by IDs, category, or partial name.
+         */
         get: {
             parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    ingredient_id: components["parameters"]["ingredient_id"];
+                query?: {
+                    /** @description Ingredient IDs to filter (CSV), e.g. ids=1,2,5 */
+                    ids?: number[];
+                    /** @description Category name to filter */
+                    category?: string;
+                    /** @description Ingredient name (partial match) to filter */
+                    ingredient_name?: string;
                 };
+                header?: never;
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Ingredients */
                 200: {
                     headers: {
-                        ETag?: string;
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Ingredient"];
+                        "application/json": components["schemas"]["Ingredient"][];
                     };
                 };
-                404: components["responses"]["NotFound"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
         post?: never;
-        /** Delete ingredient */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    nutrient_id: components["parameters"]["nutrient_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-            };
-        };
+        delete?: never;
         options?: never;
         head?: never;
-        /** Update ingredient */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    nutrient_id: components["parameters"]["nutrient_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["IngredientUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Ingredient"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-            };
-        };
+        patch?: never;
         trace?: never;
     };
     "/recipes": {
@@ -352,20 +148,23 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List recipes */
+        /**
+         * Get recipes with optional filters
+         * @description Get recipes with optional filters.
+         */
         get: {
             parameters: {
                 query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                    recipe_type?: components["parameters"]["filter_recipe_type"];
-                    cuisine_type?: components["parameters"]["filter_cuisine_type"];
-                    dietary_preferences?: components["parameters"]["filter_dietary_preferences"];
+                    /** @description Comma-separated recipe IDs, e.g., 1,2,3 */
+                    ids?: string;
+                    /** @description Filter recipes whose name ILIKE this string */
+                    recipe_name?: string;
+                    /** @description Filter by recipe type */
+                    recipe_type?: string;
+                    /** @description Filter by cuisine type */
+                    cuisine_type?: string;
+                    /** @description Filter by dietary preferences */
+                    dietary_preferences?: string;
                 };
                 header?: never;
                 path?: never;
@@ -373,22 +172,86 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Recipes */
                 200: {
                     headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Paginated_Recipe"];
+                        "application/json": components["schemas"]["Recipe"][];
                     };
                 };
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
-        /** Create recipe */
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/recipes/recipe_ingredients": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        /**
+         * Get recipe ingredients with optional filters
+         * @description Get recipe ingredients with optional filters.
+         */
+        get: {
+            parameters: {
+                query?: {
+                    /** @description Comma-separated recipe_ingredient IDs, e.g., 1,2,3 */
+                    ids?: string;
+                    /** @description Comma-separated recipe IDs to filter */
+                    recipe_id?: string;
+                    /** @description Comma-separated ingredient IDs to filter */
+                    ingredient_id?: string;
+                };
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description Recipe ingredients */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RecipeIngredient"][];
+                    };
+                };
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mood/add": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /**
+         * Add a mood entry
+         * @description Adds a mood entry for a child. (Replace generic schema once MoodEntry is defined.)
+         */
         post: {
             parameters: {
                 query?: never;
@@ -398,21 +261,24 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["RecipeCreate"];
+                    "application/json": {
+                        [key: string]: unknown;
+                    };
                 };
             };
             responses: {
-                /** @description Created */
-                201: {
+                /** @description Mood entry created */
+                200: {
                     headers: {
-                        Location?: string;
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Recipe"];
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
                     };
                 };
-                422: components["responses"]["ValidationError"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         delete?: never;
@@ -421,272 +287,137 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/recipes/{recipe_id}": {
+    "/mood/on": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get recipe */
+        /**
+         * Get today's mood snapshot
+         * @description Returns current mood status (schema TBD).
+         */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    recipe_id: components["parameters"]["recipe_id"];
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Current mood */
                 200: {
                     headers: {
-                        ETag?: string;
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Recipe"];
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
                     };
                 };
-                404: components["responses"]["NotFound"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
         post?: never;
-        /** Delete recipe */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    recipe_id: components["parameters"]["recipe_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-            };
-        };
+        delete?: never;
         options?: never;
         head?: never;
-        /** Update recipe */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    recipe_id: components["parameters"]["recipe_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["RecipeUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Recipe"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-            };
-        };
+        patch?: never;
         trace?: never;
     };
-    "/recipe-ingredients": {
+    "/mood/history/{child_id}": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** List recipe ingredients */
+        /** Get mood history for a child */
         get: {
             parameters: {
                 query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    recipe_id?: number;
-                    ingredient_id?: number;
+                    /** @description Start date (inclusive), ISO-8601 */
+                    from?: string;
+                    /** @description End date (inclusive), ISO-8601 */
+                    to?: string;
                 };
                 header?: never;
-                path?: never;
+                path: {
+                    child_id: number;
+                };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Mood history list */
                 200: {
                     headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Paginated_RecipeIngredient"];
+                        "application/json": {
+                            [key: string]: unknown;
+                        }[];
                     };
                 };
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
-        /** Create recipe ingredient */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["RecipeIngredientCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["RecipeIngredient"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-            };
-        };
+        post?: never;
         delete?: never;
         options?: never;
         head?: never;
         patch?: never;
         trace?: never;
     };
-    "/recipe-ingredients/{recipe_ingredient_id}": {
+    "/children/health": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        /** Get recipe ingredient */
+        /**
+         * Children health overview
+         * @description Returns health info (schema TBD).
+         */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
-                path: {
-                    recipe_ingredient_id: components["parameters"]["recipe_ingredient_id"];
-                };
+                path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Health info */
                 200: {
                     headers: {
-                        ETag?: string;
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["RecipeIngredient"];
+                        "application/json": {
+                            [key: string]: unknown;
+                        };
                     };
                 };
-                404: components["responses"]["NotFound"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
         post?: never;
-        /** Delete recipe ingredient */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    recipe_ingredient_id: components["parameters"]["recipe_ingredient_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-            };
-        };
+        delete?: never;
         options?: never;
         head?: never;
-        /** Update recipe ingredient */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    recipe_ingredient_id: components["parameters"]["recipe_ingredient_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["RecipeIngredientUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["RecipeIngredient"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-            };
-        };
+        patch?: never;
         trace?: never;
     };
-    "/children": {
+    "/children/": {
         parameters: {
             query?: never;
             header?: never;
@@ -696,39 +427,27 @@ export interface paths {
         /** List children */
         get: {
             parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                    age_range_id?: components["parameters"]["filter_age_range_id"];
-                    gender?: components["parameters"]["filter_gender"];
-                };
+                query?: never;
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Children list */
                 200: {
                     headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Paginated_Child"];
+                        "application/json": components["schemas"]["Child"][];
                     };
                 };
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
-        /** Create child */
+        /** Create a child */
         post: {
             parameters: {
                 query?: never;
@@ -738,21 +457,20 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["ChildCreate"];
+                    "application/json": components["schemas"]["Child"];
                 };
             };
             responses: {
-                /** @description Created */
+                /** @description Child created */
                 201: {
                     headers: {
-                        Location?: string;
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": components["schemas"]["Child"];
                     };
                 };
-                422: components["responses"]["ValidationError"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         delete?: never;
@@ -765,2099 +483,106 @@ export interface paths {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                child_id: number;
+            };
             cookie?: never;
         };
-        /** Get child */
+        /** Get a child */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    child_id: components["parameters"]["child_id"];
+                    child_id: number;
                 };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description OK */
+                /** @description Child */
                 200: {
                     headers: {
-                        ETag?: string;
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": components["schemas"]["Child"];
                     };
                 };
-                404: components["responses"]["NotFound"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
-        put?: never;
-        post?: never;
-        /** Delete child */
-        delete: {
+        /** Update a child */
+        put: {
             parameters: {
                 query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
+                header?: never;
                 path: {
-                    child_id: components["parameters"]["child_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update child */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    child_id: components["parameters"]["child_id"];
+                    child_id: number;
                 };
                 cookie?: never;
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["ChildUpdate"];
+                    "application/json": components["schemas"]["Child"];
                 };
             };
             responses: {
-                /** @description OK */
+                /** @description Updated child */
                 200: {
                     headers: {
-                        ETag?: string;
                         [name: string]: unknown;
                     };
                     content: {
                         "application/json": components["schemas"]["Child"];
                     };
                 };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
-        trace?: never;
-    };
-    "/age-groups": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List age groups */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_AgeGroup"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create age group */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["AgeGroupCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["AgeGroup"];
-                    };
-                };
-                409: components["responses"]["Conflict"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/age-groups/{age_group_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get age group */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    age_group_id: components["parameters"]["age_group_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["AgeGroup"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
         post?: never;
-        /** Delete age group */
+        /** Delete a child */
         delete: {
             parameters: {
                 query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
+                header?: never;
                 path: {
-                    age_group_id: components["parameters"]["age_group_id"];
+                    child_id: number;
                 };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description No Content */
+                /** @description Child deleted */
                 204: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content?: never;
                 };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
+                default: components["responses"]["DEFAULT_ERROR"];
             };
         };
-        options?: never;
-        head?: never;
-        /** Update age group */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    age_group_id: components["parameters"]["age_group_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["AgeGroupUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["AgeGroup"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/age-ranges": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List age ranges */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                    age_group_id?: components["parameters"]["filter_age_group_id"];
-                    gender?: components["parameters"]["filter_gender"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_AgeRange"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create age range */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["AgeRangeCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["AgeRange"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
         options?: never;
         head?: never;
         patch?: never;
-        trace?: never;
-    };
-    "/age-ranges/{age_range_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get age range */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    age_range_id: components["parameters"]["age_range_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["AgeRange"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete age range */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    age_range_id: components["parameters"]["age_range_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update age range */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    age_range_id: components["parameters"]["age_range_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["AgeRangeUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["AgeRange"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/nutrients": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List nutrients */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                    category?: components["parameters"]["filter_category"];
-                    code?: components["parameters"]["filter_code"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_Nutrient"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create nutrient */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["NutrientCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Nutrient"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/nutrients/{nutrient_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get nutrient */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    nutrient_id: components["parameters"]["nutrient_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Nutrient"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete nutrient */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    nutrient_id: components["parameters"]["nutrient_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update nutrient */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    nutrient_id: components["parameters"]["nutrient_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["NutrientUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Nutrient"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/nutrient-requirements": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List nutrient requirements */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    age_range_id?: components["parameters"]["filter_age_range_id"];
-                    nutrient_id?: components["parameters"]["filter_nutrient_id"];
-                    type?: components["parameters"]["filter_type"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_NutrientRequirement"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create nutrient requirement */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["NutrientRequirementCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["NutrientRequirement"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/nutrient-requirements/{requirement_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get nutrient requirement */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    requirement_id: components["parameters"]["requirement_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["NutrientRequirement"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete nutrient requirement */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    requirement_id: components["parameters"]["requirement_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update nutrient requirement */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    requirement_id: components["parameters"]["requirement_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["NutrientRequirementUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["NutrientRequirement"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/food-groups": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List food groups */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_FoodGroup"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create food group */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodGroupCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGroup"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/food-groups/{food_group_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get food group */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    food_group_id: components["parameters"]["food_group_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGroup"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete food group */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_group_id: components["parameters"]["food_group_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update food group */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_group_id: components["parameters"]["food_group_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodGroupUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGroup"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/food-group-requirements": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List food group requirements */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    age_range_id?: components["parameters"]["filter_age_range_id"];
-                    food_group_id?: components["parameters"]["filter_food_group_id"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_FoodGroupRequirement"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create food group requirement */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodGroupRequirementCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGroupRequirement"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/food-group-requirements/{food_req_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get food group requirement */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    food_req_id: components["parameters"]["food_req_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGroupRequirement"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete food group requirement */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_req_id: components["parameters"]["food_req_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update food group requirement */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_req_id: components["parameters"]["food_req_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodGroupRequirementUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGroupRequirement"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/food-items": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List food items */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    /** @description Search query */
-                    q?: components["parameters"]["q"];
-                    classification?: components["parameters"]["filter_classification"];
-                    food_group_id?: components["parameters"]["filter_food_group_id"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_FoodItem"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create food item */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodItemCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodItem"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/food-items/{food_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get food item */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    food_id: components["parameters"]["food_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodItem"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete food item */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_id: components["parameters"]["food_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update food item */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_id: components["parameters"]["food_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodItemUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodItem"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/composition-values": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List composition values */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    food_id?: components["parameters"]["filter_food_id"];
-                    nutrient_id?: components["parameters"]["filter_nutrient_id"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_CompositionValue"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create composition value */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["CompositionValueCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["CompositionValue"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/composition-values/{comp_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get composition value */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    comp_id: components["parameters"]["comp_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["CompositionValue"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete composition value */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    comp_id: components["parameters"]["comp_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update composition value */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    comp_id: components["parameters"]["comp_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["CompositionValueUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["CompositionValue"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        trace?: never;
-    };
-    "/food-guide-maps": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** List food guide mappings */
-        get: {
-            parameters: {
-                query?: {
-                    page?: components["parameters"]["page"];
-                    limit?: components["parameters"]["limit"];
-                    /** @description Field to sort by */
-                    sort?: components["parameters"]["sort"];
-                    order?: components["parameters"]["order"];
-                    food_id?: components["parameters"]["filter_food_id"];
-                    food_group_id?: components["parameters"]["filter_food_group_id"];
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        "RateLimit-Limit": components["headers"]["RateLimit-Limit"];
-                        "RateLimit-Remaining": components["headers"]["RateLimit-Remaining"];
-                        "RateLimit-Reset": components["headers"]["RateLimit-Reset"];
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Paginated_FoodGuideMap"];
-                    };
-                };
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        /** Create food guide mapping */
-        post: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodGuideMapCreate"];
-                };
-            };
-            responses: {
-                /** @description Created */
-                201: {
-                    headers: {
-                        Location?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGuideMap"];
-                    };
-                };
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/food-guide-maps/{food_guide_map_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get food guide mapping */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    food_guide_map_id: components["parameters"]["food_guide_map_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGuideMap"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        put?: never;
-        post?: never;
-        /** Delete food guide mapping */
-        delete: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_guide_map_id: components["parameters"]["food_guide_map_id"];
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description No Content */
-                204: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
-        options?: never;
-        head?: never;
-        /** Update food guide mapping */
-        patch: {
-            parameters: {
-                query?: never;
-                header?: {
-                    "If-Match"?: components["parameters"]["IfMatch"];
-                };
-                path: {
-                    food_guide_map_id: components["parameters"]["food_guide_map_id"];
-                };
-                cookie?: never;
-            };
-            requestBody: {
-                content: {
-                    "application/json": components["schemas"]["FoodGuideMapUpdate"];
-                };
-            };
-            responses: {
-                /** @description OK */
-                200: {
-                    headers: {
-                        ETag?: string;
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["FoodGuideMap"];
-                    };
-                };
-                404: components["responses"]["NotFound"];
-                409: components["responses"]["PreconditionFailed"];
-                422: components["responses"]["ValidationError"];
-                /** @description Error */
-                default: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Error"];
-                    };
-                };
-            };
-        };
         trace?: never;
     };
 }
 export type webhooks = Record<string, never>;
 export interface components {
     schemas: {
-        PageMeta: {
-            page: number;
-            limit: number;
-            total: number;
-            pages: number;
-        };
-        DietaryGuideline: {
-            readonly guideline_id: number;
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            age_group: string;
-            servings_veg_legumes_beans?: number;
-            servings_fruit?: number;
-            servings_grain?: number;
-            servings_meat_fish_eggs_nuts_seeds?: number;
-            servings_milk_yoghurt_cheese?: number;
-            min_age: number;
-            max_age: number;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        DietaryGuidelineCreate: {
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            age_group: string;
-            servings_veg_legumes_beans?: number;
-            servings_fruit?: number;
-            servings_grain?: number;
-            servings_meat_fish_eggs_nuts_seeds?: number;
-            servings_milk_yoghurt_cheese?: number;
-            min_age: number;
-            max_age: number;
-        };
-        DietaryGuidelineUpdate: components["schemas"]["DietaryGuidelineCreate"];
-        Paginated_DietaryGuideline: {
-            items: components["schemas"]["DietaryGuideline"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        Ingredient: {
-            readonly ingredient_id: number;
-            ingredient_name: string;
-            category: string;
-            emoji?: string;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        IngredientCreate: {
-            ingredient_name: string;
-            category: string;
-            emoji?: string;
-        };
-        IngredientUpdate: {
-            ingredient_name?: string;
-            emoji?: string;
-            category?: string;
-        };
-        Paginated_Ingredient: {
-            items: components["schemas"]["Ingredient"][];
-            meta: components["schemas"]["PageMeta"];
+        Error: {
+            /** @description Error code */
+            code?: number;
+            /** @description Error name */
+            status?: string;
+            /** @description Error message */
+            message?: string;
+            /** @description Errors */
+            errors?: {
+                [key: string]: unknown;
+            };
         };
         Recipe: {
             readonly recipe_id: number;
@@ -2876,23 +601,6 @@ export interface components {
             /** Format: date-time */
             readonly updatedAt?: string;
         };
-        RecipeCreate: {
-            recipe_name: string;
-            recipe_type?: string;
-            cuisine_type?: string;
-            dietary_preferences?: string;
-            cooking_steps?: string;
-            servings_veg_legumes_beans?: number;
-            servings_fruit?: number;
-            servings_grain?: number;
-            servings_meat_fish_eggs_nuts_seeds?: number;
-            servings_milk_yoghurt_cheese?: number;
-        };
-        RecipeUpdate: components["schemas"]["RecipeCreate"];
-        Paginated_Recipe: {
-            items: components["schemas"]["Recipe"][];
-            meta: components["schemas"]["PageMeta"];
-        };
         RecipeIngredient: {
             readonly recipe_ingredient_id: number;
             recipe_id: number;
@@ -2903,19 +611,15 @@ export interface components {
             /** Format: date-time */
             readonly updatedAt?: string;
         };
-        RecipeIngredientCreate: {
-            recipe_id: number;
-            ingredient_id: number;
-            grams: number;
-        };
-        RecipeIngredientUpdate: {
-            recipe_id?: number;
-            ingredient_id?: number;
-            grams?: number;
-        };
-        Paginated_RecipeIngredient: {
-            items: components["schemas"]["RecipeIngredient"][];
-            meta: components["schemas"]["PageMeta"];
+        Ingredient: {
+            readonly ingredient_id: number;
+            ingredient_name: string;
+            category: string;
+            emoji?: string;
+            /** Format: date-time */
+            readonly createdAt?: string;
+            /** Format: date-time */
+            readonly updatedAt?: string;
         };
         Child: {
             readonly child_id: number;
@@ -2934,323 +638,27 @@ export interface components {
             /** Format: date-time */
             readonly updatedAt?: string;
         };
-        ChildCreate: {
-            name: string;
-            /** Format: date */
-            date_of_birth: string;
+        DietaryGuideline: {
+            readonly guideline_id: number;
             /** @enum {string|null} */
             gender?: "M" | "F" | null;
-            age_range_id?: number | null;
-            height_cm?: number | null;
-            weight_kg?: number | null;
-            notes?: string | null;
-        };
-        ChildUpdate: {
-            name?: string;
-            /** Format: date */
-            date_of_birth?: string;
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            age_range_id?: number | null;
-            height_cm?: number | null;
-            weight_kg?: number | null;
-            notes?: string | null;
-        };
-        Paginated_Child: {
-            items: components["schemas"]["Child"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        AgeGroup: {
-            readonly age_group_id: number;
-            name: string;
+            age_group: string;
+            servings_veg_legumes_beans?: number;
+            servings_fruit?: number;
+            servings_grain?: number;
+            servings_meat_fish_eggs_nuts_seeds?: number;
+            servings_milk_yoghurt_cheese?: number;
+            min_age: number;
+            max_age: number;
             /** Format: date-time */
             readonly createdAt?: string;
             /** Format: date-time */
             readonly updatedAt?: string;
-        };
-        AgeGroupCreate: {
-            name: string;
-        };
-        AgeGroupUpdate: {
-            name?: string;
-        };
-        Paginated_AgeGroup: {
-            items: components["schemas"]["AgeGroup"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        AgeRange: {
-            readonly age_range_id: number;
-            age_group_id: number;
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            lower_age: string;
-            upper_age: string;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        AgeRangeCreate: {
-            age_group_id: number;
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            lower_age: string;
-            upper_age: string;
-        };
-        AgeRangeUpdate: {
-            age_group_id?: number;
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            lower_age?: string;
-            upper_age?: string;
-        };
-        Paginated_AgeRange: {
-            items: components["schemas"]["AgeRange"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        Nutrient: {
-            readonly nutrient_id: number;
-            code?: string | null;
-            name: string;
-            unit: string;
-            /** @enum {string} */
-            category: "macro" | "vitamin" | "mineral" | "sugar" | "amino_acid" | "fatty_acid" | "other";
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        NutrientCreate: {
-            code?: string | null;
-            name: string;
-            unit: string;
-            /** @enum {string} */
-            category: "macro" | "vitamin" | "mineral" | "sugar" | "amino_acid" | "fatty_acid" | "other";
-        };
-        NutrientUpdate: {
-            code?: string | null;
-            name?: string;
-            unit?: string;
-            /** @enum {string} */
-            category?: "macro" | "vitamin" | "mineral" | "sugar" | "amino_acid" | "fatty_acid" | "other";
-        };
-        Paginated_Nutrient: {
-            items: components["schemas"]["Nutrient"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        NutrientRequirement: {
-            readonly requirement_id: number;
-            age_range_id: number;
-            nutrient_id: number;
-            /** @enum {string} */
-            type: "AI" | "RDI" | "EAR" | "UL";
-            value: number;
-            notes?: string | null;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        NutrientRequirementCreate: {
-            age_range_id: number;
-            nutrient_id: number;
-            /** @enum {string} */
-            type: "AI" | "RDI" | "EAR" | "UL";
-            value: number;
-            notes?: string | null;
-        };
-        NutrientRequirementUpdate: {
-            age_range_id?: number;
-            nutrient_id?: number;
-            /** @enum {string} */
-            type?: "AI" | "RDI" | "EAR" | "UL";
-            value?: number;
-            notes?: string | null;
-        };
-        Paginated_NutrientRequirement: {
-            items: components["schemas"]["NutrientRequirement"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        FoodGroup: {
-            readonly food_group_id: number;
-            name: string;
-            /** @example serves */
-            unit: string;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        FoodGroupCreate: {
-            name: string;
-            unit: string;
-        };
-        FoodGroupUpdate: {
-            name?: string;
-            unit?: string;
-        };
-        Paginated_FoodGroup: {
-            items: components["schemas"]["FoodGroup"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        FoodGroupRequirement: {
-            readonly food_req_id: number;
-            age_range_id: number;
-            food_group_id: number;
-            min_serves: number;
-            max_serves?: number | null;
-            notes?: string | null;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        FoodGroupRequirementCreate: {
-            age_range_id: number;
-            food_group_id: number;
-            min_serves: number;
-            max_serves?: number | null;
-            notes?: string | null;
-        };
-        FoodGroupRequirementUpdate: {
-            age_range_id?: number;
-            food_group_id?: number;
-            min_serves?: number;
-            max_serves?: number | null;
-            notes?: string | null;
-        };
-        Paginated_FoodGroupRequirement: {
-            items: components["schemas"]["FoodGroupRequirement"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        FoodItem: {
-            readonly food_id: number;
-            public_food_key: string;
-            classification: string;
-            name: string;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        FoodItemCreate: {
-            public_food_key: string;
-            classification: string;
-            name: string;
-        };
-        FoodItemUpdate: {
-            public_food_key?: string;
-            classification?: string;
-            name?: string;
-        };
-        Paginated_FoodItem: {
-            items: components["schemas"]["FoodItem"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        CompositionValue: {
-            readonly comp_id: number;
-            food_id: number;
-            nutrient_id: number;
-            amount_per_100g: number;
-            /** @enum {string} */
-            basis: "per 100g" | "per 100mL" | "per serve";
-            notes?: string | null;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        CompositionValueCreate: {
-            food_id: number;
-            nutrient_id: number;
-            amount_per_100g: number;
-            /** @enum {string} */
-            basis: "per 100g" | "per 100mL" | "per serve";
-            notes?: string | null;
-        };
-        CompositionValueUpdate: {
-            food_id?: number;
-            nutrient_id?: number;
-            amount_per_100g?: number;
-            /** @enum {string} */
-            basis?: "per 100g" | "per 100mL" | "per serve";
-            notes?: string | null;
-        };
-        Paginated_CompositionValue: {
-            items: components["schemas"]["CompositionValue"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        FoodGuideMap: {
-            readonly food_guide_map_id: number;
-            food_id: number;
-            food_group_id: number;
-            serve_grams: number;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        FoodGuideMapCreate: {
-            food_id: number;
-            food_group_id: number;
-            serve_grams: number;
-        };
-        FoodGuideMapUpdate: {
-            food_id?: number;
-            food_group_id?: number;
-            serve_grams?: number;
-        };
-        Paginated_FoodGuideMap: {
-            items: components["schemas"]["FoodGuideMap"][];
-            meta: components["schemas"]["PageMeta"];
-        };
-        Error: {
-            message: string;
-            code?: string;
-            details?: {
-                [key: string]: unknown;
-            };
         };
     };
     responses: {
-        /** @description Error */
-        default: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Resource not found */
-        NotFound: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Validation failed */
-        ValidationError: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description Conflict (duplicate resource) */
-        Conflict: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": components["schemas"]["Error"];
-            };
-        };
-        /** @description ETag precondition failed */
-        PreconditionFailed: {
+        /** @description Default error response */
+        DEFAULT_ERROR: {
             headers: {
                 [name: string]: unknown;
             };
@@ -3259,56 +667,9 @@ export interface components {
             };
         };
     };
-    parameters: {
-        page: number;
-        limit: number;
-        /** @description Field to sort by */
-        sort: string;
-        order: "asc" | "desc";
-        /** @description Search query */
-        q: string;
-        guideline_id: number;
-        ingredient_id: number;
-        recipe_id: number;
-        recipe_ingredient_id: number;
-        filter_age_group: string;
-        filter_min_age: number;
-        filter_max_age: number;
-        filter_recipe_type: string;
-        filter_cuisine_type: string;
-        filter_dietary_preferences: string;
-        filter_ingredient_category: string;
-        filter_age_group_id: number;
-        filter_gender: "M" | "F";
-        filter_category: string;
-        filter_code: string;
-        filter_age_range_id: number;
-        filter_nutrient_id: number;
-        filter_type: "AI" | "RDI" | "EAR" | "UL";
-        filter_food_group_id: number;
-        filter_classification: string;
-        filter_food_id: number;
-        child_id: number;
-        age_group_id: number;
-        age_range_id: number;
-        nutrient_id: number;
-        requirement_id: number;
-        food_group_id: number;
-        food_req_id: number;
-        food_id: number;
-        comp_id: number;
-        food_guide_map_id: number;
-        IfMatch: string;
-    };
+    parameters: never;
     requestBodies: never;
-    headers: {
-        /** @description The maximum number of requests allowed in the time window */
-        "RateLimit-Limit": number;
-        /** @description The number of requests left in the current window */
-        "RateLimit-Remaining": number;
-        /** @description Seconds until the rate limit resets */
-        "RateLimit-Reset": number;
-    };
+    headers: never;
     pathItems: never;
 }
 export type $defs = Record<string, never>;

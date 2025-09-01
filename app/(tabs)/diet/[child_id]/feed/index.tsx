@@ -14,8 +14,6 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { PlusIcon } from "lucide-react-native";
-import { AddIngredientDialog } from "@/components/feed/AddIngredientDialog";
 import ConfirmFeedModal from "@/components/feed/ConfirmFeedModal";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import PageContainer from "@/components/PageContainer";

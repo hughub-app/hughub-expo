@@ -10,6 +10,7 @@
     "build": "expo export --platform web",
     "lint": "expo lint",
     "codegen": "npx openapi-typescript ./lib/api/openapi.json -o generated/api.d.ts",
+    "codegen-mock": "npx openapi-typescript ./lib/api/openapi-mock.json -o generated/api.d.ts",
     "zodgen": "npx openapi-zod-client ./lib/api/openapi.json -o generated/ozc"
   },
   "dependencies": {

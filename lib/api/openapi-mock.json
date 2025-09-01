@@ -1,0 +1,3289 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Nutrition Requirements API",
+    "version": "1.0.0"
+  },
+  "servers": [{ "url": "https://api.example.com" }],
+  "security": [{ "bearerAuth": [] }],
+  "tags": [
+    { "name": "Children" },
+    { "name": "AgeGroups" },
+    { "name": "AgeRanges" },
+    { "name": "Nutrients" },
+    { "name": "NutrientRequirements" },
+    { "name": "FoodGroups" },
+    { "name": "FoodGroupRequirements" },
+    { "name": "FoodItems" },
+    { "name": "CompositionValues" },
+    { "name": "FoodGuideMaps" },
+    {
+      "name": "DietaryGuidelines"
+    },
+    {
+      "name": "Ingredients"
+    },
+    {
+      "name": "Recipes"
+    },
+    {
+      "name": "RecipeIngredients"
+    }
+  ],
+  "paths": {
+    "/dietary-guidelines": {
+      "get": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "List dietary guidelines",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/filter_age_group" },
+          { "$ref": "#/components/parameters/filter_gender" },
+          { "$ref": "#/components/parameters/filter_min_age" },
+          { "$ref": "#/components/parameters/filter_max_age" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_DietaryGuideline"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Create dietary guideline",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DietaryGuidelineCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DietaryGuideline" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/dietary-guidelines/{guideline_id}": {
+      "get": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Get dietary guideline",
+        "parameters": [{ "$ref": "#/components/parameters/guideline_id" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DietaryGuideline" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Update dietary guideline",
+        "parameters": [
+          { "$ref": "#/components/parameters/guideline_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DietaryGuidelineUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/DietaryGuideline" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["DietaryGuidelines"],
+        "summary": "Delete dietary guideline",
+        "parameters": [
+          { "$ref": "#/components/parameters/guideline_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/ingredients": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "List ingredients",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_ingredient_category" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_Ingredient"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Ingredients"],
+        "summary": "Create ingredient",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/IngredientCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Ingredient" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/ingredients/{ingredient_id}": {
+      "get": {
+        "tags": ["Ingredients"],
+        "summary": "Get ingredient",
+        "parameters": [{ "$ref": "#/components/parameters/ingredient_id" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Ingredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["Ingredients"],
+        "summary": "Update ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/nutrient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/IngredientUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Ingredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Ingredients"],
+        "summary": "Delete ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/nutrient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+    "/recipes": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "List recipes",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_recipe_type" },
+          { "$ref": "#/components/parameters/filter_cuisine_type" },
+          { "$ref": "#/components/parameters/filter_dietary_preferences" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_Recipe" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Recipes"],
+        "summary": "Create recipe",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RecipeCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Recipe" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/recipes/{recipe_id}": {
+      "get": {
+        "tags": ["Recipes"],
+        "summary": "Get recipe",
+        "parameters": [{ "$ref": "#/components/parameters/recipe_id" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Recipe" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["Recipes"],
+        "summary": "Update recipe",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/RecipeUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Recipe" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Recipes"],
+        "summary": "Delete recipe",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+    "/recipe-ingredients": {
+      "get": {
+        "tags": ["RecipeIngredients"],
+        "summary": "List recipe ingredients",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          {
+            "name": "recipe_id",
+            "in": "query",
+            "schema": { "type": "integer" }
+          },
+          {
+            "name": "ingredient_id",
+            "in": "query",
+            "schema": { "type": "integer" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_RecipeIngredient"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Create recipe ingredient",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RecipeIngredient" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/recipe-ingredients/{recipe_ingredient_id}": {
+      "get": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Get recipe ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_ingredient_id" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RecipeIngredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Update recipe ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_ingredient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecipeIngredientUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/RecipeIngredient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["RecipeIngredients"],
+        "summary": "Delete recipe ingredient",
+        "parameters": [
+          { "$ref": "#/components/parameters/recipe_ingredient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/children": {
+      "get": {
+        "tags": ["Children"],
+        "summary": "List children",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_age_range_id" },
+          { "$ref": "#/components/parameters/filter_gender" }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_Child" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Children"],
+        "summary": "Create child",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChildCreate" }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Child" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/children/{child_id}": {
+      "get": {
+        "tags": ["Children"],
+        "summary": "Get child",
+        "parameters": [{ "$ref": "#/components/parameters/child_id" }],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Child" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["Children"],
+        "summary": "Update child",
+        "parameters": [
+          { "$ref": "#/components/parameters/child_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/ChildUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Child" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Children"],
+        "summary": "Delete child",
+        "parameters": [
+          { "$ref": "#/components/parameters/child_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+    "/age-groups": {
+      "get": {
+        "tags": ["AgeGroups"],
+        "summary": "List age groups",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_AgeGroup" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["AgeGroups"],
+        "summary": "Create age group",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AgeGroupCreate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgeGroup" }
+              }
+            }
+          },
+          "409": { "$ref": "#/components/responses/Conflict" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/age-groups/{age_group_id}": {
+      "get": {
+        "tags": ["AgeGroups"],
+        "summary": "Get age group",
+        "parameters": [{ "$ref": "#/components/parameters/age_group_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgeGroup" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["AgeGroups"],
+        "summary": "Update age group",
+        "parameters": [
+          { "$ref": "#/components/parameters/age_group_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AgeGroupUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgeGroup" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["AgeGroups"],
+        "summary": "Delete age group",
+        "parameters": [
+          { "$ref": "#/components/parameters/age_group_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/age-ranges": {
+      "get": {
+        "tags": ["AgeRanges"],
+        "summary": "List age ranges",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_age_group_id" },
+          { "$ref": "#/components/parameters/filter_gender" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_AgeRange" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["AgeRanges"],
+        "summary": "Create age range",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AgeRangeCreate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgeRange" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/age-ranges/{age_range_id}": {
+      "get": {
+        "tags": ["AgeRanges"],
+        "summary": "Get age range",
+        "parameters": [{ "$ref": "#/components/parameters/age_range_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgeRange" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["AgeRanges"],
+        "summary": "Update age range",
+        "parameters": [
+          { "$ref": "#/components/parameters/age_range_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/AgeRangeUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/AgeRange" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["AgeRanges"],
+        "summary": "Delete age range",
+        "parameters": [
+          { "$ref": "#/components/parameters/age_range_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/nutrients": {
+      "get": {
+        "tags": ["Nutrients"],
+        "summary": "List nutrients",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_category" },
+          { "$ref": "#/components/parameters/filter_code" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_Nutrient" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["Nutrients"],
+        "summary": "Create nutrient",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NutrientCreate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Nutrient" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/nutrients/{nutrient_id}": {
+      "get": {
+        "tags": ["Nutrients"],
+        "summary": "Get nutrient",
+        "parameters": [{ "$ref": "#/components/parameters/nutrient_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Nutrient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["Nutrients"],
+        "summary": "Update nutrient",
+        "parameters": [
+          { "$ref": "#/components/parameters/nutrient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/NutrientUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Nutrient" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["Nutrients"],
+        "summary": "Delete nutrient",
+        "parameters": [
+          { "$ref": "#/components/parameters/nutrient_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/nutrient-requirements": {
+      "get": {
+        "tags": ["NutrientRequirements"],
+        "summary": "List nutrient requirements",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/filter_age_range_id" },
+          { "$ref": "#/components/parameters/filter_nutrient_id" },
+          { "$ref": "#/components/parameters/filter_type" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_NutrientRequirement"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["NutrientRequirements"],
+        "summary": "Create nutrient requirement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NutrientRequirementCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NutrientRequirement" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/nutrient-requirements/{requirement_id}": {
+      "get": {
+        "tags": ["NutrientRequirements"],
+        "summary": "Get nutrient requirement",
+        "parameters": [{ "$ref": "#/components/parameters/requirement_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NutrientRequirement" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["NutrientRequirements"],
+        "summary": "Update nutrient requirement",
+        "parameters": [
+          { "$ref": "#/components/parameters/requirement_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NutrientRequirementUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/NutrientRequirement" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["NutrientRequirements"],
+        "summary": "Delete nutrient requirement",
+        "parameters": [
+          { "$ref": "#/components/parameters/requirement_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/food-groups": {
+      "get": {
+        "tags": ["FoodGroups"],
+        "summary": "List food groups",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_FoodGroup" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["FoodGroups"],
+        "summary": "Create food group",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FoodGroupCreate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodGroup" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/food-groups/{food_group_id}": {
+      "get": {
+        "tags": ["FoodGroups"],
+        "summary": "Get food group",
+        "parameters": [{ "$ref": "#/components/parameters/food_group_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodGroup" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["FoodGroups"],
+        "summary": "Update food group",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_group_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FoodGroupUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodGroup" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["FoodGroups"],
+        "summary": "Delete food group",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_group_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/food-group-requirements": {
+      "get": {
+        "tags": ["FoodGroupRequirements"],
+        "summary": "List food group requirements",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/filter_age_range_id" },
+          { "$ref": "#/components/parameters/filter_food_group_id" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_FoodGroupRequirement"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["FoodGroupRequirements"],
+        "summary": "Create food group requirement",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FoodGroupRequirementCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodGroupRequirement"
+                }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/food-group-requirements/{food_req_id}": {
+      "get": {
+        "tags": ["FoodGroupRequirements"],
+        "summary": "Get food group requirement",
+        "parameters": [{ "$ref": "#/components/parameters/food_req_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodGroupRequirement"
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["FoodGroupRequirements"],
+        "summary": "Update food group requirement",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_req_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/FoodGroupRequirementUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FoodGroupRequirement"
+                }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["FoodGroupRequirements"],
+        "summary": "Delete food group requirement",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_req_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/food-items": {
+      "get": {
+        "tags": ["FoodItems"],
+        "summary": "List food items",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/q" },
+          { "$ref": "#/components/parameters/filter_classification" },
+          { "$ref": "#/components/parameters/filter_food_group_id" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Paginated_FoodItem" }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["FoodItems"],
+        "summary": "Create food item",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FoodItemCreate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodItem" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/food-items/{food_id}": {
+      "get": {
+        "tags": ["FoodItems"],
+        "summary": "Get food item",
+        "parameters": [{ "$ref": "#/components/parameters/food_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodItem" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["FoodItems"],
+        "summary": "Update food item",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FoodItemUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodItem" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["FoodItems"],
+        "summary": "Delete food item",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/composition-values": {
+      "get": {
+        "tags": ["CompositionValues"],
+        "summary": "List composition values",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/filter_food_id" },
+          { "$ref": "#/components/parameters/filter_nutrient_id" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_CompositionValue"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["CompositionValues"],
+        "summary": "Create composition value",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompositionValueCreate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CompositionValue" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/composition-values/{comp_id}": {
+      "get": {
+        "tags": ["CompositionValues"],
+        "summary": "Get composition value",
+        "parameters": [{ "$ref": "#/components/parameters/comp_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CompositionValue" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["CompositionValues"],
+        "summary": "Update composition value",
+        "parameters": [
+          { "$ref": "#/components/parameters/comp_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CompositionValueUpdate"
+              }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/CompositionValue" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["CompositionValues"],
+        "summary": "Delete composition value",
+        "parameters": [
+          { "$ref": "#/components/parameters/comp_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    },
+
+    "/food-guide-maps": {
+      "get": {
+        "tags": ["FoodGuideMaps"],
+        "summary": "List food guide mappings",
+        "parameters": [
+          { "$ref": "#/components/parameters/page" },
+          { "$ref": "#/components/parameters/limit" },
+          { "$ref": "#/components/parameters/sort" },
+          { "$ref": "#/components/parameters/order" },
+          { "$ref": "#/components/parameters/filter_food_id" },
+          { "$ref": "#/components/parameters/filter_food_group_id" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": {
+              "RateLimit-Limit": {
+                "$ref": "#/components/headers/RateLimit-Limit"
+              },
+              "RateLimit-Remaining": {
+                "$ref": "#/components/headers/RateLimit-Remaining"
+              },
+              "RateLimit-Reset": {
+                "$ref": "#/components/headers/RateLimit-Reset"
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Paginated_FoodGuideMap"
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["FoodGuideMaps"],
+        "summary": "Create food guide mapping",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FoodGuideMapCreate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "201": {
+            "description": "Created",
+            "headers": {
+              "Location": { "schema": { "type": "string", "format": "uri" } }
+            },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodGuideMap" }
+              }
+            }
+          },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      }
+    },
+    "/food-guide-maps/{food_guide_map_id}": {
+      "get": {
+        "tags": ["FoodGuideMaps"],
+        "summary": "Get food guide mapping",
+        "parameters": [{ "$ref": "#/components/parameters/food_guide_map_id" }],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodGuideMap" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" }
+        }
+      },
+      "patch": {
+        "tags": ["FoodGuideMaps"],
+        "summary": "Update food guide mapping",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_guide_map_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": { "$ref": "#/components/schemas/FoodGuideMapUpdate" }
+            }
+          }
+        },
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "200": {
+            "description": "OK",
+            "headers": { "ETag": { "schema": { "type": "string" } } },
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/FoodGuideMap" }
+              }
+            }
+          },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" },
+          "422": { "$ref": "#/components/responses/ValidationError" }
+        }
+      },
+      "delete": {
+        "tags": ["FoodGuideMaps"],
+        "summary": "Delete food guide mapping",
+        "parameters": [
+          { "$ref": "#/components/parameters/food_guide_map_id" },
+          { "$ref": "#/components/parameters/IfMatch" }
+        ],
+        "responses": {
+          "default": {
+            "description": "Error",
+            "content": {
+              "application/json": {
+                "schema": { "$ref": "#/components/schemas/Error" }
+              }
+            }
+          },
+          "204": { "description": "No Content" },
+          "404": { "$ref": "#/components/responses/NotFound" },
+          "409": { "$ref": "#/components/responses/PreconditionFailed" }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "PageMeta": {
+        "type": "object",
+        "properties": {
+          "page": { "type": "integer", "minimum": 1 },
+          "limit": { "type": "integer", "minimum": 1 },
+          "total": { "type": "integer", "minimum": 0 },
+          "pages": { "type": "integer", "minimum": 0 }
+        },
+        "required": ["page", "limit", "total", "pages"]
+      },
+
+      "DietaryGuideline": {
+        "type": "object",
+        "properties": {
+          "guideline_id": { "type": "integer", "readOnly": true },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "age_group": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" },
+          "min_age": { "type": "integer" },
+          "max_age": { "type": "integer" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["guideline_id", "age_group", "min_age", "max_age"]
+      },
+      "DietaryGuidelineCreate": {
+        "type": "object",
+        "properties": {
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "age_group": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" },
+          "min_age": { "type": "integer" },
+          "max_age": { "type": "integer" }
+        },
+        "required": ["age_group", "min_age", "max_age"]
+      },
+      "DietaryGuidelineUpdate": {
+        "type": "object",
+        "allOf": [{ "$ref": "#/components/schemas/DietaryGuidelineCreate" }]
+      },
+      "Paginated_DietaryGuideline": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/DietaryGuideline" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "Ingredient": {
+        "type": "object",
+        "properties": {
+          "ingredient_id": { "type": "integer", "readOnly": true },
+          "ingredient_name": { "type": "string" },
+          "category": { "type": "string" },
+          "emoji": { "type": "string" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["ingredient_id", "ingredient_name", "category"]
+      },
+      "IngredientCreate": {
+        "type": "object",
+        "properties": {
+          "ingredient_name": { "type": "string" },
+          "category": { "type": "string" },
+          "emoji": { "type": "string" }
+        },
+        "required": ["ingredient_name", "category"]
+      },
+      "IngredientUpdate": {
+        "type": "object",
+        "properties": {
+          "ingredient_name": { "type": "string" },
+          "emoji": { "type": "string" },
+          "category": { "type": "string" }
+        }
+      },
+      "Paginated_Ingredient": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Ingredient" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "recipe_id": { "type": "integer", "readOnly": true },
+          "recipe_name": { "type": "string" },
+          "recipe_type": { "type": "string" },
+          "cuisine_type": { "type": "string" },
+          "dietary_preferences": { "type": "string" },
+          "cooking_steps": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["recipe_id", "recipe_name"]
+      },
+      "RecipeCreate": {
+        "type": "object",
+        "properties": {
+          "recipe_name": { "type": "string" },
+          "recipe_type": { "type": "string" },
+          "cuisine_type": { "type": "string" },
+          "dietary_preferences": { "type": "string" },
+          "cooking_steps": { "type": "string" },
+          "servings_veg_legumes_beans": { "type": "number" },
+          "servings_fruit": { "type": "number" },
+          "servings_grain": { "type": "number" },
+          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
+          "servings_milk_yoghurt_cheese": { "type": "number" }
+        },
+        "required": ["recipe_name"]
+      },
+      "RecipeUpdate": {
+        "type": "object",
+        "allOf": [{ "$ref": "#/components/schemas/RecipeCreate" }]
+      },
+      "Paginated_Recipe": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Recipe" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "RecipeIngredient": {
+        "type": "object",
+        "properties": {
+          "recipe_ingredient_id": { "type": "integer", "readOnly": true },
+          "recipe_id": { "type": "integer" },
+          "ingredient_id": { "type": "integer" },
+          "grams": { "type": "integer" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "recipe_ingredient_id",
+          "recipe_id",
+          "ingredient_id",
+          "grams"
+        ]
+      },
+      "RecipeIngredientCreate": {
+        "type": "object",
+        "properties": {
+          "recipe_id": { "type": "integer" },
+          "ingredient_id": { "type": "integer" },
+          "grams": { "type": "integer" }
+        },
+        "required": ["recipe_id", "ingredient_id", "grams"]
+      },
+      "RecipeIngredientUpdate": {
+        "type": "object",
+        "properties": {
+          "recipe_id": { "type": "integer" },
+          "ingredient_id": { "type": "integer" },
+          "grams": { "type": "integer" }
+        }
+      },
+      "Paginated_RecipeIngredient": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/RecipeIngredient" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "Child": {
+        "type": "object",
+        "properties": {
+          "child_id": { "type": "integer", "readOnly": true },
+          "name": { "type": "string" },
+          "date_of_birth": { "type": "string", "format": "date" },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "age_range_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "FK → AgeRange (optional if computed)"
+          },
+          "height_cm": { "type": "number", "nullable": true },
+          "weight_kg": { "type": "number", "nullable": true },
+          "notes": { "type": "string", "nullable": true },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["child_id", "name", "date_of_birth"]
+      },
+      "ChildCreate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "date_of_birth": { "type": "string", "format": "date" },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "age_range_id": { "type": "integer", "nullable": true },
+          "height_cm": { "type": "number", "nullable": true },
+          "weight_kg": { "type": "number", "nullable": true },
+          "notes": { "type": "string", "nullable": true }
+        },
+        "required": ["name", "date_of_birth"]
+      },
+      "ChildUpdate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "date_of_birth": { "type": "string", "format": "date" },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "age_range_id": { "type": "integer", "nullable": true },
+          "height_cm": { "type": "number", "nullable": true },
+          "weight_kg": { "type": "number", "nullable": true },
+          "notes": { "type": "string", "nullable": true }
+        }
+      },
+      "Paginated_Child": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Child" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+      "AgeGroup": {
+        "type": "object",
+        "properties": {
+          "age_group_id": { "type": "integer", "readOnly": true },
+          "name": { "type": "string" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["age_group_id", "name"]
+      },
+      "AgeGroupCreate": {
+        "type": "object",
+        "properties": { "name": { "type": "string" } },
+        "required": ["name"]
+      },
+      "AgeGroupUpdate": {
+        "type": "object",
+        "properties": { "name": { "type": "string" } }
+      },
+      "Paginated_AgeGroup": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AgeGroup" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "AgeRange": {
+        "type": "object",
+        "properties": {
+          "age_range_id": { "type": "integer", "readOnly": true },
+          "age_group_id": { "type": "integer" },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "lower_age": { "type": "string" },
+          "upper_age": { "type": "string" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["age_range_id", "age_group_id", "lower_age", "upper_age"]
+      },
+      "AgeRangeCreate": {
+        "type": "object",
+        "properties": {
+          "age_group_id": { "type": "integer" },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "lower_age": { "type": "string" },
+          "upper_age": { "type": "string" }
+        },
+        "required": ["age_group_id", "lower_age", "upper_age"]
+      },
+      "AgeRangeUpdate": {
+        "type": "object",
+        "properties": {
+          "age_group_id": { "type": "integer" },
+          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
+          "lower_age": { "type": "string" },
+          "upper_age": { "type": "string" }
+        }
+      },
+      "Paginated_AgeRange": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/AgeRange" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "Nutrient": {
+        "type": "object",
+        "properties": {
+          "nutrient_id": { "type": "integer", "readOnly": true },
+          "code": { "type": "string", "nullable": true },
+          "name": { "type": "string" },
+          "unit": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "macro",
+              "vitamin",
+              "mineral",
+              "sugar",
+              "amino_acid",
+              "fatty_acid",
+              "other"
+            ]
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["nutrient_id", "name", "unit", "category"]
+      },
+      "NutrientCreate": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "nullable": true },
+          "name": { "type": "string" },
+          "unit": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "macro",
+              "vitamin",
+              "mineral",
+              "sugar",
+              "amino_acid",
+              "fatty_acid",
+              "other"
+            ]
+          }
+        },
+        "required": ["name", "unit", "category"]
+      },
+      "NutrientUpdate": {
+        "type": "object",
+        "properties": {
+          "code": { "type": "string", "nullable": true },
+          "name": { "type": "string" },
+          "unit": { "type": "string" },
+          "category": {
+            "type": "string",
+            "enum": [
+              "macro",
+              "vitamin",
+              "mineral",
+              "sugar",
+              "amino_acid",
+              "fatty_acid",
+              "other"
+            ]
+          }
+        }
+      },
+      "Paginated_Nutrient": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/Nutrient" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "NutrientRequirement": {
+        "type": "object",
+        "properties": {
+          "requirement_id": { "type": "integer", "readOnly": true },
+          "age_range_id": { "type": "integer" },
+          "nutrient_id": { "type": "integer" },
+          "type": { "type": "string", "enum": ["AI", "RDI", "EAR", "UL"] },
+          "value": { "type": "number" },
+          "notes": { "type": "string", "nullable": true },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "requirement_id",
+          "age_range_id",
+          "nutrient_id",
+          "type",
+          "value"
+        ]
+      },
+      "NutrientRequirementCreate": {
+        "type": "object",
+        "properties": {
+          "age_range_id": { "type": "integer" },
+          "nutrient_id": { "type": "integer" },
+          "type": { "type": "string", "enum": ["AI", "RDI", "EAR", "UL"] },
+          "value": { "type": "number" },
+          "notes": { "type": "string", "nullable": true }
+        },
+        "required": ["age_range_id", "nutrient_id", "type", "value"]
+      },
+      "NutrientRequirementUpdate": {
+        "type": "object",
+        "properties": {
+          "age_range_id": { "type": "integer" },
+          "nutrient_id": { "type": "integer" },
+          "type": { "type": "string", "enum": ["AI", "RDI", "EAR", "UL"] },
+          "value": { "type": "number" },
+          "notes": { "type": "string", "nullable": true }
+        }
+      },
+      "Paginated_NutrientRequirement": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/NutrientRequirement" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "FoodGroup": {
+        "type": "object",
+        "properties": {
+          "food_group_id": { "type": "integer", "readOnly": true },
+          "name": { "type": "string" },
+          "unit": { "type": "string", "example": "serves" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["food_group_id", "name", "unit"]
+      },
+      "FoodGroupCreate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "unit": { "type": "string" }
+        },
+        "required": ["name", "unit"]
+      },
+      "FoodGroupUpdate": {
+        "type": "object",
+        "properties": {
+          "name": { "type": "string" },
+          "unit": { "type": "string" }
+        }
+      },
+      "Paginated_FoodGroup": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FoodGroup" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "FoodGroupRequirement": {
+        "type": "object",
+        "properties": {
+          "food_req_id": { "type": "integer", "readOnly": true },
+          "age_range_id": { "type": "integer" },
+          "food_group_id": { "type": "integer" },
+          "min_serves": { "type": "number" },
+          "max_serves": { "type": "number", "nullable": true },
+          "notes": { "type": "string", "nullable": true },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "food_req_id",
+          "age_range_id",
+          "food_group_id",
+          "min_serves"
+        ]
+      },
+      "FoodGroupRequirementCreate": {
+        "type": "object",
+        "properties": {
+          "age_range_id": { "type": "integer" },
+          "food_group_id": { "type": "integer" },
+          "min_serves": { "type": "number" },
+          "max_serves": { "type": "number", "nullable": true },
+          "notes": { "type": "string", "nullable": true }
+        },
+        "required": ["age_range_id", "food_group_id", "min_serves"]
+      },
+      "FoodGroupRequirementUpdate": {
+        "type": "object",
+        "properties": {
+          "age_range_id": { "type": "integer" },
+          "food_group_id": { "type": "integer" },
+          "min_serves": { "type": "number" },
+          "max_serves": { "type": "number", "nullable": true },
+          "notes": { "type": "string", "nullable": true }
+        }
+      },
+      "Paginated_FoodGroupRequirement": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FoodGroupRequirement" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "FoodItem": {
+        "type": "object",
+        "properties": {
+          "food_id": { "type": "integer", "readOnly": true },
+          "public_food_key": { "type": "string" },
+          "classification": { "type": "string" },
+          "name": { "type": "string" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": ["food_id", "public_food_key", "classification", "name"]
+      },
+      "FoodItemCreate": {
+        "type": "object",
+        "properties": {
+          "public_food_key": { "type": "string" },
+          "classification": { "type": "string" },
+          "name": { "type": "string" }
+        },
+        "required": ["public_food_key", "classification", "name"]
+      },
+      "FoodItemUpdate": {
+        "type": "object",
+        "properties": {
+          "public_food_key": { "type": "string" },
+          "classification": { "type": "string" },
+          "name": { "type": "string" }
+        }
+      },
+      "Paginated_FoodItem": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FoodItem" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "CompositionValue": {
+        "type": "object",
+        "properties": {
+          "comp_id": { "type": "integer", "readOnly": true },
+          "food_id": { "type": "integer" },
+          "nutrient_id": { "type": "integer" },
+          "amount_per_100g": { "type": "number" },
+          "basis": {
+            "type": "string",
+            "enum": ["per 100g", "per 100mL", "per serve"]
+          },
+          "notes": { "type": "string", "nullable": true },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "comp_id",
+          "food_id",
+          "nutrient_id",
+          "amount_per_100g",
+          "basis"
+        ]
+      },
+      "CompositionValueCreate": {
+        "type": "object",
+        "properties": {
+          "food_id": { "type": "integer" },
+          "nutrient_id": { "type": "integer" },
+          "amount_per_100g": { "type": "number" },
+          "basis": {
+            "type": "string",
+            "enum": ["per 100g", "per 100mL", "per serve"]
+          },
+          "notes": { "type": "string", "nullable": true }
+        },
+        "required": ["food_id", "nutrient_id", "amount_per_100g", "basis"]
+      },
+      "CompositionValueUpdate": {
+        "type": "object",
+        "properties": {
+          "food_id": { "type": "integer" },
+          "nutrient_id": { "type": "integer" },
+          "amount_per_100g": { "type": "number" },
+          "basis": {
+            "type": "string",
+            "enum": ["per 100g", "per 100mL", "per serve"]
+          },
+          "notes": { "type": "string", "nullable": true }
+        }
+      },
+      "Paginated_CompositionValue": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/CompositionValue" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+
+      "FoodGuideMap": {
+        "type": "object",
+        "properties": {
+          "food_guide_map_id": { "type": "integer", "readOnly": true },
+          "food_id": { "type": "integer" },
+          "food_group_id": { "type": "integer" },
+          "serve_grams": { "type": "number" },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        },
+        "required": [
+          "food_guide_map_id",
+          "food_id",
+          "food_group_id",
+          "serve_grams"
+        ]
+      },
+      "FoodGuideMapCreate": {
+        "type": "object",
+        "properties": {
+          "food_id": { "type": "integer" },
+          "food_group_id": { "type": "integer" },
+          "serve_grams": { "type": "number" }
+        },
+        "required": ["food_id", "food_group_id", "serve_grams"]
+      },
+      "FoodGuideMapUpdate": {
+        "type": "object",
+        "properties": {
+          "food_id": { "type": "integer" },
+          "food_group_id": { "type": "integer" },
+          "serve_grams": { "type": "number" }
+        }
+      },
+      "Paginated_FoodGuideMap": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": { "$ref": "#/components/schemas/FoodGuideMap" }
+          },
+          "meta": { "$ref": "#/components/schemas/PageMeta" }
+        },
+        "required": ["items", "meta"]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "message": { "type": "string" },
+          "code": { "type": "string" },
+          "details": { "type": "object", "additionalProperties": true }
+        },
+        "required": ["message"]
+      }
+    },
+    "parameters": {
+      "page": {
+        "name": "page",
+        "in": "query",
+        "schema": { "type": "integer", "default": 1, "minimum": 1 }
+      },
+      "limit": {
+        "name": "limit",
+        "in": "query",
+        "schema": {
+          "type": "integer",
+          "default": 20,
+          "minimum": 1,
+          "maximum": 100
+        }
+      },
+      "sort": {
+        "name": "sort",
+        "in": "query",
+        "schema": { "type": "string" },
+        "description": "Field to sort by"
+      },
+      "order": {
+        "name": "order",
+        "in": "query",
+        "schema": {
+          "type": "string",
+          "enum": ["asc", "desc"],
+          "default": "asc"
+        }
+      },
+      "q": {
+        "name": "q",
+        "in": "query",
+        "schema": { "type": "string" },
+        "description": "Search query"
+      },
+
+      "guideline_id": {
+        "name": "guideline_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "ingredient_id": {
+        "name": "ingredient_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "recipe_id": {
+        "name": "recipe_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "recipe_ingredient_id": {
+        "name": "recipe_ingredient_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+
+      "filter_age_group": {
+        "name": "age_group",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_min_age": {
+        "name": "min_age",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+      "filter_max_age": {
+        "name": "max_age",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+
+      "filter_recipe_type": {
+        "name": "recipe_type",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_cuisine_type": {
+        "name": "cuisine_type",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_dietary_preferences": {
+        "name": "dietary_preferences",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+
+      "filter_ingredient_category": {
+        "name": "category",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+
+      "filter_age_group_id": {
+        "name": "age_group_id",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+      "filter_gender": {
+        "name": "gender",
+        "in": "query",
+        "schema": { "type": "string", "enum": ["M", "F"] }
+      },
+      "filter_category": {
+        "name": "category",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_code": {
+        "name": "code",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_age_range_id": {
+        "name": "age_range_id",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+      "filter_nutrient_id": {
+        "name": "nutrient_id",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+      "filter_type": {
+        "name": "type",
+        "in": "query",
+        "schema": { "type": "string", "enum": ["AI", "RDI", "EAR", "UL"] }
+      },
+      "filter_food_group_id": {
+        "name": "food_group_id",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+      "filter_classification": {
+        "name": "classification",
+        "in": "query",
+        "schema": { "type": "string" }
+      },
+      "filter_food_id": {
+        "name": "food_id",
+        "in": "query",
+        "schema": { "type": "integer" }
+      },
+
+      "child_id": {
+        "name": "child_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "age_group_id": {
+        "name": "age_group_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "age_range_id": {
+        "name": "age_range_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "nutrient_id": {
+        "name": "nutrient_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "requirement_id": {
+        "name": "requirement_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "food_group_id": {
+        "name": "food_group_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "food_req_id": {
+        "name": "food_req_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "food_id": {
+        "name": "food_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "comp_id": {
+        "name": "comp_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+      "food_guide_map_id": {
+        "name": "food_guide_map_id",
+        "in": "path",
+        "required": true,
+        "schema": { "type": "integer" }
+      },
+
+      "IfMatch": {
+        "name": "If-Match",
+        "in": "header",
+        "schema": { "type": "string" }
+      }
+    },
+    "headers": {
+      "RateLimit-Limit": {
+        "description": "The maximum number of requests allowed in the time window",
+        "schema": { "type": "integer" }
+      },
+      "RateLimit-Remaining": {
+        "description": "The number of requests left in the current window",
+        "schema": { "type": "integer" }
+      },
+      "RateLimit-Reset": {
+        "description": "Seconds until the rate limit resets",
+        "schema": { "type": "integer" }
+      }
+    },
+    "responses": {
+      "default": {
+        "description": "Error",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Resource not found",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "ValidationError": {
+        "description": "Validation failed",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "Conflict": {
+        "description": "Conflict (duplicate resource)",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      },
+      "PreconditionFailed": {
+        "description": "ETag precondition failed",
+        "content": {
+          "application/json": {
+            "schema": { "$ref": "#/components/schemas/Error" }
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}

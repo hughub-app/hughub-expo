@@ -1,28 +1,18 @@
-import { makeCrud } from '../crud';
-import type { paths, components } from '@/generated/api';
+import { makeReadResource } from "../crud";
+import type { paths, components } from "@/generated/api";
 
-export type Ingredient = components['schemas']['Ingredient'];
-export type IngredientCreate = components['schemas']['IngredientCreate'];
-export type IngredientUpdate = components['schemas']['IngredientUpdate'];
-export type Paginated_Ingredient = components['schemas']['Paginated_Ingredient'];
+export type Ingredient = components["schemas"]["Ingredient"];
+export type IngredientList = Ingredient[];
 export type IngredientsQuery =
-  paths['/ingredients']['get']['parameters']['query']; // typed query
+  paths["/recipes/ingredients"]["get"]["parameters"]["query"];
 
-const crud = makeCrud<
+const ro = makeReadResource<
   Ingredient,
-  IngredientCreate,
-  IngredientUpdate,
-  Paginated_Ingredient,
+  IngredientList,
   IngredientsQuery,
   number
 >({
-  basePath: '/ingredients',
-  byIdPath: '/ingredients/{ingredient_id}',
-  idParam: 'ingredient_id',
+  basePath: "/recipes/ingredients",
 });
 
-export const listIngredients = crud.list;
-export const createIngredient = crud.create;
-export const getIngredient = crud.get;
-export const updateIngredient = crud.update;
-export const deleteIngredient = crud.remove;
+export const listIngredients = ro.list;
