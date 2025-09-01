@@ -1,6 +1,6 @@
 import { View, SafeAreaView, ScrollView } from "react-native";
-import React from "react";
-import { useLocalSearchParams } from "expo-router";
+import React, { useState } from "react";
+import { router, useLocalSearchParams } from "expo-router";
 import { mockRecipes } from "@/mocks/mockRecipes";
 import PageContainer from "@/components/PageContainer";
 import { Text } from "@/components/ui/text";
@@ -20,6 +20,8 @@ import NutritionRings from "@/components/diets/NutritionRings";
 import { mockChildren } from "@/mocks/mockChildren";
 import NutritionLabels from "@/components/diets/NutritionLabels";
 import { Button } from "@/components/ui/button";
+import ConfirmDialog from "@/components/ConfirmDialog";
+import { SuccessDialog } from "@/components/SuccessDialog";
 
 export default function RecipePage() {
   const { child_id, recipe_id } = useLocalSearchParams<{
@@ -164,8 +166,24 @@ export default function RecipePage() {
   // console.log('Today Intakes:', todayIntakes);
   // console.log('Projections:', projections);
 
+  const [hasConfirmed, setHasConfirmed] = useState(false);
+
+  function handleConfirm() {
+    setHasConfirmed(true);
+  }
+
   return (
     <SafeAreaView className="flex-1">
+      <SuccessDialog
+        open={hasConfirmed}
+        onOpenChange={setHasConfirmed}
+        title="Awesome!"
+        description={`${child.name} has been fed!`}
+        buttonText="Yay!"
+        onConfirm={() => {
+          router.replace(`/(tabs)/diet/${child.child_id}`);
+        }}
+      />
       <ScrollView>
         <PageContainer>
           <BackButton fallbackUrl={`/(tabs)/diet/${child_id}/feed`} />
@@ -225,14 +243,28 @@ export default function RecipePage() {
                 )}
                 <NutritionLabels />
               </View>
-              <Button className="hidden md:flex mt-8">
-                <Text>Looks good!</Text>
-              </Button>
+              <ConfirmDialog
+                description={`Do you want to feed ${recipe.recipe_name} to ${child.name}?`}
+                confirmText="Yup!"
+                cancelText="Cancel"
+                onConfirm={handleConfirm}
+              >
+                <Button className="hidden md:flex mt-8">
+                  <Text>Looks good!</Text>
+                </Button>
+              </ConfirmDialog>
             </View>
           </View>
-          <Button className="md:hidden">
-            <Text>Looks good!</Text>
-          </Button>
+          <ConfirmDialog
+            description={`Do you want to feed ${recipe.recipe_name} to ${child.name}?`}
+            confirmText="Yup!"
+            cancelText="Cancel"
+            onConfirm={handleConfirm}
+          >
+            <Button className="md:hidden">
+              <Text>Looks good!</Text>
+            </Button>
+          </ConfirmDialog>
         </PageContainer>
       </ScrollView>
     </SafeAreaView>
