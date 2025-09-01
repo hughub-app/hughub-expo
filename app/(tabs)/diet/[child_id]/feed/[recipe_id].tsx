@@ -23,6 +23,7 @@ import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import { Ingredient } from "@/lib/api/endpoints/ingredients";
+import { PageHead } from "@/components/PageHead";
 
 export default function RecipePage() {
   const { child_id, recipe_id } = useLocalSearchParams<{
@@ -203,6 +204,10 @@ export default function RecipePage() {
 
   return (
     <SafeAreaView className="flex-1">
+      <PageHead
+        title={`${recipe.recipe_name} for ${child.name}`}
+        description={`Feed ${child.name} the recipe ${recipe.recipe_name}`}
+      />
       <SuccessDialog
         open={hasConfirmed}
         onOpenChange={setHasConfirmed}
