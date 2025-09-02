@@ -24,7 +24,7 @@ type IngredientCardProps = {
   units?: string[];
   onSkip?: (ingredientId: number) => void;
   onRestore?: (ingredientId: number) => void;
-  onSelectAlternative: (newIngredientId: number) => void;
+  onSelectAlternative: (newIngredient: Ingredient) => void;
   onChangeAmount: (ingredientId: number, amount: number) => void;
   skipped?: boolean;
 };
@@ -85,7 +85,7 @@ export default function IngredientCard({ ingredient, grams, units, onSkip, onSel
           ingredient={ingredient}
           onSelectIngredient={onSelectAlternative}
         >
-          <Button onPress={() => onSelectAlternative?.(ingredient.ingredient_id)} disabled={skipped}>
+          <Button onPress={() => onSelectAlternative?.(ingredient)} disabled={skipped}>
             <ArrowLeftRight className="text-white" />
             <Text>Find Alternative</Text>
           </Button>

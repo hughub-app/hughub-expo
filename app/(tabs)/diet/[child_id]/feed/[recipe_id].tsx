@@ -1,7 +1,7 @@
 import { View, SafeAreaView, ScrollView } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
-import { mockRecipes } from "@/mocks/mockRecipes";
+// import { mockRecipes } from "@/mocks/mockRecipes";
 import PageContainer from "@/components/PageContainer";
 import { Text } from "@/components/ui/text";
 import BackButton from "@/components/BackButton";
@@ -11,8 +11,8 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { mockRecipeIngredients } from "@/mocks/mockRecipeIngredients";
-import { mockIngredients } from "@/mocks/mockIngredients";
+// import { mockRecipeIngredients } from "@/mocks/mockRecipeIngredients";
+// import { mockIngredients } from "@/mocks/mockIngredients";
 import IngredientCard from "@/components/feed/IngredientCard";
 import { CategoryType, IngredientType } from "@/types";
 import { capitalCase } from "change-case";
@@ -22,8 +22,14 @@ import NutritionLabels from "@/components/diets/NutritionLabels";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
 import { SuccessDialog } from "@/components/SuccessDialog";
-import { Ingredient } from "@/lib/api/endpoints/ingredients";
+import { Ingredient, listIngredients } from "@/lib/api/endpoints/ingredients";
 import { PageHead } from "@/components/PageHead";
+import { listRecipes, Recipe } from "@/lib/api/endpoints/recipes";
+import HHSpinner from "@/components/HHSpinner";
+import {
+  listRecipeIngredients,
+  RecipeIngredient,
+} from "@/lib/api/endpoints/recipeIngredients";
 
 export default function RecipePage() {
   const { child_id, recipe_id } = useLocalSearchParams<{
@@ -31,10 +37,73 @@ export default function RecipePage() {
     child_id: string;
   }>();
 
-  const recipe = mockRecipes.find((r) => r.recipe_id === Number(recipe_id));
+  const [loadingRecipe, setLoadingRecipe] = useState<boolean>(false);
+  const [recipe, setRecipe] = useState<Recipe | undefined>(undefined);
+  const [ingredients, setIngredients] = useState<Ingredient[]>([]);
+  const [recipeIngredients, setRecipeIngredients] = useState<
+    RecipeIngredient[]
+  >([]);
+
+  const [hasConfirmed, setHasConfirmed] = useState(false);
+
+  // const recipe = mockRecipes.find((r) => r.recipe_id === Number(recipe_id));
+
+  const ingredientsWithGrams = ingredients.map((ing) => ({
+    ingredient: ing,
+    grams:
+      recipeIngredients.find((ri) => ri.ingredient_id === ing.ingredient_id)
+        ?.grams || 0,
+    skipped: false,
+  }));
+
+  console.log(ingredientsWithGrams)
+
+  const [menuIngredients, setMenuIngredients] =
+    React.useState<typeof ingredientsWithGrams>([]);
+
+  useEffect(() => {
+    setMenuIngredients(ingredientsWithGrams);
+  }, [ingredients, recipeIngredients]);
+
   const child = mockChildren.find((c) => c.child_id === Number(child_id));
 
-  if (!recipe || !child) {
+  useEffect(() => {
+    setLoadingRecipe(true);
+    listRecipes({
+      ids: recipe_id,
+    })
+      .then((res) => {
+        setRecipe(res[0]);
+      })
+      .finally(() => {
+        setLoadingRecipe(false);
+      });
+    listRecipeIngredients({
+      recipe_id,
+    }).then((res) => {
+      setRecipeIngredients(res);
+      const ingredientIds = res.map((ri) => ri.ingredient_id).join(",");
+      listIngredients({
+        ids: ingredientIds,
+      }).then((res) => {
+        setIngredients(res);
+      });
+    });
+  }, [recipe_id]);
+
+  if (loadingRecipe) {
+    return <HHSpinner />;
+  }
+
+  if (!child) {
+    return (
+      <View>
+        <Text>Child not found</Text>
+      </View>
+    );
+  }
+
+  if (!recipe) {
     return (
       <View>
         <Text>Recipe not found</Text>
@@ -44,23 +113,7 @@ export default function RecipePage() {
 
   const todayIntakes = child.todayIntakes;
 
-  const steps = recipe.cooking_steps ? recipe.cooking_steps.split("\n") : [];
-  const recipeIngredients = mockRecipeIngredients.filter(
-    (ri) => ri.recipe_id === recipe.recipe_id
-  );
-  const ingredients = mockIngredients.filter((ing) =>
-    recipeIngredients.some((ri) => ri.ingredient_id === ing.ingredient_id)
-  );
-  const ingredientsWithGrams = ingredients.map((ing) => ({
-    ingredient: ing,
-    grams:
-      recipeIngredients.find((ri) => ri.ingredient_id === ing.ingredient_id)
-        ?.grams || 0,
-    skipped: false
-  }));
-
-  const [menuIngredients, setMenuIngredients] =
-    React.useState<typeof ingredientsWithGrams>(ingredientsWithGrams);
+  const steps = recipe?.cooking_steps ? recipe.cooking_steps.split(/(?=\d+\.\s*)/) : [];
 
   function handleChangeAmount(ingredientId: number, amount: number) {
     setMenuIngredients((prev) =>
@@ -78,11 +131,11 @@ export default function RecipePage() {
         .filter(
           (ig) =>
             ig.ingredient.category ===
-            IngredientType[
-              capitalCase(
-                category as unknown as keyof typeof IngredientType
-              ) as keyof typeof IngredientType
-            ] && !ig.skipped
+              IngredientType[
+                capitalCase(
+                  category as unknown as keyof typeof IngredientType
+                ) as keyof typeof IngredientType
+              ] && !ig.skipped
         )
         .reduce((sum, ig) => sum + ig.grams, 0);
       return acc;
@@ -96,11 +149,11 @@ export default function RecipePage() {
         .filter(
           (ig) =>
             ig.ingredient.category ===
-            IngredientType[
-              capitalCase(
-                category as unknown as keyof typeof IngredientType
-              ) as keyof typeof IngredientType
-            ] && !ig.skipped
+              IngredientType[
+                capitalCase(
+                  category as unknown as keyof typeof IngredientType
+                ) as keyof typeof IngredientType
+              ] && !ig.skipped
         )
         .reduce((sum, ig) => sum + ig.grams, 0);
       return acc;
@@ -162,9 +215,6 @@ export default function RecipePage() {
 
   // console.log('Today Intakes:', todayIntakes);
   // console.log('Projections:', projections);
-
-  const [hasConfirmed, setHasConfirmed] = useState(false);
-
   function handleConfirm() {
     setHasConfirmed(true);
   }
@@ -189,8 +239,10 @@ export default function RecipePage() {
     );
   }
 
-  function handleSelectAlternative(oldIngredientId: number, newIngredientId: number) {
-    const newIngredient = mockIngredients.find((i) => i.ingredient_id === newIngredientId);
+  function handleSelectAlternative(
+    oldIngredientId: number,
+    newIngredient: Ingredient
+  ) {
     if (newIngredient) {
       setMenuIngredients((prev) =>
         prev.map((ing) =>
@@ -239,7 +291,7 @@ export default function RecipePage() {
                     </View>
                   </AccordionContent>
                 </AccordionItem>
-                <AccordionItem value="ingredients" op>
+                <AccordionItem value="ingredients">
                   <AccordionTrigger>
                     <Text className="!text-xl font-bold mb-4">Ingredients</Text>
                   </AccordionTrigger>
@@ -253,7 +305,12 @@ export default function RecipePage() {
                           // onSkip={handleSkip}
                           // onFindAlternative={handleFindAlternative}
                           onChangeAmount={handleChangeAmount}
-                          onSelectAlternative={(newIngredientId) => handleSelectAlternative(mi.ingredient.ingredient_id, newIngredientId)}
+                          onSelectAlternative={(newIngredientId) =>
+                            handleSelectAlternative(
+                              mi.ingredient.ingredient_id,
+                              newIngredientId
+                            )
+                          }
                           onSkip={handleSkip}
                           onRestore={handleRestore}
                           skipped={mi.skipped}

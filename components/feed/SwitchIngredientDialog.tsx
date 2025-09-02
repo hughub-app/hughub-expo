@@ -11,7 +11,7 @@ import SwitchIngredientForm from "./SwitchIngredientForm";
 import { Ingredient } from "@/lib/api/endpoints/ingredients";
 
 type SwitchIngredientDialogProps = {
-  onSelectIngredient?: (ingredientId: number) => void;
+  onSelectIngredient?: (ingredient: Ingredient) => void;
   ingredient: Ingredient;
   children: React.ReactNode;
 };

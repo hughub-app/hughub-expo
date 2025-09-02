@@ -6,7 +6,7 @@ import { mockIngredients } from "@/mocks/mockIngredients";
 import { Ingredient } from "@/lib/api/endpoints/ingredients";
 
 type SwitchIngredientFormProps = {
-  onSelectIngredient?: (ingredientId: number) => void;
+  onSelectIngredient?: (ingredient: Ingredient) => void;
   ingredientId: number;
 };
 
@@ -25,7 +25,7 @@ export default function SwitchIngredientForm({
   ).slice(0, 9);
 
   function handleToggleIngredient(ingredient: Ingredient) {
-    onSelectIngredient?.(ingredient.ingredient_id)
+    onSelectIngredient?.(ingredient)
   }
 
   return (

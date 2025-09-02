@@ -109,7 +109,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Ingredient IDs to filter (CSV), e.g. ids=1,2,5 */
-                    ids?: number[];
+                    ids?: string;
                     /** @description Category name to filter */
                     category?: string;
                     /** @description Ingredient name (partial match) to filter */
