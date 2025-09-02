@@ -35,7 +35,7 @@ export const SwitchIngredientDialog: React.FC<SwitchIngredientDialogProps> = ({
         </DialogHeader>
         <SwitchIngredientForm
           onSelectIngredient={onSelectIngredient}
-          ingredientId={ingredient.ingredient_id}
+          oldIngredient={ingredient}
         />
       </DialogContent>
     </Dialog>
