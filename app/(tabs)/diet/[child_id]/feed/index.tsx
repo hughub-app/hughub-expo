@@ -1,5 +1,5 @@
 import { ScrollView, View } from "react-native";
-import React, { useMemo, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -14,15 +14,14 @@ import {
   SelectItem,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import ConfirmFeedModal from "@/components/feed/ConfirmFeedModal";
 import { SuccessDialog } from "@/components/SuccessDialog";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
-import { mockRecipes } from "@/mocks/mockRecipes";
 import RecipeCard from "@/components/menus/RecipeCard";
-import { Ingredient } from "@/lib/api/endpoints/ingredients";
-import { mockIngredients } from "@/mocks/mockIngredients";
+import { listRecipes, Recipe } from "@/lib/api/endpoints/recipes";
+import { Input } from "@/components/ui/input";
+import HHSpinner from "@/components/HHSpinner";
 
 type Params = { child_id?: string | string[] };
 
@@ -55,31 +54,24 @@ export default function Feed() {
     );
   }
 
-  const [ingredients, setIngredients] = useState<Ingredient[]>(
-    mockIngredients.slice(0, 2)
-  );
-
-  const [isAddingIngredients, setIsAddingIngredients] = useState(false);
-  const [isConfirming, setIsConfirming] = useState(false);
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
-  function handleAddIngredientIds(ingredientIds: string[]) {
-    setIngredients([
-      ...mockIngredients.filter((i) => ingredientIds.includes(i.ingredient_id.toString())),
-    ]);
-  }
+  const [loading, setIsLoading] = useState(false);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [searchTerm, setSearchTerm] = React.useState("");
 
-  function handleConfirm() {
-    setIsConfirming(true);
-  }
-
-  function handleFinalConfirm() {
-    setIsConfirming(false);
-    setHasConfirmed(true);
-  }
-
-  const allRecipes = mockRecipes;
-  const recipes = allRecipes;
+  useEffect(() => {
+    setIsLoading(true);
+    listRecipes({
+      recipe_name: searchTerm || undefined,
+    })
+      .then((res) => {
+        setRecipes(res);
+      })
+      .finally(() => {
+        setIsLoading(false);
+      });
+  }, [searchTerm]);
 
   return (
     <>
@@ -97,46 +89,55 @@ export default function Feed() {
           router.replace(`/(tabs)/diet/${child.child_id}`);
         }}
       />
-      <ConfirmFeedModal
+      {/* <ConfirmFeedModal
         child={child}
         visible={isConfirming}
         onClose={() => setIsConfirming(false)}
         onConfirm={handleFinalConfirm}
         ingredients={ingredients}
         childIntake={child.todayIntakes}
-      />
+      /> */}
       <SafeAreaView className="flex-1">
         <ScrollView>
           <PageContainer>
             <BackButton fallbackUrl={`/(tabs)/diet/${child.child_id}`} />
             <Text className="!text-3xl font-bold">Feed {child.name}</Text>
-            <Select className="mt-4">
-              <SelectTrigger className="!w-full">
-                <SelectValue placeholder="Select meal type" />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectGroup>
-                  <SelectLabel>Meal Type</SelectLabel>
-                  <SelectItem label="Breakfast" value="breakfast" />
-                  <SelectItem label="Lunch" value="lunch" />
-                  <SelectItem label="Dinner" value="dinner" />
-                </SelectGroup>
-              </SelectContent>
-            </Select>
-            <View className="mt-4">
-              <View className="grid md:grid-cols-2 gap-2 mb-4">
-                {recipes.map((recipe) => (
-                  <Link
-                    href={`/diet/${child.child_id}/feed/${recipe.recipe_id}`}
-                  >
-                    <RecipeCard key={recipe.recipe_id} recipe={recipe} />
-                  </Link>
-                ))}
-              </View>
+            <View className="grid md:grid-cols-2 gap-2 mt-4">
+              <Select>
+                <SelectTrigger className="!w-full">
+                  <SelectValue placeholder="Select meal type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    <SelectLabel>Meal Type</SelectLabel>
+                    <SelectItem label="Breakfast" value="breakfast" />
+                    <SelectItem label="Lunch" value="lunch" />
+                    <SelectItem label="Dinner" value="dinner" />
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              <Input
+                placeholder="Search recipe"
+                value={searchTerm}
+                onChangeText={setSearchTerm}
+              />
             </View>
-            <Link
-              href={`/diet/${child.child_id}/feed/custom`}
-            >
+            <View className="mt-4">
+              {loading ? (
+                <HHSpinner />
+              ) : (
+                <View className="grid md:grid-cols-2 gap-2 mb-4">
+                  {recipes.map((recipe) => (
+                    <Link
+                      href={`/diet/${child.child_id}/feed/${recipe.recipe_id}`}
+                    >
+                      <RecipeCard key={recipe.recipe_id} recipe={recipe} />
+                    </Link>
+                  ))}
+                </View>
+              )}
+            </View>
+            <Link href={`/diet/${child.child_id}/feed/custom`}>
               <Button className="mt-4">
                 <Text>Add New Recipe</Text>
               </Button>

@@ -12,7 +12,7 @@ const ro = makeReadResource<
   RecipesQuery,
   number
 >({
-  basePath: "/recipes/ingredients",
+  basePath: "/recipes/",
 });
 
 export const listRecipes = ro.list;
