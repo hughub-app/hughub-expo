@@ -11,16 +11,30 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RingChart } from "@/components/charts/RingChart";
 import Emoji from "@/components/emoji";
+import { useMoodStore } from "@/hooks/useMoodStore";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
 import { mockChildren } from "@/mocks/mockChildren";
+import NutritionRings from "@/components/diets/NutritionRings";
+import NutritionLabels from "@/components/diets/NutritionLabels";
 
 export default function ChildScreen() {
   const { child_id } = useLocalSearchParams<{ child_id: string }>();
   const router = useRouter();
 
   const child = mockChildren.find((c) => c.child_id === Number(child_id));
+
+  if (!child) {
+    return (
+      <View>
+        <Text>Recipe not found</Text>
+      </View>
+    )
+  }
+
+  const todayIntakes = child.todayIntakes;
+
 
   // mock mood data for past week
   const mockMoodData = [
@@ -32,6 +46,8 @@ export default function ChildScreen() {
     { x: 6, y: 4 },
     { x: 7, y: 3 },
   ];
+
+  const currentEmoji = useMoodStore((s) => s.currentEmoji);
 
   return (
     <SafeAreaView className="flex-1">
@@ -47,43 +63,49 @@ export default function ChildScreen() {
             </CardHeader>
             <CardContent>
               {/* Monthly Mood Overview LineChart*/}
+              <View className="">
               <LineChart
                 data={mockMoodData}
                 title="Monthly Mood Overview"
                 color="#00D4AA"
+                height={280}
               />
+              </View>
 
               {/* Mood Static Card */}
               <View className="flex-row space-x-6 top-6">
                 {/* Weekly Average Card */}
-                <Card className="flex-1 mr-2 items-center">
-                  <View className="flex-row justify-center align-middle h-fit">
-                    <Emoji type="laugh" />
-                    <View>
-                      <CardHeader>
-                        <CardTitle className="text-3xl">
-                          Weekly Average
-                        </CardTitle>
+                <Card className="flex-1 mr-2">
+                  <View className="flex-row items-center p-4">
+                    <View className="mr-4">
+                      <Emoji type={currentEmoji} size={40} />
+                    </View>
+                    <View className="flex-1">
+                      <CardHeader className="p-0">
+                        <CardTitle className="text-3xl">Weekly Average</CardTitle>
                       </CardHeader>
-                      <CardContent>
-                        <Text className="text-lg text-gray-800">
-                          Average Mood: 3.5/5
-                        </Text>
+                      <CardContent className="p-0 pt-2">
+                        <Text className="text-lg text-gray-800">Average Mood: 3.5/5</Text>
                       </CardContent>
                     </View>
                   </View>
                 </Card>
                 {/* Lastest Mood */}
-                <Card className="flex-1 ml-2 items-center">
-                  <CardHeader>
-                    <CardTitle className="text-3xl">Latest Mood</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Text className="text-lg text-gray-800">Mood: 4/5</Text>
-                    <Text className="text-sm text-gray-500 mt-1">
-                      Recorded on: 2024-06-20
-                    </Text>
-                  </CardContent>
+                <Card className="flex-1 ml-2">
+                  <View className="flex-row items-center p-4">
+                    <View className="mr-4">
+                      <Emoji type={currentEmoji} size={40} />
+                    </View>
+                    <View className="flex-1">
+                      <CardHeader className="p-0">
+                        <CardTitle className="text-3xl">Latest Mood</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0 pt-2">
+                        <Text className="text-lg text-gray-800">Mood: 4/5</Text>
+                        <Text className="text-sm text-gray-500 mt-1">Recorded on: 2024-06-20</Text>
+                      </CardContent>
+                    </View>
+                  </View>
                 </Card>
               </View>
 
@@ -139,13 +161,23 @@ export default function ChildScreen() {
               <Text className="mt-4 ml-2 text-xl font-bold text-gray-800 mb-2">
                 Today's Intakes
               </Text>
-              <RingChart
-                progress={0.75}
-                color="#FF8C00"
-                size={200}
-                strokeWidth={20}
-                title="Macronutrient Distribution"
-              />
+              <View className="mt-20 order-1 md:order-2">
+                <View className="flex-row justify-center gap-4 ">
+                  {todayIntakes && (
+                    <NutritionRings
+                      values={todayIntakes}
+                      target={{
+                        vegetable: 6,
+                        protein: 5,
+                        fruit: 6,
+                        grain: 4,
+                        dairy: 4,
+                      }}
+                    />
+                  )}
+                  <NutritionLabels />
+                </View>
+              </View>
 
               <Button
                 onPress={() => {
