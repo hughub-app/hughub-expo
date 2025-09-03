@@ -2,7 +2,6 @@
 import { api, withAuth } from "./client";
 import type { components } from "@/generated/api";
 import { Toast } from "toastify-react-native";
-import { router } from "expo-router";
 
 /* ============================= Types & helpers ============================= */
 
@@ -61,8 +60,6 @@ async function notifyHttpError(resp: Response, opts?: HandleErrorOpts) {
 }
 
 function notifyNetworkError(e: unknown) {
-  console.log("YHOO Error:", e);
-  
   // Prefer a generic message consistent with your Axios interceptor
   Toast.error("Network error. Please check your connection or server address.");
 }
