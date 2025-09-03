@@ -19,7 +19,7 @@ import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
 import RecipeCard from "@/components/menus/RecipeCard";
-import { listRecipes, Recipe } from "@/lib/api/endpoints/recipes";
+import { listRecipes, Recipe, RecipeType } from "@/lib/api/endpoints/recipes";
 import { Input } from "@/components/ui/input";
 import HHSpinner from "@/components/HHSpinner";
 
@@ -59,11 +59,13 @@ export default function Feed() {
   const [loading, setIsLoading] = useState(false);
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [searchTerm, setSearchTerm] = React.useState("");
+  const [recipeType, setRecipeType] = React.useState<RecipeType | undefined>(undefined);
 
   useEffect(() => {
     setIsLoading(true);
     listRecipes({
       recipe_name: searchTerm || undefined,
+      recipe_type: recipeType || undefined,
     })
       .then((res) => {
         setRecipes(res);
@@ -71,7 +73,9 @@ export default function Feed() {
       .finally(() => {
         setIsLoading(false);
       });
-  }, [searchTerm]);
+  }, [searchTerm, recipeType]);
+
+  const recipeTypes = Object.values(RecipeType);
 
   return (
     <>
@@ -103,16 +107,18 @@ export default function Feed() {
             <BackButton fallbackUrl={`/(tabs)/diet/${child.child_id}`} />
             <Text className="!text-3xl font-bold">Feed {child.name}</Text>
             <View className="grid md:grid-cols-2 gap-2 mt-4">
-              <Select>
+              <Select onValueChange={(v) => setRecipeType(v?.value as RecipeType)}>
                 <SelectTrigger className="!w-full">
                   <SelectValue placeholder="Select meal type" />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectGroup>
                     <SelectLabel>Meal Type</SelectLabel>
-                    <SelectItem label="Breakfast" value="breakfast" />
-                    <SelectItem label="Lunch" value="lunch" />
-                    <SelectItem label="Dinner" value="dinner" />
+                    {
+                      recipeTypes.map((type) => (
+                        <SelectItem key={type} label={type} value={type} />
+                      ))
+                    }
                   </SelectGroup>
                 </SelectContent>
               </Select>
