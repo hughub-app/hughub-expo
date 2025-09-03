@@ -23,6 +23,7 @@
     "@rn-primitives/accordion": "^1.2.0",
     "@rn-primitives/dialog": "^1.2.0",
     "@rn-primitives/portal": "^1.3.0",
+    "@rn-primitives/radio-group": "^1.2.0",
     "@rn-primitives/select": "^1.2.0",
     "@rn-primitives/slot": "^1.2.0",
     "@rn-primitives/tooltip": "^1.2.0",

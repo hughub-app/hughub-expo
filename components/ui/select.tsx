@@ -83,12 +83,15 @@ function SelectContent({
   return (
     <SelectPrimitive.Portal hostName={portalHost}>
       <FullWindowOverlay>
-        <SelectPrimitive.Overlay style={Platform.select({ native: StyleSheet.absoluteFill })}>
+        <SelectPrimitive.Overlay
+          style={Platform.select({ native: StyleSheet.absoluteFill })}
+          className="z-[60]"
+        >
           <TextClassContext.Provider value="text-popover-foreground">
-            <NativeOnlyAnimatedView className="z-50" entering={FadeIn} exiting={FadeOut}>
+            <NativeOnlyAnimatedView className="z-[60]" entering={FadeIn} exiting={FadeOut}>
               <SelectPrimitive.Content
                 className={cn(
-                  'bg-popover border-border relative z-50 min-w-[8rem] rounded-md border shadow-md shadow-black/5',
+                  'bg-popover border-border relative z-[60] min-w-[8rem] rounded-md border shadow-md shadow-black/5',
                   Platform.select({
                     web: cn(
                       'animate-in fade-in-0 zoom-in-95 origin-(--radix-select-content-transform-origin) max-h-52 overflow-y-auto overflow-x-hidden',
