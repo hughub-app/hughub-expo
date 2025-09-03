@@ -143,11 +143,11 @@ export default function Feed() {
                 </View>
               )}
             </View>
-            <Link href={`/diet/${child.child_id}/feed/custom`}>
+            {/* <Link href={`/diet/${child.child_id}/feed/custom`}>
               <Button className="mt-4">
                 <Text>Add New Recipe</Text>
               </Button>
-            </Link>
+            </Link> */}
           </PageContainer>
         </ScrollView>
       </SafeAreaView>
