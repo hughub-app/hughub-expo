@@ -6,6 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { getAge } from "@/lib/utils";
 import { ChildAvatar } from "./ChildAvatar";
 import { Calendar } from "lucide-react-native";
+import Emoji from "./emoji";
 
 export default function ChildCard({ child }: { child: Child }) {
   const age = getAge(new Date(child.date_of_birth));
@@ -25,12 +26,20 @@ export default function ChildCard({ child }: { child: Child }) {
       <CardContent>
         <View className="flex-row gap-4">
           <Card className="p-4 items-center flex-1 justify-center">
-            <Text className="!text-5xl mb-2">🥺</Text>
+            <Text className="!text-5xl mb-2">
+              <Emoji
+                type="smile"
+                size={52}
+              />
+            </Text>
             <Text>Last Mood</Text>
           </Card>
-          <Card className="p-4 items-center flex-1 justify-center">
+          <Card className="p-4 items-center flex-1 justify-center gap-2">
             <View className="flex-row gap-2 items-center">
-              <Text className="!text-5xl mb-2">🥺</Text>
+              <Emoji
+                type="frown"
+                size={52}
+              />
               <Text>40%</Text>
             </View>
             <Text className="text-center">Weekly Average Mood</Text>
