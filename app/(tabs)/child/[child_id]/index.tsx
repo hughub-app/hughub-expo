@@ -1,6 +1,6 @@
 // app/child/[child_id].tsx
 
-import React from "react";
+import React, { useEffect } from "react";
 import { View, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -21,15 +21,21 @@ import NutritionRings from "@/components/diets/NutritionRings";
 import NutritionLabels from "@/components/diets/NutritionLabels";
 
 export default function ChildScreen() {
-  const { child_id } = useLocalSearchParams<{ child_id: string }>();
+  const params = useLocalSearchParams();
+  const childIdParam = Array.isArray(params.child_id) ? params.child_id?.[0] : (params.child_id as string | undefined);
   const router = useRouter();
 
   // Persist provided id for later reuse across pages
-  usePersistChildId(typeof child_id === 'string' ? child_id : undefined);
+  usePersistChildId(typeof childIdParam === 'string' ? childIdParam : undefined);
 
-  const idNum = typeof child_id === 'string' ? Number(child_id) : NaN;
+  const idNum = typeof childIdParam === 'string' ? Number(childIdParam) : NaN;
   const { child, loading, error } = useChildById(Number.isFinite(idNum) ? idNum : null);
   const todayIntakes = child?.todayIntakes;
+
+  // Debug: verify the exact route param received and normalization
+  useEffect(() => {
+    console.log('Route child_id raw:', params.child_id, 'normalized:', childIdParam, 'numeric:', idNum);
+  }, [params.child_id]);
 
 
   // mock mood data for past week
@@ -163,7 +169,7 @@ export default function ChildScreen() {
                 onPress={() => {
                   router.push({
                     pathname: "/GetMood/[child_id]",
-                    params: { child_id },
+                    params: { child_id: String(childIdParam) },
                   });
                 }}
               >
@@ -203,7 +209,7 @@ export default function ChildScreen() {
                 onPress={() => {
                   router.push({
                     pathname: "/diet/[child_id]",
-                    params: { child_id },
+                    params: { child_id: String(childIdParam) },
                   });
                 }}
               >

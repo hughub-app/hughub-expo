@@ -162,6 +162,7 @@ export default function HomeScreen() {
             {children.map((child) => (
               <Link
                 key={child.child_id}
+                asChild
                 href={{
                   pathname: "/child/[child_id]",
                   params: { child_id: String(child.child_id) },
