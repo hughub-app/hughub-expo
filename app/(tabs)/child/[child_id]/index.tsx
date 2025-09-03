@@ -1,7 +1,7 @@
 // app/child/[child_id].tsx
 
 import React from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "@/components/ui/text";
@@ -15,7 +15,8 @@ import { useMoodStore } from "@/hooks/useMoodStore";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
-import { mockChildren } from "@/mocks/mockChildren";
+import { usePersistChildId } from "@/lib/hooks/usePersistChildId";
+import { useChildById } from "@/lib/hooks/useChildById";
 import NutritionRings from "@/components/diets/NutritionRings";
 import NutritionLabels from "@/components/diets/NutritionLabels";
 
@@ -23,17 +24,12 @@ export default function ChildScreen() {
   const { child_id } = useLocalSearchParams<{ child_id: string }>();
   const router = useRouter();
 
-  const child = mockChildren.find((c) => c.child_id === Number(child_id));
+  // Persist provided id for later reuse across pages
+  usePersistChildId(typeof child_id === 'string' ? child_id : undefined);
 
-  if (!child) {
-    return (
-      <View>
-        <Text>Recipe not found</Text>
-      </View>
-    )
-  }
-
-  const todayIntakes = child.todayIntakes;
+  const idNum = typeof child_id === 'string' ? Number(child_id) : NaN;
+  const { child, loading, error } = useChildById(Number.isFinite(idNum) ? idNum : null);
+  const todayIntakes = child?.todayIntakes;
 
 
   // mock mood data for past week
@@ -48,6 +44,30 @@ export default function ChildScreen() {
   ];
 
   const currentEmoji = useMoodStore((s) => s.currentEmoji);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  if (error && !child) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center">
+        <Text>{error}</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!child) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center">
+        <Text>Child not found.</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1">

@@ -21,11 +21,14 @@ import { getToken } from "@/lib/token";
 import { Toast } from "toastify-react-native";
 import { PortalHost } from "@rn-primitives/portal";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { useRouter } from "expo-router";
+
 
 export default function HomeScreen() {
   const [children, setChildren] = useState<Child[]>(mockChildren);
   const [submitting, setSubmitting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     (async () => {
@@ -145,10 +148,7 @@ export default function HomeScreen() {
 
   return (
     <SafeAreaView className="flex-1">
-      <PageHead
-        title="Home"
-        description="Welcome to HugHub!"
-      />
+      <PageHead title="Home" description="Welcome to HugHub!" />
       <ScrollView>
         <PageContainer>
           <Text className="text-3xl font-bold text-gray-900 mb-2">
@@ -159,15 +159,21 @@ export default function HomeScreen() {
           </Text>
 
           <View className="gap-4">
-            {children.map((child, cIdx) => (
-              <Link href={`/child/${child.child_id}`} key={cIdx}>
+            {children.map((child) => (
+              <Link
+                key={child.child_id}
+                href={{
+                  pathname: "/child/[child_id]",
+                  params: { child_id: String(child.child_id) },
+                }}
+              >
                 <ChildCard child={child} />
               </Link>
             ))}
           </View>
 
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-            <PortalHost name="dialog"/>
+            <PortalHost name="dialog" />
 
             <DialogTrigger asChild>
               <Button className="w-full mt-6">
@@ -194,7 +200,9 @@ export default function HomeScreen() {
                     className={nameError ? "border-red-500" : undefined}
                   />
                   {nameError ? (
-                    <Text className="text-red-500 text-sm mt-1">{nameError}</Text>
+                    <Text className="text-red-500 text-sm mt-1">
+                      {nameError}
+                    </Text>
                   ) : null}
                 </View>
                 <View>
@@ -210,7 +218,9 @@ export default function HomeScreen() {
                     className={dobError ? "border-red-500" : undefined}
                   />
                   {dobError ? (
-                    <Text className="text-red-500 text-sm mt-1">{dobError}</Text>
+                    <Text className="text-red-500 text-sm mt-1">
+                      {dobError}
+                    </Text>
                   ) : null}
                 </View>
                 <View>
@@ -226,7 +236,9 @@ export default function HomeScreen() {
                     className={mealsError ? "border-red-500" : undefined}
                   />
                   {mealsError ? (
-                    <Text className="text-red-500 text-sm mt-1">{mealsError}</Text>
+                    <Text className="text-red-500 text-sm mt-1">
+                      {mealsError}
+                    </Text>
                   ) : null}
                 </View>
                 <View>
@@ -250,7 +262,9 @@ export default function HomeScreen() {
                     </View>
                   </RadioGroup>
                   {genderError ? (
-                    <Text className="text-red-500 text-sm mt-1">{genderError}</Text>
+                    <Text className="text-red-500 text-sm mt-1">
+                      {genderError}
+                    </Text>
                   ) : null}
                 </View>
               </View>
