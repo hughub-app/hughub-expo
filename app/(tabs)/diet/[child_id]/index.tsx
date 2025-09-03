@@ -11,6 +11,7 @@ import { Button } from "@/components/ui/button";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
+import WeeklyIntakeSection from "@/components/feed/WeeklyIntakeSection";
 
 type Params = { child_id?: string | string[] };
 
@@ -77,12 +78,11 @@ export default function DietByChildPage() {
               />
               <NutritionLabels />
             </View>
-            <Text className="text-xl font-semibold">Child ID: {childId}</Text>
-
+            <WeeklyIntakeSection childId={childId} />
             {/* Replace with your real UI (FlatList of meals, etc.) */}
             <View className="rounded-2xl border border-neutral-200 p-4">
               <Text className="text-base text-neutral-700">
-                TODO: Show today’s meals, nutrients, and quick actions here.
+                TODO: Show today's meals, nutrients, and quick actions here.
               </Text>
             </View>
             <Link href={`/diet/${childId}/feed`} asChild>
