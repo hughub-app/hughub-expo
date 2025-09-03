@@ -38,6 +38,7 @@ export default function RecipePage() {
   }>();
 
   const [loadingRecipe, setLoadingRecipe] = useState<boolean>(false);
+  const [loadingIngredients, setLoadingIngredients] = useState<boolean>(false);
   const [recipe, setRecipe] = useState<Recipe | undefined>(undefined);
   const [ingredients, setIngredients] = useState<Ingredient[]>([]);
   const [recipeIngredients, setRecipeIngredients] = useState<
@@ -55,8 +56,6 @@ export default function RecipePage() {
         ?.grams || 0,
     skipped: false,
   }));
-
-  console.log(ingredientsWithGrams)
 
   const [menuIngredients, setMenuIngredients] =
     React.useState<typeof ingredientsWithGrams>([]);
@@ -78,6 +77,7 @@ export default function RecipePage() {
       .finally(() => {
         setLoadingRecipe(false);
       });
+    setLoadingIngredients(true);
     listRecipeIngredients({
       recipe_id,
     }).then((res) => {
@@ -87,6 +87,8 @@ export default function RecipePage() {
         ids: ingredientIds,
       }).then((res) => {
         setIngredients(res);
+      }).finally(() => {
+        setLoadingIngredients(false);
       });
     });
   }, [recipe_id]);
@@ -293,30 +295,40 @@ export default function RecipePage() {
                 </AccordionItem>
                 <AccordionItem value="ingredients">
                   <AccordionTrigger>
-                    <Text className="!text-xl font-bold mb-4">Ingredients</Text>
+                    {
+                      loadingIngredients ? (
+                        <HHSpinner/>
+                      ) : (
+                        <Text className="!text-xl font-bold mb-4">Ingredients</Text>
+                      )
+                    }
                   </AccordionTrigger>
                   <AccordionContent>
-                    <View className="gap-2">
-                      {menuIngredients.map((mi) => (
-                        <IngredientCard
-                          key={mi.ingredient.ingredient_id}
-                          ingredient={mi.ingredient}
-                          grams={mi.grams}
-                          // onSkip={handleSkip}
-                          // onFindAlternative={handleFindAlternative}
-                          onChangeAmount={handleChangeAmount}
-                          onSelectAlternative={(newIngredientId) =>
-                            handleSelectAlternative(
-                              mi.ingredient.ingredient_id,
-                              newIngredientId
-                            )
-                          }
-                          onSkip={handleSkip}
-                          onRestore={handleRestore}
-                          skipped={mi.skipped}
-                        />
-                      ))}
-                    </View>
+                    {
+                      !loadingIngredients && (
+                      <View className="gap-2">
+                        {menuIngredients.map((mi) => (
+                          <IngredientCard
+                            key={mi.ingredient.ingredient_id}
+                            ingredient={mi.ingredient}
+                            grams={mi.grams}
+                            // onSkip={handleSkip}
+                            // onFindAlternative={handleFindAlternative}
+                            onChangeAmount={handleChangeAmount}
+                            onSelectAlternative={(newIngredientId) =>
+                              handleSelectAlternative(
+                                mi.ingredient.ingredient_id,
+                                newIngredientId
+                              )
+                            }
+                            onSkip={handleSkip}
+                            onRestore={handleRestore}
+                            skipped={mi.skipped}
+                          />
+                        ))}
+                      </View>
+                      )
+                    }
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
