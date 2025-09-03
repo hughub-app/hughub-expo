@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { View, ScrollView } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Text } from "@/components/ui/text";
@@ -12,23 +12,39 @@ import ChildCard from "@/components/ChildCard";
 import { Link } from "expo-router";
 import PageContainer from "@/components/PageContainer";
 import { PageHead } from "@/components/PageHead";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogClose, DialogFooter } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 // removed Select dropdown for gender in favor of RadioGroup
 import { getAge } from "@/lib/utils";
+import { createChild, listChildren } from "@/lib/api/endpoints/children";
+import { getToken } from "@/lib/token";
+import { Toast } from "toastify-react-native";
 import { PortalHost } from "@rn-primitives/portal";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 export default function HomeScreen() {
   const [children, setChildren] = useState<Child[]>(mockChildren);
+  const [submitting, setSubmitting] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const items = await listChildren(undefined, { throwError: false });
+        if (Array.isArray(items) && items.length) setChildren(items as Child[]);
+      } catch {}
+    })();
+  }, []);
 
   // dialog state
   const [name, setName] = useState("");
   const [dob, setDob] = useState(""); // accepts YYYY-MM-DD or timestamp
   const [gender, setGender] = useState<"male" | "female" | "">("");
+  const [mealsPerDay, setMealsPerDay] = useState<string>("");
   const [nameError, setNameError] = useState<string>("");
   const [dobError, setDobError] = useState<string>("");
   const [genderError, setGenderError] = useState<string>("");
+  const [mealsError, setMealsError] = useState<string>("");
 
   const resetForm = () => {
     setName("");
@@ -37,6 +53,8 @@ export default function HomeScreen() {
     setNameError("");
     setDobError("");
     setGenderError("");
+    setMealsPerDay("");
+    setMealsError("");
   };
 
   const validateName = (value: string) => {
@@ -70,6 +88,15 @@ export default function HomeScreen() {
     return "";
   };
 
+  const validateMeals = (value: string) => {
+    if (!value.trim()) return "Meals per day is required";
+    const num = Number(value);
+    if (!isFinite(num)) return "Must be a number";
+    if (num === 0) return "Cannot be zero";
+    if (num < 0) return "Must be positive";
+    return "";
+  };
+
   const computeAgeRangeId = (birth: string) => {
     const d = new Date(isNaN(Number(birth)) ? birth : Number(birth));
     const age = getAge(d);
@@ -78,15 +105,17 @@ export default function HomeScreen() {
     return 3;
   };
 
-  const handleAddChild = () => {
+  const handleAddChild = async () => {
     // validate all fields
     const nErr = validateName(name);
     const dErr = validateDob(dob);
     const gErr = validateGender(gender);
+    const mErr = validateMeals(mealsPerDay);
     setNameError(nErr);
     setDobError(dErr);
     setGenderError(gErr);
-    if (nErr || dErr || gErr) return;
+    setMealsError(mErr);
+    if (nErr || dErr || gErr || mErr) return;
     const nextId = (children.reduce((m, c) => Math.max(m, c.child_id), 0) || 0) + 1;
     const isoDob = isNaN(Number(dob)) ? dob : new Date(Number(dob)).toISOString().slice(0, 10);
     const nowIso = new Date().toISOString();
@@ -95,16 +124,23 @@ export default function HomeScreen() {
       name,
       date_of_birth: isoDob,
       gender: gender === "male" ? "M" : "F",
-      age_range_id: computeAgeRangeId(isoDob),
-      height_cm: 0,
-      weight_kg: 0,
-      notes: null,
-      createdAt: nowIso,
-      updatedAt: nowIso,
-      todayIntakes: { vegetable: 0, protein: 0, fruit: 0, grain: 0, dairy: 0 },
+      meals_per_day: Number(mealsPerDay),
     };
-    setChildren((prev) => [...prev, newChild]);
-    resetForm();
+    try {
+      setSubmitting(true);
+      const token = await getToken();
+      const res = await createChild(newChild, { throwError: true, auth: { token: token || undefined } });
+      const created = res?.item ?? newChild; // fallback to local when API returns no body
+      setChildren((prev) => [...prev, created]);
+      Toast.success("Child added successfully");
+      resetForm();
+      setDialogOpen(false);
+    } catch (e) {
+      console.error(e);
+      Toast.error("Failed to add child. Please try again.");
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -130,7 +166,7 @@ export default function HomeScreen() {
             ))}
           </View>
 
-          <Dialog>
+          <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <PortalHost name="dialog"/>
 
             <DialogTrigger asChild>
@@ -178,6 +214,22 @@ export default function HomeScreen() {
                   ) : null}
                 </View>
                 <View>
+                  <Text className="mb-1">Meals per day</Text>
+                  <Input
+                    value={mealsPerDay}
+                    onChangeText={(v) => {
+                      setMealsPerDay(v);
+                      setMealsError(validateMeals(v));
+                    }}
+                    placeholder="e.g., 3"
+                    keyboardType="numeric"
+                    className={mealsError ? "border-red-500" : undefined}
+                  />
+                  {mealsError ? (
+                    <Text className="text-red-500 text-sm mt-1">{mealsError}</Text>
+                  ) : null}
+                </View>
+                <View>
                   <Text className="mb-1">Gender</Text>
                   <RadioGroup
                     value={gender || undefined}
@@ -203,14 +255,22 @@ export default function HomeScreen() {
                 </View>
               </View>
               <DialogFooter className="mt-4">
-                <DialogClose asChild>
-                  <Button
-                    onPress={handleAddChild}
-                    disabled={!name || !dob || !gender || !!nameError || !!dobError || !!genderError}
-                  >
-                    <Text>Confirm</Text>
-                  </Button>
-                </DialogClose>
+                <Button
+                  onPress={handleAddChild}
+                  disabled={
+                    submitting ||
+                    !name ||
+                    !dob ||
+                    !gender ||
+                    !mealsPerDay ||
+                    !!nameError ||
+                    !!dobError ||
+                    !!genderError ||
+                    !!mealsError
+                  }
+                >
+                  <Text>{submitting ? "Adding..." : "Confirm"}</Text>
+                </Button>
               </DialogFooter>
             </DialogContent>
           </Dialog>

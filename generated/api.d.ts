@@ -65,7 +65,7 @@ export interface paths {
                     ids?: string;
                     /** @description Filter by gender */
                     gender?: "M" | "F";
-                    /** @description Filter by age (min_age ≤ age ≤ max_age) */
+                    /** @description Filter by age (min_age �?age �?max_age) */
                     age?: number;
                 };
                 header?: never;
@@ -109,7 +109,7 @@ export interface paths {
             parameters: {
                 query?: {
                     /** @description Ingredient IDs to filter (CSV), e.g. ids=1,2,5 */
-                    ids?: string;
+                    ids?: number[];
                     /** @description Category name to filter */
                     category?: string;
                     /** @description Ingredient name (partial match) to filter */
@@ -628,7 +628,9 @@ export interface components {
             date_of_birth: string;
             /** @enum {string|null} */
             gender?: "M" | "F" | null;
-            /** @description FK → AgeRange (optional if computed) */
+            /** @description Meals per day, must be >= 1 */
+            meals_per_day?: number;
+            /** @description FK �?AgeRange (optional if computed) */
             age_range_id?: number | null;
             height_cm?: number | null;
             weight_kg?: number | null;

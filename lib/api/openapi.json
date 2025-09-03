@@ -5,9 +5,18 @@
     "version": "v1"
   },
   "tags": [
-    { "name": "recipes", "description": "Recipe Recommander API" },
-    { "name": "mood", "description": "Children Emotion API" },
-    { "name": "children", "description": "Children Info Management API" }
+    {
+      "name": "recipes",
+      "description": "Recipe Recommander API"
+    },
+    {
+      "name": "mood",
+      "description": "Children Emotion API"
+    },
+    {
+      "name": "children",
+      "description": "Children Info Management API"
+    }
   ],
   "paths": {
     "/recipes/recommend": {
@@ -21,7 +30,11 @@
             "in": "query",
             "required": false,
             "description": "Max items to return",
-            "schema": { "type": "integer", "minimum": 1, "default": 20 }
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "default": 20
+            }
           }
         ],
         "responses": {
@@ -29,15 +42,21 @@
             "description": "Recommended recipes",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Recipe" } }
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/recipes/dietary-guidelines": {
       "get": {
         "summary": "Get dietary guidelines with filters",
@@ -49,21 +68,29 @@
             "in": "query",
             "description": "Comma-separated guideline IDs, e.g., 1,2,3",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "gender",
             "in": "query",
             "description": "Filter by gender",
             "required": false,
-            "schema": { "type": "string", "enum": ["M", "F"] }
+            "schema": {
+              "type": "string",
+              "enum": ["M", "F"]
+            }
           },
           {
             "name": "age",
             "in": "query",
-            "description": "Filter by age (min_age ≤ age ≤ max_age)",
+            "description": "Filter by age (min_age �?age �?max_age)",
             "required": false,
-            "schema": { "type": "integer", "minimum": 0 }
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
           }
         ],
         "responses": {
@@ -71,15 +98,21 @@
             "description": "Dietary guidelines",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/DietaryGuideline" } }
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DietaryGuideline"
+                  }
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/recipes/ingredients": {
       "get": {
         "summary": "Get all ingredients with optional filters",
@@ -91,7 +124,12 @@
             "in": "query",
             "description": "Ingredient IDs to filter (CSV), e.g. ids=1,2,5",
             "required": false,
-            "schema": { "type": "array", "items": { "type": "integer" } },
+            "schema": {
+              "type": "array",
+              "items": {
+                "type": "integer"
+              }
+            },
             "style": "form",
             "explode": false
           },
@@ -99,14 +137,18 @@
             "name": "category",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "Category name to filter"
           },
           {
             "name": "ingredient_name",
             "in": "query",
             "required": false,
-            "schema": { "type": "string" },
+            "schema": {
+              "type": "string"
+            },
             "description": "Ingredient name (partial match) to filter"
           }
         ],
@@ -115,15 +157,21 @@
             "description": "Ingredients",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Ingredient" } }
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/recipes": {
       "get": {
         "summary": "Get recipes with optional filters",
@@ -135,35 +183,45 @@
             "in": "query",
             "description": "Comma-separated recipe IDs, e.g., 1,2,3",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "recipe_name",
             "in": "query",
             "description": "Filter recipes whose name ILIKE this string",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "recipe_type",
             "in": "query",
             "description": "Filter by recipe type",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "cuisine_type",
             "in": "query",
             "description": "Filter by cuisine type",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "dietary_preferences",
             "in": "query",
             "description": "Filter by dietary preferences",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -171,15 +229,21 @@
             "description": "Recipes",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Recipe" } }
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/recipes/recipe_ingredients": {
       "get": {
         "summary": "Get recipe ingredients with optional filters",
@@ -191,21 +255,27 @@
             "in": "query",
             "description": "Comma-separated recipe_ingredient IDs, e.g., 1,2,3",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "recipe_id",
             "in": "query",
             "description": "Comma-separated recipe IDs to filter",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           },
           {
             "name": "ingredient_id",
             "in": "query",
             "description": "Comma-separated ingredient IDs to filter",
             "required": false,
-            "schema": { "type": "string" }
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -213,15 +283,21 @@
             "description": "Recipe ingredients",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/RecipeIngredient" } }
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeIngredient"
+                  }
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/mood/add": {
       "post": {
         "summary": "Add a mood entry",
@@ -231,7 +307,10 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "type": "object", "additionalProperties": true }
+              "schema": {
+                "type": "object",
+                "additionalProperties": true
+              }
             }
           }
         },
@@ -240,18 +319,22 @@
             "description": "Mood entry created",
             "content": {
               "application/json": {
-                "schema": { "type": "object", "additionalProperties": true }
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/mood/on": {
       "get": {
-        "summary": "Get today's mood snapshot",
+        "summary": "Get today\u0027s mood snapshot",
         "description": "Returns current mood status (schema TBD).",
         "tags": ["mood"],
         "responses": {
@@ -259,15 +342,19 @@
             "description": "Current mood",
             "content": {
               "application/json": {
-                "schema": { "type": "object", "additionalProperties": true }
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/mood/history/{child_id}": {
       "get": {
         "summary": "Get mood history for a child",
@@ -277,21 +364,30 @@
             "in": "path",
             "name": "child_id",
             "required": true,
-            "schema": { "type": "integer", "minimum": 0 }
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
           },
           {
             "name": "from",
             "in": "query",
             "required": false,
             "description": "Start date (inclusive), ISO-8601",
-            "schema": { "type": "string", "format": "date" }
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
           },
           {
             "name": "to",
             "in": "query",
             "required": false,
             "description": "End date (inclusive), ISO-8601",
-            "schema": { "type": "string", "format": "date" }
+            "schema": {
+              "type": "string",
+              "format": "date"
+            }
           }
         ],
         "responses": {
@@ -299,15 +395,22 @@
             "description": "Mood history list",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "type": "object", "additionalProperties": true } }
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/children/health": {
       "get": {
         "summary": "Children health overview",
@@ -318,15 +421,19 @@
             "description": "Health info",
             "content": {
               "application/json": {
-                "schema": { "type": "object", "additionalProperties": true }
+                "schema": {
+                  "type": "object",
+                  "additionalProperties": true
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/children/": {
       "post": {
         "summary": "Create a child",
@@ -335,7 +442,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/Child" }
+              "schema": {
+                "$ref": "#/components/schemas/Child"
+              }
             }
           }
         },
@@ -344,11 +453,15 @@
             "description": "Child created",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Child" }
+                "schema": {
+                  "$ref": "#/components/schemas/Child"
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       },
       "get": {
@@ -359,22 +472,31 @@
             "description": "Children list",
             "content": {
               "application/json": {
-                "schema": { "type": "array", "items": { "$ref": "#/components/schemas/Child" } }
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Child"
+                  }
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     },
-
     "/children/{child_id}": {
       "parameters": [
         {
           "in": "path",
           "name": "child_id",
           "required": true,
-          "schema": { "type": "integer", "minimum": 0 }
+          "schema": {
+            "type": "integer",
+            "minimum": 0
+          }
         }
       ],
       "get": {
@@ -385,11 +507,15 @@
             "description": "Child",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Child" }
+                "schema": {
+                  "$ref": "#/components/schemas/Child"
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       },
       "put": {
@@ -399,7 +525,9 @@
           "required": true,
           "content": {
             "application/json": {
-              "schema": { "$ref": "#/components/schemas/Child" }
+              "schema": {
+                "$ref": "#/components/schemas/Child"
+              }
             }
           }
         },
@@ -408,109 +536,268 @@
             "description": "Updated child",
             "content": {
               "application/json": {
-                "schema": { "$ref": "#/components/schemas/Child" }
+                "schema": {
+                  "$ref": "#/components/schemas/Child"
+                }
               }
             }
           },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       },
       "delete": {
         "summary": "Delete a child",
         "tags": ["children"],
         "responses": {
-          "204": { "description": "Child deleted" },
-          "default": { "$ref": "#/components/responses/DEFAULT_ERROR" }
+          "204": {
+            "description": "Child deleted"
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
         }
       }
     }
   },
-
   "components": {
     "schemas": {
       "Error": {
         "type": "object",
         "properties": {
-          "code": { "type": "integer", "description": "Error code" },
-          "status": { "type": "string", "description": "Error name" },
-          "message": { "type": "string", "description": "Error message" },
-          "errors": { "type": "object", "description": "Errors", "additionalProperties": {} }
+          "code": {
+            "type": "integer",
+            "description": "Error code"
+          },
+          "status": {
+            "type": "string",
+            "description": "Error name"
+          },
+          "message": {
+            "type": "string",
+            "description": "Error message"
+          },
+          "errors": {
+            "type": "object",
+            "description": "Errors",
+            "additionalProperties": {}
+          }
         }
       },
       "Recipe": {
         "type": "object",
         "properties": {
-          "recipe_id": { "type": "integer", "readOnly": true },
-          "recipe_name": { "type": "string" },
-          "recipe_type": { "type": "string" },
-          "cuisine_type": { "type": "string" },
-          "dietary_preferences": { "type": "string" },
-          "cooking_steps": { "type": "string" },
-          "servings_veg_legumes_beans": { "type": "number" },
-          "servings_fruit": { "type": "number" },
-          "servings_grain": { "type": "number" },
-          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
-          "servings_milk_yoghurt_cheese": { "type": "number" },
-          "createdAt": { "type": "string", "format": "date-time", "readOnly": true },
-          "updatedAt": { "type": "string", "format": "date-time", "readOnly": true }
+          "recipe_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "recipe_name": {
+            "type": "string"
+          },
+          "recipe_type": {
+            "type": "string"
+          },
+          "cuisine_type": {
+            "type": "string"
+          },
+          "dietary_preferences": {
+            "type": "string"
+          },
+          "cooking_steps": {
+            "type": "string"
+          },
+          "servings_veg_legumes_beans": {
+            "type": "number"
+          },
+          "servings_fruit": {
+            "type": "number"
+          },
+          "servings_grain": {
+            "type": "number"
+          },
+          "servings_meat_fish_eggs_nuts_seeds": {
+            "type": "number"
+          },
+          "servings_milk_yoghurt_cheese": {
+            "type": "number"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
         },
         "required": ["recipe_id", "recipe_name"]
       },
       "RecipeIngredient": {
         "type": "object",
         "properties": {
-          "recipe_ingredient_id": { "type": "integer", "readOnly": true },
-          "recipe_id": { "type": "integer" },
-          "ingredient_id": { "type": "integer" },
-          "grams": { "type": "integer" },
-          "createdAt": { "type": "string", "format": "date-time", "readOnly": true },
-          "updatedAt": { "type": "string", "format": "date-time", "readOnly": true }
+          "recipe_ingredient_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "recipe_id": {
+            "type": "integer"
+          },
+          "ingredient_id": {
+            "type": "integer"
+          },
+          "grams": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
         },
-        "required": ["recipe_ingredient_id", "recipe_id", "ingredient_id", "grams"]
+        "required": [
+          "recipe_ingredient_id",
+          "recipe_id",
+          "ingredient_id",
+          "grams"
+        ]
       },
       "Ingredient": {
         "type": "object",
         "properties": {
-          "ingredient_id": { "type": "integer", "readOnly": true },
-          "ingredient_name": { "type": "string" },
-          "category": { "type": "string" },
-          "emoji": { "type": "string" },
-          "createdAt": { "type": "string", "format": "date-time", "readOnly": true },
-          "updatedAt": { "type": "string", "format": "date-time", "readOnly": true }
+          "ingredient_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "ingredient_name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "emoji": {
+            "type": "string"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
         },
         "required": ["ingredient_id", "ingredient_name", "category"]
       },
       "Child": {
         "type": "object",
         "properties": {
-          "child_id": { "type": "integer", "readOnly": true },
-          "name": { "type": "string" },
-          "date_of_birth": { "type": "string", "format": "date" },
-          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
-          "age_range_id": { "type": "integer", "nullable": true, "description": "FK → AgeRange (optional if computed)" },
-          "height_cm": { "type": "number", "nullable": true },
-          "weight_kg": { "type": "number", "nullable": true },
-          "notes": { "type": "string", "nullable": true },
-          "createdAt": { "type": "string", "format": "date-time", "readOnly": true },
-          "updatedAt": { "type": "string", "format": "date-time", "readOnly": true }
+          "child_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "name": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["M", "F"],
+            "nullable": true
+          },
+          "meals_per_day": {
+            "description": "Meals per day, must be \u003e= 1",
+            "type": "number",
+            "minimum": 1
+          },
+          "age_range_id": {
+            "type": "integer",
+            "nullable": true,
+            "description": "FK �?AgeRange (optional if computed)"
+          },
+          "height_cm": {
+            "type": "number",
+            "nullable": true
+          },
+          "weight_kg": {
+            "type": "number",
+            "nullable": true
+          },
+          "notes": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
         },
         "required": ["child_id", "name", "date_of_birth"]
       },
       "DietaryGuideline": {
         "type": "object",
         "properties": {
-          "guideline_id": { "type": "integer", "readOnly": true },
-          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
-          "age_group": { "type": "string" },
-          "servings_veg_legumes_beans": { "type": "number" },
-          "servings_fruit": { "type": "number" },
-          "servings_grain": { "type": "number" },
-          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
-          "servings_milk_yoghurt_cheese": { "type": "number" },
-          "min_age": { "type": "integer" },
-          "max_age": { "type": "integer" },
-          "createdAt": { "type": "string", "format": "date-time", "readOnly": true },
-          "updatedAt": { "type": "string", "format": "date-time", "readOnly": true }
+          "guideline_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "gender": {
+            "type": "string",
+            "enum": ["M", "F"],
+            "nullable": true
+          },
+          "age_group": {
+            "type": "string"
+          },
+          "servings_veg_legumes_beans": {
+            "type": "number"
+          },
+          "servings_fruit": {
+            "type": "number"
+          },
+          "servings_grain": {
+            "type": "number"
+          },
+          "servings_meat_fish_eggs_nuts_seeds": {
+            "type": "number"
+          },
+          "servings_milk_yoghurt_cheese": {
+            "type": "number"
+          },
+          "min_age": {
+            "type": "integer"
+          },
+          "max_age": {
+            "type": "integer"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updatedAt": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
         },
         "required": ["guideline_id", "age_group", "min_age", "max_age"]
       }
@@ -520,7 +807,9 @@
         "description": "Default error response",
         "content": {
           "application/json": {
-            "schema": { "$ref": "#/components/schemas/Error" }
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            }
           }
         }
       }
