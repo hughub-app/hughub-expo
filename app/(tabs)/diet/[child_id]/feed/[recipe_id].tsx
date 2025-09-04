@@ -17,7 +17,6 @@ import IngredientCard from "@/components/feed/IngredientCard";
 import { CategoryType, IngredientType, Intakes } from "@/types";
 import { capitalCase } from "change-case";
 import NutritionRings from "@/components/diets/NutritionRings";
-import { mockChildren } from "@/mocks/mockChildren";
 import NutritionLabels from "@/components/diets/NutritionLabels";
 import { Button } from "@/components/ui/button";
 import ConfirmDialog from "@/components/ConfirmDialog";
@@ -37,6 +36,7 @@ import {
 import { createMeal, CreateMeal, getMealsByChildInRange, Meal } from "@/lib/api/endpoints/meals";
 import moment from "moment";
 import { getAge } from "@/lib/utils";
+import { useGetChild } from "@/hooks/useGetChild";
 
 export default function RecipePage() {
   const { child_id, recipe_id } = useLocalSearchParams<{
@@ -71,7 +71,7 @@ export default function RecipePage() {
     setMenuIngredients(ingredientsWithGrams);
   }, [ingredients, recipeIngredients]);
 
-  const child = mockChildren.find((c) => c.child_id === Number(child_id));
+  const child = useGetChild({ childId: child_id || "" });
   const age = getAge(child?.date_of_birth ? new Date(child.date_of_birth) : new Date());
 
   const [guidelines, setGuidelines] = useState<DietaryGuideline[]>([]);

@@ -15,6 +15,7 @@ import { useMoodStore } from "@/hooks/useMoodStore";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
+import ChildDashboardTodayIntake from "@/components/ChildDashboardTodayIntake";
 import { usePersistChildId } from "@/lib/hooks/usePersistChildId";
 import { useChildById } from "@/lib/hooks/useChildById";
 import NutritionRings from "@/components/diets/NutritionRings";
@@ -22,6 +23,7 @@ import NutritionLabels from "@/components/diets/NutritionLabels";
 import { api } from "@/lib/api/client";
 import type { components } from "@/generated/api";
 import type { Intakes } from "@/types";
+import moment from "moment";
 
 type MoodLog = components['schemas']['MoodLog'];
 
@@ -327,11 +329,11 @@ export default function ChildScreen() {
       <ScrollView className="flex-1 px-4">
         <PageContainer>
           <BackButton fallbackUrl="/" />
-
+          <Text className="!text-5xl font-bold mb-8">{child?.name}</Text>
           {/* Emotional Wellbeing Section */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle className="text-5xl">Emotional Wellbeing</CardTitle>
+              <Text className="!text-4xl font-bold">Emotional Wellbeing</Text>
             </CardHeader>
             <CardContent>
               {/* Monthly Mood Overview LineChart*/}
@@ -345,7 +347,7 @@ export default function ChildScreen() {
               </View>
 
               {/* Mood Static Card */}
-              <View className="flex-row space-x-6 top-6">
+              <View className="flex-row space-x-6 top-6 mb-6">
                 {/* Weekly Average Card */}
                 <Card className="flex-1 mr-2">
                   <View className="flex-row items-center p-4">
@@ -384,7 +386,7 @@ export default function ChildScreen() {
                           })()}
                         </Text>
                         <Text className="text-sm text-gray-500 mt-1">
-                          Recorded on: {latestMood?.created_at ? formatDateTimeLocal(latestMood.created_at as string) : '—'}
+                          Recorded on: {latestMood?.created_at ? moment(latestMood.created_at).format('LLL') : '—'}
                         </Text>
                       </CardContent>
                     </View>
@@ -393,7 +395,7 @@ export default function ChildScreen() {
               </View>
 
               {/* Maya's Thought Tab*/}
-              <Text className="text-2xl font-semibold text-gray-900 mt-8">
+              {/* <Text className="text-2xl font-semibold text-gray-900 mt-8">
                 Maya's Thoughts
               </Text>
               <View className="flex-row item items-center">
@@ -418,7 +420,7 @@ export default function ChildScreen() {
               </View>
               <Text className="text-gray-900 mt-4">
                 🗓️Last Update {formatRelative(latestMood?.created_at as string)}
-              </Text>
+              </Text> */}
 
               {/* View Details Button */}
               <Button
@@ -434,46 +436,7 @@ export default function ChildScreen() {
               </Button>
             </CardContent>
           </Card>
-
-          {/* Diet & Nutrition Section */}
-          <Card className="mb-6">
-            <CardHeader>
-              <Text className="!text-5xl">Diet & Nutrition</Text>
-            </CardHeader>
-            <CardContent>
-              <Text className="mt-4 ml-2 text-xl font-bold text-gray-800 mb-2">
-                Today's Intakes
-              </Text>
-              <View className="mt-20 order-1 md:order-2">
-                <View className="flex-row justify-center items-center gap-4 ">
-                  {/* {todayIntakes && ( */}
-                    <NutritionRings
-                      values={weeklyIntakes}
-                      target={{
-                        dairy: 6,
-                        protein: 5,
-                        grain: 5,
-                        vegetable: 6,
-                        fruit: 3,
-                      }}
-                    />
-                  {/* )} */}
-                  <NutritionLabels />
-                </View>
-              </View>
-
-              <Button
-                onPress={() => {
-                  router.push({
-                    pathname: "/diet/[child_id]",
-                    params: { child_id: String(childIdParam) },
-                  });
-                }}
-              >
-                <Text>View Diet Details</Text>
-              </Button>
-            </CardContent>
-          </Card>
+          <ChildDashboardTodayIntake childId={idNum.toString()} />
         </PageContainer>
       </ScrollView>
     </SafeAreaView>

@@ -1,9 +1,8 @@
 import { ScrollView, View } from "react-native";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, router, useLocalSearchParams } from "expo-router";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { mockChildren } from "@/mocks/mockChildren";
 import {
   Select,
   SelectContent,
@@ -22,18 +21,14 @@ import RecipeCard from "@/components/menus/RecipeCard";
 import { listRecipes, Recipe, RecipeType } from "@/lib/api/endpoints/recipes";
 import { Input } from "@/components/ui/input";
 import HHSpinner from "@/components/HHSpinner";
+import { useGetChild } from "@/hooks/useGetChild";
 
 type Params = { child_id?: string | string[] };
 
 export default function Feed() {
   const params = useLocalSearchParams<Params>();
 
-  // Force param into a single string
-  const childId = useMemo(() => {
-    const v = params.child_id;
-    return Array.isArray(v) ? v[0] : v;
-  }, [params.child_id]);
-
+  const childId = params.child_id;
   if (!childId) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
@@ -44,15 +39,7 @@ export default function Feed() {
     );
   }
 
-  const child = mockChildren.find((c) => c.child_id === Number(childId));
-
-  if (!child) {
-    return (
-      <View className="flex-1 items-center justify-center bg-white">
-        <Text className="text-base text-red-500">Child not found.</Text>
-      </View>
-    );
-  }
+  const child = useGetChild({ childId: childId as string });
 
   const [hasConfirmed, setHasConfirmed] = useState(false);
 
@@ -76,6 +63,14 @@ export default function Feed() {
   }, [searchTerm, recipeType]);
 
   const recipeTypes = Object.values(RecipeType);
+
+   if (!child) {
+    return (
+      <View className="flex-1 items-center justify-center bg-white">
+        <Text className="text-base text-red-500">Child not found.</Text>
+      </View>
+    );
+  }
 
   return (
     <>

@@ -193,13 +193,13 @@ export type CrudResource<
     opts?: CommonCallOpts
   ): Promise<{ item: TItem; location?: string } | null>;
   /** On error: toast + null or throw if throwError */
-  get(id: TId, opts?: CommonCallOpts): Promise<{ item: TItem; etag?: string } | null>;
+  get(id: TId, opts?: CommonCallOpts): Promise<TItem | null>;
   /** On error: toast + null or throw if throwError */
   update(
     id: TId,
     body: TUpdate,
     opts?: { etag?: string } & CommonCallOpts
-  ): Promise<{ item: TItem; etag?: string } | null>;
+  ): Promise<TItem | null>;
   /** On error: toast + false or throw if throwError */
   remove(id: TId, opts?: { etag?: string } & CommonCallOpts): Promise<boolean>;
 };
@@ -277,7 +277,7 @@ export function makeCrud<
   async function get(
     id: TId,
     optsArg?: CommonCallOpts
-  ): Promise<{ item: TItem; etag?: string } | null> {
+  ): Promise<TItem | null> {
     try {
       const res = await api.GET(byIdPath as any, {
         params: { path: { [idParam as string]: id } as any },
@@ -294,7 +294,7 @@ export function makeCrud<
         return (fallbackGet?.() ?? null) as null;
       }
       const etag = res.response.headers.get("ETag") ?? undefined;
-      return { item: res.data as TItem, etag };
+      return res.data as TItem;
     } catch (e) {
       notifyNetworkError(e);
       if (optsArg?.throwError) throw new Error(errorToMessage(e));
@@ -306,7 +306,7 @@ export function makeCrud<
     id: TId,
     body: TUpdate,
     optsArg?: { etag?: string } & CommonCallOpts
-  ): Promise<{ item: TItem; etag?: string } | null> {
+  ): Promise<TItem | null> {
     try {
       const authHdr = optsArg?.auth?.token ? withAuth(optsArg.auth.token).headers ?? {} : {};
       const headers =
@@ -324,7 +324,7 @@ export function makeCrud<
         return (fallbackUpdate?.() ?? null) as null;
       }
       const newEtag = res.response.headers.get("ETag") ?? undefined;
-      return { item: res.data as TItem, etag: newEtag };
+      return res.data as TItem;
     } catch (e) {
       notifyNetworkError(e);
       if (optsArg?.throwError) throw new Error(errorToMessage(e));
