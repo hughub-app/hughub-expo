@@ -163,7 +163,6 @@ export function makeReadResource<
 }
 
 /* ================================== CRUD ================================== */
-
 export type CrudOptions<
   TListQuery extends Record<string, any> | undefined,
   TId extends number | string

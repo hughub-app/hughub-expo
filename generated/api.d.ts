@@ -11,18 +11,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get dietary guidelines with filters
-         * @description Get dietary guidelines with optional filters.
-         */
+        /** @description Get dietary guidelines with optional filters. */
         get: {
             parameters: {
                 query?: {
-                    /** @description Comma-separated list of guideline IDs, e.g., 1,2,3 */
+                    /** @description Comma-separated guideline IDs e.g. 1,2,3 */
                     ids?: string;
-                    /** @description Filter by gender */
-                    gender?: string;
-                    /** @description Filter by age range (min_age ≤ age ≤ max_age) */
+                    gender?: "M" | "F";
+                    /** @description Matches min_age ≤ age ≤ max_age */
                     age?: number;
                 };
                 header?: never;
@@ -31,6 +27,16 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["DietaryGuideline"][];
+                    };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -49,15 +55,14 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** Get all ingredients with optional filters */
+        /** @description Get all ingredients with optional filters */
         get: {
             parameters: {
                 query?: {
-                    /** @description Ingredient IDs to filter, e.g. ids=1,2,5 */
+                    /** @description Comma-separated ingredient IDs */
                     ids?: string;
-                    /** @description Category name to filter */
                     category?: string;
-                    /** @description Ingredient name (partial match) to filter */
+                    /** @description Partial match */
                     ingredient_name?: string;
                 };
                 header?: never;
@@ -66,6 +71,16 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Ingredient"][];
+                    };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -84,22 +99,16 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get recipes with optional filters
-         * @description Get recipes with optional filters.
-         */
+        /** @description Get recipes with optional filters. */
         get: {
             parameters: {
                 query?: {
-                    /** @description Comma-separated list of recipe IDs, e.g., 1,2,3 */
+                    /** @description Comma-separated recipe IDs */
                     ids?: string;
-                    /** @description Filter recipes whose name ILIKE this string */
+                    /** @description ILIKE match */
                     recipe_name?: string;
-                    /** @description Filter by recipe type */
                     recipe_type?: string;
-                    /** @description Filter by cuisine type */
                     cuisine_type?: string;
-                    /** @description Filter by dietary preferences */
                     dietary_preferences?: string;
                 };
                 header?: never;
@@ -108,6 +117,16 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Recipe"][];
+                    };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -126,18 +145,15 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get recipe ingredients with optional filters
-         * @description Get recipe ingredients with optional filters.
-         */
+        /** @description Get recipe ingredients with optional filters. */
         get: {
             parameters: {
                 query?: {
-                    /** @description Comma-separated list of recipe_ingredient IDs, e.g., 1,2,3 */
+                    /** @description Comma-separated recipe_ingredient IDs */
                     ids?: string;
-                    /** @description Comma-separated list of recipe IDs to filter */
+                    /** @description Comma-separated recipe IDs */
                     recipe_id?: string;
-                    /** @description Comma-separated list of ingredient IDs to filter */
+                    /** @description Comma-separated ingredient IDs */
                     ingredient_id?: string;
                 };
                 header?: never;
@@ -146,6 +162,16 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["RecipeIngredient"][];
+                    };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -214,7 +240,6 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description ID of the child */
                     child_id: number;
                 };
                 cookie?: never;
@@ -257,7 +282,6 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description ID of the meal */
                     meal_id: number;
                 };
                 cookie?: never;
@@ -288,7 +312,6 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description ID of the meal */
                     meal_id: number;
                 };
                 cookie?: never;
@@ -442,7 +465,6 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description ID of the mood log to update */
                     mood_log_id: number;
                 };
                 cookie?: never;
@@ -476,7 +498,6 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description ID of the mood log to delete */
                     mood_log_id: number;
                 };
                 cookie?: never;
@@ -515,7 +536,6 @@ export interface paths {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description ID of the child to fetch the latest mood log for */
                     child_id: number;
                 };
                 cookie?: never;
@@ -530,13 +550,6 @@ export interface paths {
                     content: {
                         "application/json": components["schemas"]["MoodLog"];
                     };
-                };
-                /** @description Child not found or no mood logs available */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
@@ -558,18 +571,14 @@ export interface paths {
             };
             cookie?: never;
         };
-        /** @description Get all mood logs for a child between two timestamps */
         get: {
             parameters: {
                 query: {
-                    /** @description Start timestamp (ISO format, e.g. 2025-09-01T00:00:00) */
                     start: string;
-                    /** @description End timestamp (ISO format, e.g. 2025-09-03T23:59:59) */
                     end: string;
                 };
                 header?: never;
                 path: {
-                    /** @description ID of the child to fetch mood logs for */
                     child_id: number;
                 };
                 cookie?: never;
@@ -585,20 +594,7 @@ export interface paths {
                         "application/json": components["schemas"]["MoodLog"][];
                     };
                 };
-                /** @description Missing or invalid parameters */
-                400: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
-                /** @description Child not found or no mood logs in the range */
-                404: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content?: never;
-                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -617,10 +613,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
+        /** @description Get children with optional ID filter (comma-separated). */
         get: {
             parameters: {
                 query?: {
-                    /** @description Filter by child IDs (comma separated, e.g. ids=1,2,3) */
+                    /** @description Comma-separated child IDs (e.g., 1,2,3) */
                     ids?: string;
                 };
                 header?: never;
@@ -629,27 +626,21 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description List of children */
+                /** @description OK */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        /** @example [
-                         *       {
-                         *         "child_id": 1,
-                         *         "name": "Tom",
-                         *         "gender": "Male",
-                         *         "date_of_birth": "2018-06-12"
-                         *       }
-                         *     ] */
-                        "application/json": unknown;
+                        "application/json": components["schemas"]["Child"][];
                     };
                 };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
+        /** @description Create a new child */
         post: {
             parameters: {
                 query?: never;
@@ -659,31 +650,20 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    /** @example {
-                     *       "name": "Alice",
-                     *       "gender": "F",
-                     *       "date_of_birth": "2019-05-20",
-                     *       "meals_per_day": 3
-                     *     } */
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["CreateChild"];
                 };
             };
             responses: {
-                /** @description Child created */
+                /** @description Created */
                 201: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        /** @example {
-                         *       "child_id": 2,
-                         *       "name": "Alice",
-                         *       "gender": "Female",
-                         *       "date_of_birth": "2019-05-20"
-                         *     } */
-                        "application/json": unknown;
+                        "application/json": components["schemas"]["Child"];
                     };
                 };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -703,68 +683,55 @@ export interface paths {
             cookie?: never;
         };
         get?: never;
+        /** @description Update a child by ID */
         put: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Child ID to update */
                     child_id: number;
                 };
                 cookie?: never;
             };
             requestBody: {
                 content: {
-                    /** @example {
-                     *       "name": "Alice Updated",
-                     *       "gender": "F",
-                     *       "date_of_birth": "2019-05-20"
-                     *     } */
-                    "application/json": unknown;
+                    "application/json": components["schemas"]["UpdateChild"];
                 };
             };
             responses: {
-                /** @description Child updated */
+                /** @description OK */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        /** @example {
-                         *       "child_id": 2,
-                         *       "name": "Alice Updated",
-                         *       "gender": "Female",
-                         *       "date_of_birth": "2019-05-20"
-                         *     } */
-                        "application/json": unknown;
+                        "application/json": components["schemas"]["Child"];
                     };
                 };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         post?: never;
+        /** @description Delete a child by ID */
         delete: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
-                    /** @description Child ID to delete */
                     child_id: number;
                 };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description Child deleted */
+                /** @description OK */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        /** @example {
-                         *       "message": "Child 2 deleted successfully"
-                         *     } */
-                        "application/json": unknown;
+                        "application/json": components["schemas"]["Message"];
                     };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
@@ -791,76 +758,54 @@ export interface components {
                 [key: string]: unknown;
             };
         };
-        Recipe: {
-            readonly recipe_id: number;
-            recipe_name: string;
-            recipe_type?: string;
-            cuisine_type?: string;
-            dietary_preferences?: string;
-            cooking_steps?: string;
-            servings_veg_legumes_beans?: number;
-            servings_fruit?: number;
-            servings_grain?: number;
-            servings_meat_fish_eggs_nuts_seeds?: number;
-            servings_milk_yoghurt_cheese?: number;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        RecipeIngredient: {
-            readonly recipe_ingredient_id: number;
-            recipe_id: number;
-            ingredient_id: number;
-            grams: number;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        Ingredient: {
-            readonly ingredient_id: number;
-            ingredient_name: string;
-            category: string;
-            emoji?: string;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
-        };
-        Child: {
-            readonly child_id: number;
-            name: string;
-            /** Format: date */
-            date_of_birth: string;
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            /** @description FK → AgeRange (optional if computed) */
-            age_range_id?: number | null;
-            height_cm?: number | null;
-            weight_kg?: number | null;
-            notes?: string | null;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
+        PaginationMetadata: {
+            total?: number;
+            total_pages?: number;
+            first_page?: number;
+            last_page?: number;
+            page?: number;
+            previous_page?: number;
+            next_page?: number;
         };
         DietaryGuideline: {
-            readonly guideline_id: number;
-            /** @enum {string|null} */
-            gender?: "M" | "F" | null;
-            age_group: string;
-            servings_veg_legumes_beans?: number;
-            servings_fruit?: number;
-            servings_grain?: number;
-            servings_meat_fish_eggs_nuts_seeds?: number;
-            servings_milk_yoghurt_cheese?: number;
-            min_age: number;
-            max_age: number;
-            /** Format: date-time */
-            readonly createdAt?: string;
-            /** Format: date-time */
-            readonly updatedAt?: string;
+            /** @enum {string} */
+            gender?: "M" | "F";
+            age_group?: string;
+            servings_veg_legumes_beans?: number | null;
+            servings_fruit?: number | null;
+            servings_grain?: number | null;
+            servings_meat_fish_eggs_nuts_seeds?: number | null;
+            servings_milk_yoghurt_cheese?: number | null;
+            min_age?: number;
+            max_age?: number;
+            readonly guideline_id?: number;
+        };
+        Ingredient: {
+            ingredient_name?: string;
+            category?: string;
+            emoji?: string | null;
+            readonly ingredient_id?: number;
+        };
+        Recipe: {
+            recipe_name?: string;
+            recipe_type?: string | null;
+            cuisine_type?: string | null;
+            dietary_preferences?: string | null;
+            cooking_steps?: string | null;
+            servings_veg_legumes_beans?: number | null;
+            servings_fruit?: number | null;
+            servings_grain?: number | null;
+            servings_meat_fish_eggs_nuts_seeds?: number | null;
+            servings_milk_yoghurt_cheese?: number | null;
+            readonly recipe_id?: number;
+        };
+        RecipeIngredient: {
+            recipe_id?: number;
+            ingredient_id?: number;
+            grams?: number | null;
+            readonly recipe_ingredient_id?: number;
+            readonly recipe_name?: string | null;
+            readonly ingredient_name?: string | null;
         };
         CreateMeal: {
             meal_name: string;
@@ -934,6 +879,35 @@ export interface components {
             /** @enum {string} */
             mood?: "laugh" | "happy" | "neutral" | "sad" | "angry";
             notes?: string | null;
+        };
+        Child: {
+            name?: string;
+            /** Format: date */
+            date_of_birth?: string;
+            /** @enum {string|null} */
+            gender?: "M" | "F" | null;
+            meals_per_day?: number | null;
+            readonly child_id?: number;
+            /** Format: date-time */
+            readonly created_at?: string;
+            /** Format: date-time */
+            readonly updated_at?: string;
+        };
+        CreateChild: {
+            name: string;
+            /** Format: date */
+            date_of_birth: string;
+            /** @enum {string} */
+            gender: "M" | "F";
+            meals_per_day: number;
+        };
+        UpdateChild: {
+            name?: string;
+            /** Format: date */
+            date_of_birth?: string;
+            /** @enum {string|null} */
+            gender?: "M" | "F" | null;
+            meals_per_day?: number | null;
         };
     };
     responses: {

@@ -2,180 +2,260 @@
   "paths": {
     "/recipes/dietary-guidelines": {
       "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "ids",
+            "description": "Comma-separated guideline IDs e.g. 1,2,3",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "gender",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "M",
+                "F"
+              ]
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "age",
+            "description": "Matches min_age \u2264 age \u2264 max_age",
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "required": false
+          }
+        ],
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/DietaryGuideline"
+                  }
+                }
+              }
+            }
+          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "summary": "Get dietary guidelines with filters",
-        "tags": ["recipes"],
-        "description": "Get dietary guidelines with optional filters.",
-        "parameters": [
-          {
-            "name": "ids",
-            "in": "query",
-            "description": "Comma-separated list of guideline IDs, e.g., 1,2,3",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "gender",
-            "in": "query",
-            "description": "Filter by gender",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "age",
-            "in": "query",
-            "description": "Filter by age range (min_age ≤ age ≤ max_age)",
-            "required": false,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ]
+        "tags": [
+          "recipes"
+        ],
+        "description": "Get dietary guidelines with optional filters."
       }
     },
     "/recipes/ingredients": {
       "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "ids",
+            "description": "Comma-separated ingredient IDs",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "category",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "ingredient_name",
+            "description": "Partial match",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Ingredient"
+                  }
+                }
+              }
+            }
+          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "summary": "Get all ingredients with optional filters",
-        "tags": ["recipes"],
-        "parameters": [
-          {
-            "name": "ids",
-            "in": "query",
-            "type": "array",
-            "collectionFormat": "multi",
-            "description": "Ingredient IDs to filter, e.g. ids=1,2,5"
-          },
-          {
-            "name": "category",
-            "in": "query",
-            "type": "string",
-            "description": "Category name to filter"
-          },
-          {
-            "name": "ingredient_name",
-            "in": "query",
-            "type": "string",
-            "description": "Ingredient name (partial match) to filter"
-          }
-        ]
+        "tags": [
+          "recipes"
+        ],
+        "description": "Get all ingredients with optional filters"
       }
     },
     "/recipes/": {
       "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "ids",
+            "description": "Comma-separated recipe IDs",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "recipe_name",
+            "description": "ILIKE match",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "recipe_type",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "cuisine_type",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "dietary_preferences",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Recipe"
+                  }
+                }
+              }
+            }
+          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "summary": "Get recipes with optional filters",
-        "tags": ["recipes"],
-        "description": "Get recipes with optional filters.",
-        "parameters": [
-          {
-            "name": "ids",
-            "in": "query",
-            "description": "Comma-separated list of recipe IDs, e.g., 1,2,3",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "recipe_name",
-            "in": "query",
-            "description": "Filter recipes whose name ILIKE this string",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "recipe_type",
-            "in": "query",
-            "description": "Filter by recipe type",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "cuisine_type",
-            "in": "query",
-            "description": "Filter by cuisine type",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "dietary_preferences",
-            "in": "query",
-            "description": "Filter by dietary preferences",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
+        "tags": [
+          "recipes"
+        ],
+        "description": "Get recipes with optional filters."
       }
     },
     "/recipes/recipe_ingredients": {
       "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "ids",
+            "description": "Comma-separated recipe_ingredient IDs",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "recipe_id",
+            "description": "Comma-separated recipe IDs",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "ingredient_id",
+            "description": "Comma-separated ingredient IDs",
+            "schema": {
+              "type": "string"
+            },
+            "required": false
+          }
+        ],
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecipeIngredient"
+                  }
+                }
+              }
+            }
+          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "summary": "Get recipe ingredients with optional filters",
-        "tags": ["recipes"],
-        "description": "Get recipe ingredients with optional filters.",
-        "parameters": [
-          {
-            "name": "ids",
-            "in": "query",
-            "description": "Comma-separated list of recipe_ingredient IDs, e.g., 1,2,3",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "recipe_id",
-            "in": "query",
-            "description": "Comma-separated list of recipe IDs to filter",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          },
-          {
-            "name": "ingredient_id",
-            "in": "query",
-            "description": "Comma-separated list of ingredient IDs to filter",
-            "required": false,
-            "schema": {
-              "type": "string"
-            }
-          }
-        ]
+        "tags": [
+          "recipes"
+        ],
+        "description": "Get recipe ingredients with optional filters."
       }
     },
     "/meals/": {
       "post": {
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -185,9 +265,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
@@ -203,7 +280,9 @@
             }
           }
         },
-        "tags": ["meal"],
+        "tags": [
+          "meals"
+        ],
         "description": "Create a new meal record"
       }
     },
@@ -227,19 +306,10 @@
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "tags": ["meal"],
-        "description": "Get all meals for a specific child",
-        "parameters": [
-          {
-            "name": "child_id",
-            "in": "path",
-            "description": "ID of the child",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ]
+        "tags": [
+          "meals"
+        ],
+        "description": "Get all meals for a specific child"
       },
       "parameters": [
         {
@@ -256,6 +326,9 @@
     "/meals/{meal_id}": {
       "put": {
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -265,9 +338,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
@@ -283,19 +353,10 @@
             }
           }
         },
-        "tags": ["meal"],
-        "description": "Update a meal by ID",
-        "parameters": [
-          {
-            "name": "meal_id",
-            "in": "path",
-            "description": "ID of the meal",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ]
+        "tags": [
+          "meals"
+        ],
+        "description": "Update a meal by ID"
       },
       "parameters": [
         {
@@ -324,24 +385,18 @@
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "tags": ["meal"],
-        "description": "Delete a meal by ID",
-        "parameters": [
-          {
-            "name": "meal_id",
-            "in": "path",
-            "description": "ID of the meal",
-            "required": true,
-            "schema": {
-              "type": "integer"
-            }
-          }
-        ]
+        "tags": [
+          "meals"
+        ],
+        "description": "Delete a meal by ID"
       }
     },
     "/mood_logs/": {
       "post": {
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
           "201": {
             "description": "Created",
             "content": {
@@ -351,9 +406,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
@@ -370,7 +422,9 @@
           }
         },
         "summary": "Create a new mood log",
-        "tags": ["mood_log"],
+        "tags": [
+          "mood_logs"
+        ],
         "description": "Create a new mood log"
       },
       "get": {
@@ -393,7 +447,9 @@
           }
         },
         "summary": "Get all mood logs",
-        "tags": ["mood_log"],
+        "tags": [
+          "mood_logs"
+        ],
         "description": "Get all mood logs with optional filters"
       }
     },
@@ -418,7 +474,9 @@
           }
         },
         "summary": "Get a mood log by child ID",
-        "tags": ["mood"],
+        "tags": [
+          "mood_logs"
+        ],
         "description": "Get a single mood log by using the child ID",
         "parameters": [
           {
@@ -447,6 +505,9 @@
     "/mood_logs/{mood_log_id}": {
       "put": {
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -456,9 +517,6 @@
                 }
               }
             }
-          },
-          "422": {
-            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
           },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
@@ -474,19 +532,10 @@
             }
           }
         },
-        "tags": ["mood_log"],
-        "description": "Update a mood log by ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "mood_log_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true,
-            "description": "ID of the mood log to update"
-          }
-        ]
+        "tags": [
+          "mood_logs"
+        ],
+        "description": "Update a mood log by ID"
       },
       "parameters": [
         {
@@ -516,19 +565,10 @@
           }
         },
         "summary": "Delete a mood log",
-        "tags": ["mood_log"],
-        "description": "Delete a mood log by ID",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "mood_log_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true,
-            "description": "ID of the mood log to delete"
-          }
-        ]
+        "tags": [
+          "mood_logs"
+        ],
+        "description": "Delete a mood log by ID"
       }
     },
     "/mood_logs/latest/{child_id}": {
@@ -544,26 +584,14 @@
               }
             }
           },
-          "404": {
-            "description": "Child not found or no mood logs available"
-          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "tags": ["mood"],
-        "description": "Get the latest mood log for a specific child",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "child_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true,
-            "description": "ID of the child to fetch the latest mood log for"
-          }
-        ]
+        "tags": [
+          "mood_logs"
+        ],
+        "description": "Get the latest mood log for a specific child"
       },
       "parameters": [
         {
@@ -579,7 +607,30 @@
     },
     "/mood_logs/range/{child_id}": {
       "get": {
+        "parameters": [
+          {
+            "in": "query",
+            "name": "start",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true
+          },
+          {
+            "in": "query",
+            "name": "end",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            },
+            "required": true
+          }
+        ],
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
           "200": {
             "description": "OK",
             "content": {
@@ -593,48 +644,12 @@
               }
             }
           },
-          "400": {
-            "description": "Missing or invalid parameters"
-          },
-          "404": {
-            "description": "Child not found or no mood logs in the range"
-          },
           "default": {
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "tags": ["mood"],
-        "description": "Get all mood logs for a child between two timestamps",
-        "parameters": [
-          {
-            "in": "path",
-            "name": "child_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true,
-            "description": "ID of the child to fetch mood logs for"
-          },
-          {
-            "in": "query",
-            "name": "start",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "description": "Start timestamp (ISO format, e.g. 2025-09-01T00:00:00)"
-          },
-          {
-            "in": "query",
-            "name": "end",
-            "schema": {
-              "type": "string",
-              "format": "date-time"
-            },
-            "required": true,
-            "description": "End timestamp (ISO format, e.g. 2025-09-03T23:59:59)"
-          }
+        "tags": [
+          "mood_logs"
         ]
       },
       "parameters": [
@@ -651,50 +666,30 @@
     },
     "/children/": {
       "get": {
-        "responses": {
-          "200": {
-            "description": "List of children",
-            "content": {
-              "application/json": {
-                "example": [
-                  {
-                    "child_id": 1,
-                    "name": "Tom",
-                    "gender": "Male",
-                    "date_of_birth": "2018-06-12"
-                  }
-                ]
-              }
-            }
-          },
-          "default": {
-            "$ref": "#/components/responses/DEFAULT_ERROR"
-          }
-        },
-        "tags": ["children"],
         "parameters": [
           {
             "in": "query",
             "name": "ids",
+            "description": "Comma-separated child IDs (e.g., 1,2,3)",
             "schema": {
               "type": "string"
             },
-            "required": false,
-            "description": "Filter by child IDs (comma separated, e.g. ids=1,2,3)"
+            "required": false
           }
-        ]
-      },
-      "post": {
+        ],
         "responses": {
-          "201": {
-            "description": "Child created",
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "200": {
+            "description": "OK",
             "content": {
               "application/json": {
-                "example": {
-                  "child_id": 2,
-                  "name": "Alice",
-                  "gender": "Female",
-                  "date_of_birth": "2019-05-20"
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/Child"
+                  }
                 }
               }
             }
@@ -703,34 +698,58 @@
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "tags": ["children"],
+        "tags": [
+          "children"
+        ],
+        "description": "Get children with optional ID filter (comma-separated)."
+      },
+      "post": {
+        "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Child"
+                }
+              }
+            }
+          },
+          "default": {
+            "$ref": "#/components/responses/DEFAULT_ERROR"
+          }
+        },
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "example": {
-                "name": "Alice",
-                "gender": "F",
-                "date_of_birth": "2019-05-20",
-                "meals_per_day": 3
+              "schema": {
+                "$ref": "#/components/schemas/CreateChild"
               }
             }
           }
-        }
+        },
+        "tags": [
+          "children"
+        ],
+        "description": "Create a new child"
       }
     },
     "/children/{child_id}": {
       "put": {
         "responses": {
+          "422": {
+            "$ref": "#/components/responses/UNPROCESSABLE_CONTENT"
+          },
           "200": {
-            "description": "Child updated",
+            "description": "OK",
             "content": {
               "application/json": {
-                "example": {
-                  "child_id": 2,
-                  "name": "Alice Updated",
-                  "gender": "Female",
-                  "date_of_birth": "2019-05-20"
+                "schema": {
+                  "$ref": "#/components/schemas/Child"
                 }
               }
             }
@@ -739,30 +758,20 @@
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "tags": ["children"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "child_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true,
-            "description": "Child ID to update"
-          }
-        ],
         "requestBody": {
           "required": true,
           "content": {
             "application/json": {
-              "example": {
-                "name": "Alice Updated",
-                "gender": "F",
-                "date_of_birth": "2019-05-20"
+              "schema": {
+                "$ref": "#/components/schemas/UpdateChild"
               }
             }
           }
-        }
+        },
+        "tags": [
+          "children"
+        ],
+        "description": "Update a child by ID"
       },
       "parameters": [
         {
@@ -778,11 +787,11 @@
       "delete": {
         "responses": {
           "200": {
-            "description": "Child deleted",
+            "description": "OK",
             "content": {
               "application/json": {
-                "example": {
-                  "message": "Child 2 deleted successfully"
+                "schema": {
+                  "$ref": "#/components/schemas/Message"
                 }
               }
             }
@@ -791,18 +800,10 @@
             "$ref": "#/components/responses/DEFAULT_ERROR"
           }
         },
-        "tags": ["children"],
-        "parameters": [
-          {
-            "in": "path",
-            "name": "child_id",
-            "schema": {
-              "type": "integer"
-            },
-            "required": true,
-            "description": "Child ID to delete"
-          }
-        ]
+        "tags": [
+          "children"
+        ],
+        "description": "Delete a child by ID"
       }
     }
   },
@@ -813,30 +814,14 @@
   "tags": [
     {
       "name": "recipes",
-      "description": "Recipe Recommander API"
-    },
-    {
-      "name": "mood",
-      "description": "Children Emotion API"
-    },
-    {
-      "name": "children",
-      "description": "Children Info Management API"
-    },
-    {
-      "name": "meal",
-      "description": "Children Meal Management API"
-    },
-    {
-      "name": "recipes",
-      "description": "Recipe Recommander API"
+      "description": "Recipe Recommender API"
     },
     {
       "name": "meals",
       "description": "meals CRUD API"
     },
     {
-      "name": "mood",
+      "name": "mood_logs",
       "description": "Mood Logs API"
     },
     {
@@ -869,131 +854,185 @@
           }
         }
       },
-      "Recipe": {
+      "PaginationMetadata": {
         "type": "object",
         "properties": {
-          "recipe_id": { "type": "integer", "readOnly": true },
-          "recipe_name": { "type": "string" },
-          "recipe_type": { "type": "string" },
-          "cuisine_type": { "type": "string" },
-          "dietary_preferences": { "type": "string" },
-          "cooking_steps": { "type": "string" },
-          "servings_veg_legumes_beans": { "type": "number" },
-          "servings_fruit": { "type": "number" },
-          "servings_grain": { "type": "number" },
-          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
-          "servings_milk_yoghurt_cheese": { "type": "number" },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
+          "total": {
+            "type": "integer"
           },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
+          "total_pages": {
+            "type": "integer"
+          },
+          "first_page": {
+            "type": "integer"
+          },
+          "last_page": {
+            "type": "integer"
+          },
+          "page": {
+            "type": "integer"
+          },
+          "previous_page": {
+            "type": "integer"
+          },
+          "next_page": {
+            "type": "integer"
           }
-        },
-        "required": ["recipe_id", "recipe_name"]
-      },
-      "RecipeIngredient": {
-        "type": "object",
-        "properties": {
-          "recipe_ingredient_id": { "type": "integer", "readOnly": true },
-          "recipe_id": { "type": "integer" },
-          "ingredient_id": { "type": "integer" },
-          "grams": { "type": "integer" },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          }
-        },
-        "required": [
-          "recipe_ingredient_id",
-          "recipe_id",
-          "ingredient_id",
-          "grams"
-        ]
-      },
-      "Ingredient": {
-        "type": "object",
-        "properties": {
-          "ingredient_id": { "type": "integer", "readOnly": true },
-          "ingredient_name": { "type": "string" },
-          "category": { "type": "string" },
-          "emoji": { "type": "string" },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          }
-        },
-        "required": ["ingredient_id", "ingredient_name", "category"]
-      },
-      "Child": {
-        "type": "object",
-        "properties": {
-          "child_id": { "type": "integer", "readOnly": true },
-          "name": { "type": "string" },
-          "date_of_birth": { "type": "string", "format": "date" },
-          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
-          "age_range_id": {
-            "type": "integer",
-            "nullable": true,
-            "description": "FK → AgeRange (optional if computed)"
-          },
-          "height_cm": { "type": "number", "nullable": true },
-          "weight_kg": { "type": "number", "nullable": true },
-          "notes": { "type": "string", "nullable": true },
-          "createdAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
-            "readOnly": true
-          }
-        },
-        "required": ["child_id", "name", "date_of_birth"]
+        }
       },
       "DietaryGuideline": {
         "type": "object",
         "properties": {
-          "guideline_id": { "type": "integer", "readOnly": true },
-          "gender": { "type": "string", "enum": ["M", "F"], "nullable": true },
-          "age_group": { "type": "string" },
-          "servings_veg_legumes_beans": { "type": "number" },
-          "servings_fruit": { "type": "number" },
-          "servings_grain": { "type": "number" },
-          "servings_meat_fish_eggs_nuts_seeds": { "type": "number" },
-          "servings_milk_yoghurt_cheese": { "type": "number" },
-          "min_age": { "type": "integer" },
-          "max_age": { "type": "integer" },
-          "createdAt": {
+          "gender": {
             "type": "string",
-            "format": "date-time",
-            "readOnly": true
+            "enum": [
+              "M",
+              "F"
+            ]
           },
-          "updatedAt": {
-            "type": "string",
-            "format": "date-time",
+          "age_group": {
+            "type": "string"
+          },
+          "servings_veg_legumes_beans": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_fruit": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_grain": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_meat_fish_eggs_nuts_seeds": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_milk_yoghurt_cheese": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "min_age": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "max_age": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "guideline_id": {
+            "type": "integer",
             "readOnly": true
           }
-        },
-        "required": ["guideline_id", "age_group", "min_age", "max_age"]
+        }
+      },
+      "Ingredient": {
+        "type": "object",
+        "properties": {
+          "ingredient_name": {
+            "type": "string"
+          },
+          "category": {
+            "type": "string"
+          },
+          "emoji": {
+            "type": "string",
+            "nullable": true
+          },
+          "ingredient_id": {
+            "type": "integer",
+            "readOnly": true
+          }
+        }
+      },
+      "Recipe": {
+        "type": "object",
+        "properties": {
+          "recipe_name": {
+            "type": "string"
+          },
+          "recipe_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "cuisine_type": {
+            "type": "string",
+            "nullable": true
+          },
+          "dietary_preferences": {
+            "type": "string",
+            "nullable": true
+          },
+          "cooking_steps": {
+            "type": "string",
+            "nullable": true
+          },
+          "servings_veg_legumes_beans": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_fruit": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_grain": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_meat_fish_eggs_nuts_seeds": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "servings_milk_yoghurt_cheese": {
+            "type": "number",
+            "minimum": 0.0,
+            "nullable": true
+          },
+          "recipe_id": {
+            "type": "integer",
+            "readOnly": true
+          }
+        }
+      },
+      "RecipeIngredient": {
+        "type": "object",
+        "properties": {
+          "recipe_id": {
+            "type": "integer"
+          },
+          "ingredient_id": {
+            "type": "integer"
+          },
+          "grams": {
+            "type": "integer",
+            "minimum": 0,
+            "nullable": true
+          },
+          "recipe_ingredient_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "recipe_name": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          },
+          "ingredient_name": {
+            "type": "string",
+            "readOnly": true,
+            "nullable": true
+          }
+        }
       },
       "CreateMeal": {
         "type": "object",
@@ -1003,38 +1042,48 @@
           },
           "servings_fruit": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_grain": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_meat_fish_eggs_nuts_seeds": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_milk_yoghurt_cheese": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_veg_legumes_beans": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "child_id": {
             "type": "integer"
           },
           "meal_type": {
             "type": "string",
-            "enum": ["Breakfast", "Lunch", "Dinner", "Snack", "Dessert"]
+            "enum": [
+              "Breakfast",
+              "Lunch",
+              "Dinner",
+              "Snack",
+              "Dessert"
+            ]
           }
         },
-        "required": ["child_id", "meal_name", "meal_type"]
+        "required": [
+          "child_id",
+          "meal_name",
+          "meal_type"
+        ]
       },
       "Meal": {
         "type": "object",
@@ -1044,35 +1093,41 @@
           },
           "servings_fruit": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_grain": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_meat_fish_eggs_nuts_seeds": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_milk_yoghurt_cheese": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_veg_legumes_beans": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "child_id": {
             "type": "integer"
           },
           "meal_type": {
             "type": "string",
-            "enum": ["Breakfast", "Lunch", "Dinner", "Snack", "Dessert"]
+            "enum": [
+              "Breakfast",
+              "Lunch",
+              "Dinner",
+              "Snack",
+              "Dessert"
+            ]
           },
           "meal_id": {
             "type": "integer",
@@ -1093,35 +1148,41 @@
           },
           "servings_fruit": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_grain": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_meat_fish_eggs_nuts_seeds": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_milk_yoghurt_cheese": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "servings_veg_legumes_beans": {
             "type": "number",
-            "default": 0,
-            "minimum": 0
+            "default": 0.0,
+            "minimum": 0.0
           },
           "child_id": {
             "type": "integer"
           },
           "meal_type": {
             "type": "string",
-            "enum": ["Breakfast", "Lunch", "Dinner", "Snack", "Dessert"]
+            "enum": [
+              "Breakfast",
+              "Lunch",
+              "Dinner",
+              "Snack",
+              "Dessert"
+            ]
           }
         }
       },
@@ -1132,7 +1193,9 @@
             "type": "string"
           }
         },
-        "required": ["message"]
+        "required": [
+          "message"
+        ]
       },
       "CreateMoodLog": {
         "type": "object",
@@ -1142,14 +1205,23 @@
           },
           "mood": {
             "type": "string",
-            "enum": ["laugh", "happy", "neutral", "sad", "angry"]
+            "enum": [
+              "laugh",
+              "happy",
+              "neutral",
+              "sad",
+              "angry"
+            ]
           },
           "notes": {
             "type": "string",
             "nullable": true
           }
         },
-        "required": ["child_id", "mood"]
+        "required": [
+          "child_id",
+          "mood"
+        ]
       },
       "MoodLog": {
         "type": "object",
@@ -1175,17 +1247,124 @@
             "readOnly": true
           }
         },
-        "required": ["child_id", "mood"]
+        "required": [
+          "child_id",
+          "mood"
+        ]
       },
       "UpdateMoodLog": {
         "type": "object",
         "properties": {
           "mood": {
             "type": "string",
-            "enum": ["laugh", "happy", "neutral", "sad", "angry"]
+            "enum": [
+              "laugh",
+              "happy",
+              "neutral",
+              "sad",
+              "angry"
+            ]
           },
           "notes": {
             "type": "string",
+            "nullable": true
+          }
+        }
+      },
+      "Child": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "M",
+              "F",
+              null
+            ],
+            "nullable": true
+          },
+          "meals_per_day": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
+            "nullable": true
+          },
+          "child_id": {
+            "type": "integer",
+            "readOnly": true
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time",
+            "readOnly": true
+          }
+        }
+      },
+      "CreateChild": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "M",
+              "F"
+            ]
+          },
+          "meals_per_day": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+          }
+        },
+        "required": [
+          "date_of_birth",
+          "gender",
+          "meals_per_day",
+          "name"
+        ]
+      },
+      "UpdateChild": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "date_of_birth": {
+            "type": "string",
+            "format": "date"
+          },
+          "gender": {
+            "type": "string",
+            "enum": [
+              "M",
+              "F",
+              null
+            ],
+            "nullable": true
+          },
+          "meals_per_day": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10,
             "nullable": true
           }
         }
