@@ -68,8 +68,9 @@ const GetMoodPage = () => {
   const mapEmojiToMood = (e: EmojiType | null): string | null => {
     if (!e) return null;
     switch (e) {
-      case "smile":
       case "laugh":
+        return "laugh"; // align with backend enum
+      case "smile":
         return "happy";
       case "frown":
         return "sad";
@@ -123,7 +124,7 @@ const GetMoodPage = () => {
               className="text-white bg-gray-700"
               onPress={handleCardChange}
             >
-              Change Card
+              <Text>Change Card</Text>
             </Button>
           </View>
 
@@ -172,7 +173,7 @@ const GetMoodPage = () => {
           />
 
           <Button className="mt-10 mb-10 text-white" onPress={handleSave}>
-            Save
+            <Text>Save</Text>
           </Button>
         </PageContainer>
       </ScrollView>
