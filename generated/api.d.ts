@@ -4,49 +4,6 @@
  */
 
 export interface paths {
-    "/recipes/recommend": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Recommend recipes
-         * @description Returns a list of recommended recipes.
-         */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Max items to return */
-                    limit?: number;
-                };
-                header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Recommended recipes */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Recipe"][];
-                    };
-                };
-                default: components["responses"]["DEFAULT_ERROR"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
     "/recipes/dietary-guidelines": {
         parameters: {
             query?: never;
@@ -61,11 +18,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Comma-separated guideline IDs, e.g., 1,2,3 */
+                    /** @description Comma-separated list of guideline IDs, e.g., 1,2,3 */
                     ids?: string;
                     /** @description Filter by gender */
-                    gender?: "M" | "F";
-                    /** @description Filter by age (min_age ≤ age ≤ max_age) */
+                    gender?: string;
+                    /** @description Filter by age range (min_age ≤ age ≤ max_age) */
                     age?: number;
                 };
                 header?: never;
@@ -74,15 +31,6 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Dietary guidelines */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["DietaryGuideline"][];
-                    };
-                };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -101,14 +49,11 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /**
-         * Get all ingredients with optional filters
-         * @description Get ingredients filtered by IDs, category, or partial name.
-         */
+        /** Get all ingredients with optional filters */
         get: {
             parameters: {
                 query?: {
-                    /** @description Ingredient IDs to filter (CSV), e.g. ids=1,2,5 */
+                    /** @description Ingredient IDs to filter, e.g. ids=1,2,5 */
                     ids?: string;
                     /** @description Category name to filter */
                     category?: string;
@@ -121,15 +66,6 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Ingredients */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Ingredient"][];
-                    };
-                };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -141,7 +77,7 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/recipes": {
+    "/recipes/": {
         parameters: {
             query?: never;
             header?: never;
@@ -155,7 +91,7 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Comma-separated recipe IDs, e.g., 1,2,3 */
+                    /** @description Comma-separated list of recipe IDs, e.g., 1,2,3 */
                     ids?: string;
                     /** @description Filter recipes whose name ILIKE this string */
                     recipe_name?: string;
@@ -172,15 +108,6 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Recipes */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Recipe"][];
-                    };
-                };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -206,11 +133,11 @@ export interface paths {
         get: {
             parameters: {
                 query?: {
-                    /** @description Comma-separated recipe_ingredient IDs, e.g., 1,2,3 */
+                    /** @description Comma-separated list of recipe_ingredient IDs, e.g., 1,2,3 */
                     ids?: string;
-                    /** @description Comma-separated recipe IDs to filter */
+                    /** @description Comma-separated list of recipe IDs to filter */
                     recipe_id?: string;
-                    /** @description Comma-separated ingredient IDs to filter */
+                    /** @description Comma-separated list of ingredient IDs to filter */
                     ingredient_id?: string;
                 };
                 header?: never;
@@ -219,13 +146,88 @@ export interface paths {
             };
             requestBody?: never;
             responses: {
-                /** @description Recipe ingredients */
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meals/": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        /** @description Create a new meal record */
+        post: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["CreateMeal"];
+                };
+            };
+            responses: {
+                /** @description Created */
+                201: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Meal"];
+                    };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/meals/child/{child_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                child_id: number;
+            };
+            cookie?: never;
+        };
+        /** @description Get all meals for a specific child */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description ID of the child */
+                    child_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["RecipeIngredient"][];
+                        "application/json": components["schemas"]["Meal"][];
                     };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
@@ -239,18 +241,113 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/mood/add": {
+    "/meals/{meal_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                meal_id: number;
+            };
+            cookie?: never;
+        };
+        get?: never;
+        /** @description Update a meal by ID */
+        put: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description ID of the meal */
+                    meal_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateMeal"];
+                };
+            };
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Meal"];
+                    };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        post?: never;
+        /** @description Delete a meal by ID */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description ID of the meal */
+                    meal_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mood_logs/": {
         parameters: {
             query?: never;
             header?: never;
             path?: never;
             cookie?: never;
         };
-        get?: never;
+        /**
+         * Get all mood logs
+         * @description Get all mood logs with optional filters
+         */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path?: never;
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MoodLog"][];
+                    };
+                };
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
         put?: never;
         /**
-         * Add a mood entry
-         * @description Adds a mood entry for a child. (Replace generic schema once MoodEntry is defined.)
+         * Create a new mood log
+         * @description Create a new mood log
          */
         post: {
             parameters: {
@@ -261,23 +358,20 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": {
-                        [key: string]: unknown;
-                    };
+                    "application/json": components["schemas"]["CreateMoodLog"];
                 };
             };
             responses: {
-                /** @description Mood entry created */
-                200: {
+                /** @description Created */
+                201: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: unknown;
-                        };
+                        "application/json": components["schemas"]["MoodLog"];
                     };
                 };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
@@ -287,81 +381,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/mood/on": {
+    "/mood_logs/{child_id}": {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                child_id: number;
+            };
             cookie?: never;
         };
         /**
-         * Get today's mood snapshot
-         * @description Returns current mood status (schema TBD).
+         * Get a mood log by child ID
+         * @description Get a single mood log by using the child ID
          */
         get: {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Current mood */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": {
-                            [key: string]: unknown;
-                        };
-                    };
-                };
-                default: components["responses"]["DEFAULT_ERROR"];
-            };
-        };
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/mood/history/{child_id}": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get mood history for a child */
-        get: {
-            parameters: {
-                query?: {
-                    /** @description Start date (inclusive), ISO-8601 */
-                    from?: string;
-                    /** @description End date (inclusive), ISO-8601 */
-                    to?: string;
-                };
-                header?: never;
                 path: {
+                    /** @description ID of the child to fetch the mood log for */
                     child_id: number;
                 };
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description Mood history list */
+                /** @description OK */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: unknown;
-                        }[];
+                        "application/json": components["schemas"]["MoodLog"][];
                     };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
@@ -375,36 +426,178 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
-    "/children/health": {
+    "/mood_logs/{mood_log_id}": {
         parameters: {
             query?: never;
             header?: never;
-            path?: never;
+            path: {
+                mood_log_id: number;
+            };
             cookie?: never;
         };
-        /**
-         * Children health overview
-         * @description Returns health info (schema TBD).
-         */
-        get: {
+        get?: never;
+        /** @description Update a mood log by ID */
+        put: {
             parameters: {
                 query?: never;
                 header?: never;
-                path?: never;
+                path: {
+                    /** @description ID of the mood log to update */
+                    mood_log_id: number;
+                };
                 cookie?: never;
             };
-            requestBody?: never;
+            requestBody: {
+                content: {
+                    "application/json": components["schemas"]["UpdateMoodLog"];
+                };
+            };
             responses: {
-                /** @description Health info */
+                /** @description OK */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": {
-                            [key: string]: unknown;
-                        };
+                        "application/json": components["schemas"]["MoodLog"];
                     };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        post?: never;
+        /**
+         * Delete a mood log
+         * @description Delete a mood log by ID
+         */
+        delete: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description ID of the mood log to delete */
+                    mood_log_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Message"];
+                    };
+                };
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mood_logs/latest/{child_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                child_id: number;
+            };
+            cookie?: never;
+        };
+        /** @description Get the latest mood log for a specific child */
+        get: {
+            parameters: {
+                query?: never;
+                header?: never;
+                path: {
+                    /** @description ID of the child to fetch the latest mood log for */
+                    child_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MoodLog"];
+                    };
+                };
+                /** @description Child not found or no mood logs available */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/mood_logs/range/{child_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                child_id: number;
+            };
+            cookie?: never;
+        };
+        /** @description Get all mood logs for a child between two timestamps */
+        get: {
+            parameters: {
+                query: {
+                    /** @description Start timestamp (ISO format, e.g. 2025-09-01T00:00:00) */
+                    start: string;
+                    /** @description End timestamp (ISO format, e.g. 2025-09-03T23:59:59) */
+                    end: string;
+                };
+                header?: never;
+                path: {
+                    /** @description ID of the child to fetch mood logs for */
+                    child_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["MoodLog"][];
+                    };
+                };
+                /** @description Missing or invalid parameters */
+                400: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
+                };
+                /** @description Child not found or no mood logs in the range */
+                404: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content?: never;
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
@@ -424,30 +617,39 @@ export interface paths {
             path?: never;
             cookie?: never;
         };
-        /** List children */
         get: {
             parameters: {
-                query?: never;
+                query?: {
+                    /** @description Filter by child IDs (comma separated, e.g. ids=1,2,3) */
+                    ids?: string;
+                };
                 header?: never;
                 path?: never;
                 cookie?: never;
             };
             requestBody?: never;
             responses: {
-                /** @description Children list */
+                /** @description List of children */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Child"][];
+                        /** @example [
+                         *       {
+                         *         "child_id": 1,
+                         *         "name": "Tom",
+                         *         "gender": "Male",
+                         *         "date_of_birth": "2018-06-12"
+                         *       }
+                         *     ] */
+                        "application/json": unknown;
                     };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         put?: never;
-        /** Create a child */
         post: {
             parameters: {
                 query?: never;
@@ -457,7 +659,13 @@ export interface paths {
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["Child"];
+                    /** @example {
+                     *       "name": "Alice",
+                     *       "gender": "F",
+                     *       "date_of_birth": "2019-05-20",
+                     *       "meals_per_day": 3
+                     *     } */
+                    "application/json": unknown;
                 };
             };
             responses: {
@@ -467,7 +675,13 @@ export interface paths {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Child"];
+                        /** @example {
+                         *       "child_id": 2,
+                         *       "name": "Alice",
+                         *       "gender": "Female",
+                         *       "date_of_birth": "2019-05-20"
+                         *     } */
+                        "application/json": unknown;
                     };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
@@ -488,65 +702,53 @@ export interface paths {
             };
             cookie?: never;
         };
-        /** Get a child */
-        get: {
-            parameters: {
-                query?: never;
-                header?: never;
-                path: {
-                    child_id: number;
-                };
-                cookie?: never;
-            };
-            requestBody?: never;
-            responses: {
-                /** @description Child */
-                200: {
-                    headers: {
-                        [name: string]: unknown;
-                    };
-                    content: {
-                        "application/json": components["schemas"]["Child"];
-                    };
-                };
-                default: components["responses"]["DEFAULT_ERROR"];
-            };
-        };
-        /** Update a child */
+        get?: never;
         put: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Child ID to update */
                     child_id: number;
                 };
                 cookie?: never;
             };
             requestBody: {
                 content: {
-                    "application/json": components["schemas"]["Child"];
+                    /** @example {
+                     *       "name": "Alice Updated",
+                     *       "gender": "F",
+                     *       "date_of_birth": "2019-05-20"
+                     *     } */
+                    "application/json": unknown;
                 };
             };
             responses: {
-                /** @description Updated child */
+                /** @description Child updated */
                 200: {
                     headers: {
                         [name: string]: unknown;
                     };
                     content: {
-                        "application/json": components["schemas"]["Child"];
+                        /** @example {
+                         *       "child_id": 2,
+                         *       "name": "Alice Updated",
+                         *       "gender": "Female",
+                         *       "date_of_birth": "2019-05-20"
+                         *     } */
+                        "application/json": unknown;
                     };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
         };
         post?: never;
-        /** Delete a child */
         delete: {
             parameters: {
                 query?: never;
                 header?: never;
                 path: {
+                    /** @description Child ID to delete */
                     child_id: number;
                 };
                 cookie?: never;
@@ -554,11 +756,16 @@ export interface paths {
             requestBody?: never;
             responses: {
                 /** @description Child deleted */
-                204: {
+                200: {
                     headers: {
                         [name: string]: unknown;
                     };
-                    content?: never;
+                    content: {
+                        /** @example {
+                         *       "message": "Child 2 deleted successfully"
+                         *     } */
+                        "application/json": unknown;
+                    };
                 };
                 default: components["responses"]["DEFAULT_ERROR"];
             };
@@ -655,10 +862,92 @@ export interface components {
             /** Format: date-time */
             readonly updatedAt?: string;
         };
+        CreateMeal: {
+            meal_name: string;
+            /** @default 0 */
+            servings_fruit: number;
+            /** @default 0 */
+            servings_grain: number;
+            /** @default 0 */
+            servings_meat_fish_eggs_nuts_seeds: number;
+            /** @default 0 */
+            servings_milk_yoghurt_cheese: number;
+            /** @default 0 */
+            servings_veg_legumes_beans: number;
+            child_id: number;
+            /** @enum {string} */
+            meal_type: "Breakfast" | "Lunch" | "Dinner" | "Snack" | "Dessert";
+        };
+        Meal: {
+            meal_name?: string;
+            /** @default 0 */
+            servings_fruit: number;
+            /** @default 0 */
+            servings_grain: number;
+            /** @default 0 */
+            servings_meat_fish_eggs_nuts_seeds: number;
+            /** @default 0 */
+            servings_milk_yoghurt_cheese: number;
+            /** @default 0 */
+            servings_veg_legumes_beans: number;
+            child_id?: number;
+            /** @enum {string} */
+            meal_type?: "Breakfast" | "Lunch" | "Dinner" | "Snack" | "Dessert";
+            readonly meal_id?: number;
+            /** Format: date-time */
+            readonly created_at?: string;
+        };
+        UpdateMeal: {
+            meal_name?: string;
+            /** @default 0 */
+            servings_fruit: number;
+            /** @default 0 */
+            servings_grain: number;
+            /** @default 0 */
+            servings_meat_fish_eggs_nuts_seeds: number;
+            /** @default 0 */
+            servings_milk_yoghurt_cheese: number;
+            /** @default 0 */
+            servings_veg_legumes_beans: number;
+            child_id?: number;
+            /** @enum {string} */
+            meal_type?: "Breakfast" | "Lunch" | "Dinner" | "Snack" | "Dessert";
+        };
+        Message: {
+            message: string;
+        };
+        CreateMoodLog: {
+            child_id: number;
+            /** @enum {string} */
+            mood: "laugh" | "happy" | "neutral" | "sad" | "angry";
+            notes?: string | null;
+        };
+        MoodLog: {
+            readonly mood_log_id?: number;
+            child_id: number;
+            mood: string;
+            notes?: string | null;
+            /** Format: date-time */
+            readonly created_at?: string;
+        };
+        UpdateMoodLog: {
+            /** @enum {string} */
+            mood?: "laugh" | "happy" | "neutral" | "sad" | "angry";
+            notes?: string | null;
+        };
     };
     responses: {
         /** @description Default error response */
         DEFAULT_ERROR: {
+            headers: {
+                [name: string]: unknown;
+            };
+            content: {
+                "application/json": components["schemas"]["Error"];
+            };
+        };
+        /** @description Unprocessable Content */
+        UNPROCESSABLE_CONTENT: {
             headers: {
                 [name: string]: unknown;
             };
