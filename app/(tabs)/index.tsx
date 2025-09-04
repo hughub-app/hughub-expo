@@ -185,9 +185,12 @@ export default function HomeScreen() {
       <PageHead title="Home" description="Welcome to HugHub!" />
       <ScrollView>
         <PageContainer>
-          <Text className="!text-3xl font-bold text-gray-900 mb-2">
-            HugHub
-          </Text>
+          <View className="flex-row items-center mb-2 gap-2">
+            <img src="/HugHub.svg" width={32} height={32} alt="HugHub logo" />
+            <Text className="!text-3xl font-bold text-gray-900">
+              HugHub
+            </Text>
+          </View>
           <Text className="text-gray-600 mb-6">
           </Text>
 
