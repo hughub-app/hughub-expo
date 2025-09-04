@@ -283,6 +283,11 @@ export function makeCrud<
         params: { path: { [idParam as string]: id } as any },
         ...(optsArg?.auth ? withAuth(optsArg.auth.token) : {}),
       });
+      try {
+        if (typeof __DEV__ !== 'undefined' && __DEV__) {
+          console.log('HTTP GET', res.response.url, res.response.status);
+        }
+      } catch {}
       if (!res.response.ok) {
         await notifyHttpError(res.response, optsArg?.error);
         if (optsArg?.throwError) throw new Error(await toErrorMessage(res.response));

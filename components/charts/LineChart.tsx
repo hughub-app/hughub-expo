@@ -16,6 +16,7 @@ interface LineChartProps {
   title?: string;
   color?: string;
   gradient?: boolean;
+  height?: number;
 }
 
 const { width: screenWidth } = Dimensions.get('window');
@@ -24,7 +25,8 @@ export function LineChart({
   data, 
   title = 'Chart', 
   color = '#007AFF',
-  gradient = true 
+  gradient = true,
+  height = 200,
 }: LineChartProps) {
   return (
     <View className="bg-white rounded-xl p-4 shadow-sm">
@@ -33,7 +35,7 @@ export function LineChart({
       )}
       <VictoryChart
         width={screenWidth - 64}
-        height={200}
+        height={height}
         padding={{ left: 50, top: 20, right: 20, bottom: 50 }}
       >
         <VictoryAxis

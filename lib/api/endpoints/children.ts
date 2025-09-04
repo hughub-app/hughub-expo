@@ -15,8 +15,8 @@ const crud = makeCrud<
   ChildrenQuery,// TListQuery
   number        // TId
 >({
-  basePath: '/children/',                // note the trailing slash if your spec has it
-  byIdPath: '/children/{child_id}',      // matches the spec
+  basePath: '/children/',                // trailing slash for list
+  byIdPath: '/children/{child_id}/',     // many backends require trailing slash for detail
   idParam: 'child_id',
 });
 

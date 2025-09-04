@@ -1,7 +1,7 @@
 // app/child/[child_id].tsx
 
-import React from "react";
-import { View, ScrollView } from "react-native";
+import React, { useEffect } from "react";
+import { View, ScrollView, ActivityIndicator } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "@/components/ui/text";
@@ -11,17 +11,31 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { RingChart } from "@/components/charts/RingChart";
 import Emoji from "@/components/emoji";
+import { useMoodStore } from "@/hooks/useMoodStore";
 import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
-import { mockChildren } from "@/mocks/mockChildren";
 import ChildDashboardTodayIntake from "@/components/ChildDashboardTodayIntake";
+import { usePersistChildId } from "@/lib/hooks/usePersistChildId";
+import { useChildById } from "@/lib/hooks/useChildById";
 
 export default function ChildScreen() {
-  const { child_id } = useLocalSearchParams<{ child_id: string }>();
+  const params = useLocalSearchParams();
+  const childIdParam = Array.isArray(params.child_id) ? params.child_id?.[0] : (params.child_id as string | undefined);
   const router = useRouter();
 
-  const child = mockChildren.find((c) => c.child_id === Number(child_id));
+  // Persist provided id for later reuse across pages
+  usePersistChildId(typeof childIdParam === 'string' ? childIdParam : undefined);
+
+  const idNum = typeof childIdParam === 'string' ? Number(childIdParam) : NaN;
+  const { child, loading, error } = useChildById(Number.isFinite(idNum) ? idNum : null);
+  const todayIntakes = child?.todayIntakes;
+
+  // Debug: verify the exact route param received and normalization
+  useEffect(() => {
+    console.log('Route child_id raw:', params.child_id, 'normalized:', childIdParam, 'numeric:', idNum);
+  }, [params.child_id]);
+
 
   // mock mood data for past week
   const mockMoodData = [
@@ -33,6 +47,32 @@ export default function ChildScreen() {
     { x: 6, y: 4 },
     { x: 7, y: 3 },
   ];
+
+  const currentEmoji = useMoodStore((s) => s.currentEmoji);
+
+  if (loading) {
+    return (
+      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+        <ActivityIndicator />
+      </View>
+    );
+  }
+
+  if (error && !child) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center">
+        <Text>{error}</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (!child) {
+    return (
+      <SafeAreaView className="flex-1 items-center justify-center">
+        <Text>Child not found.</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView className="flex-1">
@@ -48,25 +88,30 @@ export default function ChildScreen() {
             </CardHeader>
             <CardContent>
               {/* Monthly Mood Overview LineChart*/}
-              <LineChart
-                data={mockMoodData}
-                title="Monthly Mood Overview"
-                color="#00D4AA"
-              />
+              <View className="">
+                <LineChart
+                  data={mockMoodData}
+                  title="Monthly Mood Overview"
+                  color="#00D4AA"
+                  height={280}
+                />
+              </View>
 
               {/* Mood Static Card */}
               <View className="flex-row space-x-6 top-6">
                 {/* Weekly Average Card */}
-                <Card className="flex-1 mr-2 items-center">
-                  <View className="flex-row justify-center align-middle h-fit">
-                    <Emoji type="laugh" />
-                    <View>
-                      <CardHeader>
+                <Card className="flex-1 mr-2">
+                  <View className="flex-row items-center p-4">
+                    <View className="mr-4">
+                      <Emoji type={currentEmoji} size={40} />
+                    </View>
+                    <View className="flex-1">
+                      <CardHeader className="p-0">
                         <CardTitle className="text-3xl">
                           Weekly Average
                         </CardTitle>
                       </CardHeader>
-                      <CardContent>
+                      <CardContent className="p-0 pt-2">
                         <Text className="text-lg text-gray-800">
                           Average Mood: 3.5/5
                         </Text>
@@ -75,16 +120,23 @@ export default function ChildScreen() {
                   </View>
                 </Card>
                 {/* Lastest Mood */}
-                <Card className="flex-1 ml-2 items-center">
-                  <CardHeader>
-                    <CardTitle className="text-3xl">Latest Mood</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <Text className="text-lg text-gray-800">Mood: 4/5</Text>
-                    <Text className="text-sm text-gray-500 mt-1">
-                      Recorded on: 2024-06-20
-                    </Text>
-                  </CardContent>
+                <Card className="flex-1 ml-2">
+                  <View className="flex-row items-center p-4">
+                    <View className="mr-4">
+                      <Emoji type={currentEmoji} size={40} />
+                    </View>
+                    <View className="flex-1">
+                      <CardHeader className="p-0">
+                        <CardTitle className="text-3xl">Latest Mood</CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0 pt-2">
+                        <Text className="text-lg text-gray-800">Mood: 4/5</Text>
+                        <Text className="text-sm text-gray-500 mt-1">
+                          Recorded on: 2024-06-20
+                        </Text>
+                      </CardContent>
+                    </View>
+                  </View>
                 </Card>
               </View>
 
@@ -122,16 +174,16 @@ export default function ChildScreen() {
                 onPress={() => {
                   router.push({
                     pathname: "/GetMood/[child_id]",
-                    params: { child_id },
+                    params: { child_id: String(childIdParam) },
                   });
                 }}
               >
-                <Text>Get Mood</Text>
+                <Text>Update Mood</Text>
               </Button>
             </CardContent>
           </Card>
 
-          <ChildDashboardTodayIntake childId={child_id} />
+          <ChildDashboardTodayIntake childId={idNum.toString()} />
         </PageContainer>
       </ScrollView>
     </SafeAreaView>

@@ -7,9 +7,9 @@ const baseUrl = process.env.EXPO_PUBLIC_API_URL;
 //   throw new Error('Missing EXPO_PUBLIC_API_URL at build time');
 // }
 
+// Do not set global Content-Type to avoid CORS preflight on GET
 export const api = createClient<paths>({
-  baseUrl, // e.g. https://your-flask-api.example.com
-  headers: { 'Content-Type': 'application/json' },
+  baseUrl,
 });
 
 export const withAuth = (token?: string) =>

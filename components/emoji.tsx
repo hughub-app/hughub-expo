@@ -1,8 +1,10 @@
 import { Angry, Frown, Laugh, Meh, Smile } from "lucide-react-native";
 import React from "react";
 
+export type EmojiType = 'laugh' | 'smile' | 'meh' | 'frown' | 'angry';
+
 interface EmojiProps {
-    type: 'laugh' | 'smile' | 'meh' | 'frown' | 'angry';
+    type: EmojiType;
     className?: string;
     size?: number;
 }
