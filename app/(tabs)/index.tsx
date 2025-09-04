@@ -30,7 +30,7 @@ import { Toast } from "toastify-react-native";
 import { PortalHost } from "@rn-primitives/portal";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 // import { useRouter } from "expo-router";
-import { getChildIds } from "@/lib/storage/childIds";
+import { addChildIds, getChildIds } from "@/lib/storage/childIds";
 
 export default function HomeScreen() {
   const [children, setChildren] = useState<Child[]>([]);
@@ -166,6 +166,7 @@ export default function HomeScreen() {
         auth: { token: token || undefined },
       });
       const created = res?.item ?? newChild; // fallback to local when API returns no body
+      addChildIds(String(created.child_id));
       setChildrenIds((prev) => [...prev, String(created.child_id)]);
       // setChildren((prev) => [...prev, created]);
       Toast.success("Child added successfully");
@@ -184,11 +185,10 @@ export default function HomeScreen() {
       <PageHead title="Home" description="Welcome to HugHub!" />
       <ScrollView>
         <PageContainer>
-          <Text className="text-3xl font-bold text-gray-900 mb-2">
-            Welcome to Your Health Dashboard
+          <Text className="!text-3xl font-bold text-gray-900 mb-2">
+            HugHub
           </Text>
           <Text className="text-gray-600 mb-6">
-            Track your progress with beautiful charts and insights
           </Text>
 
           {children.length === 0 ? (
