@@ -34,7 +34,7 @@ import {
   DietaryGuideline,
   listDietaryGuidelines,
 } from "@/lib/api/endpoints/dietaryGuidelines";
-import { getMealsByChildInRange, Meal } from "@/lib/api/endpoints/meals";
+import { createMeal, CreateMeal, getMealsByChildInRange, Meal } from "@/lib/api/endpoints/meals";
 import moment from "moment";
 import { getAge } from "@/lib/utils";
 
@@ -53,8 +53,7 @@ export default function RecipePage() {
   >([]);
 
   const [hasConfirmed, setHasConfirmed] = useState(false);
-
-  // const recipe = mockRecipes.find((r) => r.recipe_id === Number(recipe_id));
+  const [isCreatingMeal, setIsCreatingMeal] = useState(false);
 
   const ingredientsWithGrams = ingredients.map((ing) => ({
     ingredient: ing,
@@ -153,11 +152,16 @@ export default function RecipePage() {
     },
     { vegetable: 0, protein: 0, fruit: 0, grain: 0, dairy: 0 }
   );
+
   useEffect(() => {
     console.log('Fetching meals for child', childId)
     if (childId) {
-      const endOfToday = moment().endOf("day").toDate();
-      const startOfDay = moment().startOf("day").toDate();
+      const startOfDay = new Date();
+      startOfDay.setUTCHours(0, 0, 0, 0);
+      const endOfToday = new Date();
+      endOfToday.setUTCHours(23, 59, 59, 999);
+
+      console.log('from', startOfDay.toISOString(), 'to', endOfToday.toISOString())
       getMealsByChildInRange?.(Number(childId), {
         start: startOfDay.toISOString(),
         end: endOfToday.toISOString(),
@@ -201,6 +205,8 @@ export default function RecipePage() {
     {} as Record<CategoryType, number>
   );
 
+  console.log(totalGramsPerIngredientType, ingredientsWithGrams)
+
   const totalGramsPerIngredientTypeState = Object.values(CategoryType).reduce(
     (acc, category) => {
       acc[category] = menuIngredients
@@ -219,12 +225,17 @@ export default function RecipePage() {
     {} as Record<CategoryType, number>
   );
 
+
+
   function calcServing(
     servings: number | undefined | null,
     type: CategoryType,
     totalGrams: Record<CategoryType, number>,
     stateGrams: Record<CategoryType, number>
   ): number {
+    if (type === CategoryType.Fruit) {
+      console.log('calcServing', { servings, type, totalGrams, stateGrams })
+    }
     const base = servings || 0;
     const denominator = totalGrams[type];
     const ratio = denominator === 0 ? 0 : stateGrams[type] / denominator;
@@ -286,7 +297,23 @@ export default function RecipePage() {
   };
 
   function handleConfirm() {
-    setHasConfirmed(true);
+    if (recipe) {
+      setHasConfirmed(true);
+      const newMeal: CreateMeal = {
+        servings_veg_legumes_beans: servingPerIngredientType.vegetable,
+        servings_meat_fish_eggs_nuts_seeds: servingPerIngredientType.protein,
+        servings_fruit: servingPerIngredientType.fruit,
+        servings_grain: servingPerIngredientType.grain,
+        servings_milk_yoghurt_cheese: servingPerIngredientType.dairy,
+        meal_name: recipe?.recipe_name || "Custom Meal",
+        child_id: Number(child_id),
+        meal_type: recipe.recipe_type as any,
+      };
+      setIsCreatingMeal(true);
+      createMeal(newMeal).finally(() => {
+        setIsCreatingMeal(false);
+      });
+    }
   }
 
   function handleSkip(ingredientId: number) {
@@ -339,6 +366,7 @@ export default function RecipePage() {
         onConfirm={() => {
           router.replace(`/(tabs)/diet/${child.child_id}`);
         }}
+        loading={isCreatingMeal}
       />
       <ScrollView>
         <PageContainer>

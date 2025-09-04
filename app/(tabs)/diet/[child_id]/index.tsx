@@ -1,7 +1,6 @@
-import { Link, Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { View, ActivityIndicator, ScrollView } from "react-native";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
+import { View, ScrollView } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
-import Rings from "@/components/charts/Rings";
 import { mockChildren } from "@/mocks/mockChildren";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -12,8 +11,6 @@ import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
 import WeeklyIntakeSection from "@/components/feed/WeeklyIntakeSection";
-import { mockIngredients } from "@/mocks/mockIngredients";
-import { mockRecipes } from "@/mocks/mockRecipes";
 import { getMealsByChildInRange, Meal } from "@/lib/api/endpoints/meals";
 import moment from "moment";
 import { DietaryGuideline, listDietaryGuidelines } from "@/lib/api/endpoints/dietaryGuidelines";
@@ -59,11 +56,14 @@ export default function DietByChildPage() {
   const child = mockChildren.find((c) => c.child_id === Number(childId));
   const age = getAge(child?.date_of_birth ? new Date(child.date_of_birth) : new Date());
 
-  const endOfToday = useMemo(() => moment().endOf("day").toDate(), []);
-  const startOfDay = useMemo(() => moment().startOf("day").toDate(), []);
-
+  
   useEffect(() => {
     if (childId) {
+      const startOfDay = new Date();
+      startOfDay.setUTCHours(0, 0, 0, 0);
+      const endOfToday = new Date();
+      endOfToday.setUTCHours(23, 59, 59, 999);
+
       getMealsByChildInRange?.(Number(childId), {
         start: startOfDay.toISOString(),
         end: endOfToday.toISOString(),
@@ -73,7 +73,7 @@ export default function DietByChildPage() {
         }
       });
     }
-  }, [childId, endOfToday, startOfDay]);
+  }, [childId]);
 
   const [guidelines, setGuidelines] = useState<DietaryGuideline[]>([]);
   const guide = guidelines?.[0];
@@ -162,7 +162,7 @@ export default function DietByChildPage() {
                       }}
                     />
                     <Text className="mt-2 text-sm text-gray-500">
-                      Cooked on: 2024-06-20
+                      Cooked on: {moment(lastMeal.created_at).format("LLL")}
                     </Text>
                   </View>
                 </>

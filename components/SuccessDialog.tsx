@@ -10,6 +10,7 @@ import {
   DialogTitle,
   DialogDescription,
 } from "@/components/ui/dialog";
+import HHSpinner from "./HHSpinner";
 
 type SuccessDialogProps = {
   open: boolean;
@@ -18,6 +19,8 @@ type SuccessDialogProps = {
   description?: string;
   buttonText?: string;
   onConfirm?: () => void;
+  loading?: boolean;
+  loadingText?: string;
 };
 
 export const SuccessDialog: React.FC<SuccessDialogProps> = ({
@@ -27,18 +30,34 @@ export const SuccessDialog: React.FC<SuccessDialogProps> = ({
   description = "Your action was completed successfully.",
   buttonText = "OK",
   onConfirm,
+  loading = false,
+  loadingText = "Processing...",
 }) => {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent>
         <DialogHeader>
           <View className="items-center mb-4">
-            <CheckCircle2 size={48} className="text-green-400" />
+            {
+              loading ? (
+                <HHSpinner size={48} />
+              ) : (
+                <CheckCircle2 size={48} className="text-green-400" />
+              )
+            }
           </View>
-          <DialogTitle className="text-center">{title}</DialogTitle>
-          <DialogDescription className="text-center">
-            {description}
-          </DialogDescription>
+          {
+            loading ? (
+              <Text className="text-center text-xl mb-4">{loadingText}</Text>
+            ) : (
+              <>
+                <DialogTitle className="text-center">{title}</DialogTitle>
+                <DialogDescription className="text-center">
+                  {description}
+                </DialogDescription>
+              </>
+            )
+          }
         </DialogHeader>
         <Button
           className="mt-6"

@@ -22,11 +22,14 @@ export default function WeeklyIntakeSection({
 
   const [meals, setMeals] = useState<Meal[]>([]);
 
-  const endOfToday = useMemo(() => moment().endOf("day").toDate(), []);
-  const startOfWeek = useMemo(() => moment().startOf("week").toDate(), []);
-
   useEffect(() => {
     if (childId) {
+      const endOfToday = new Date();
+      endOfToday.setUTCHours(23, 59, 59, 999);
+
+      const startOfWeek = moment().startOf("week").toDate();
+      startOfWeek.setUTCHours(0, 0, 0, 0);
+
       getMealsByChildInRange?.(Number(childId), {
         start: startOfWeek.toISOString(),
         end: endOfToday.toISOString(),
@@ -36,7 +39,7 @@ export default function WeeklyIntakeSection({
         }
       });
     }
-  }, [childId, endOfToday, startOfWeek]);
+  }, [childId]);
 
   const mealsByDay = useMemo(() => {
     const grouped: Record<string, Meal[]> = {};
@@ -118,7 +121,9 @@ export default function WeeklyIntakeSection({
     <View className="my-4 grid grid-cols-7 justify-between items-center">
       {dates.map((date, idx) => {
         const isFuture = date > today;
-        const totalIntake = totalIntakesByDay[date.toISOString().split("T")[0]] || {
+        const totalIntake = totalIntakesByDay[
+          date.toISOString().split("T")[0]
+        ] || {
           vegetable: 0,
           protein: 0,
           fruit: 0,
