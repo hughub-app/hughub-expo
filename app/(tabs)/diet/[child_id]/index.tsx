@@ -134,6 +134,7 @@ export default function DietByChildPage() {
             <BackButton fallbackUrl={`/(tabs)/child/${childId}`} />
             <View className="flex-1 p-4 gap-4">
               <Text className="!text-3xl font-bold">{child?.name}'s Diet</Text>
+              <Text className="!text-2xl font-bold">Today</Text>
               <View className="flex-row gap-6 justify-center items-center">
                 <NutritionRings
                   values={todaysIntake}
@@ -141,6 +142,7 @@ export default function DietByChildPage() {
                 />
                 <NutritionLabels />
               </View>
+              <Text className="!text-2xl font-bold">This Week</Text>
               <WeeklyIntakeSection childId={childId} target={target} />
               {/* Replace with your real UI (FlatList of meals, etc.) */}
               {lastMeal && (
