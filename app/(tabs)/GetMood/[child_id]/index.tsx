@@ -104,6 +104,8 @@ const GetMoodPage = () => {
           </Text>
           <View className="flex-row justify-center mt-5">
             {emotions.map((emotion) => (
+
+
               <Button
                 key={emotion}
                 onPress={() => handleEmojiSelect(emotion)}
@@ -116,6 +118,8 @@ const GetMoodPage = () => {
                 <Emoji type={emotion} size={64} />
               </View>
               </Button>
+
+              
             ))}
           </View>
 

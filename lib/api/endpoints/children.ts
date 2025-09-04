@@ -4,7 +4,8 @@ import type { components } from '@/generated/api';
 
 export type Child = components['schemas']['Child'] & { todayIntakes?: Intakes };
 export type ChildList = Child[];
-type ChildrenQuery = undefined; // no query params in the spec
+// Allow filtering by ids, e.g. GET /children/?ids=1,2
+export type ChildrenQuery = { ids?: string } | undefined;
 
 // keep the literal paths so your api client matches correctly
 const crud = makeCrud<
