@@ -90,12 +90,12 @@ export default function ChildScreen() {
             <CardContent>
               {/* Monthly Mood Overview LineChart*/}
               <View className="">
-              <LineChart
-                data={mockMoodData}
-                title="Monthly Mood Overview"
-                color="#00D4AA"
-                height={280}
-              />
+                <LineChart
+                  data={mockMoodData}
+                  title="Monthly Mood Overview"
+                  color="#00D4AA"
+                  height={280}
+                />
               </View>
 
               {/* Mood Static Card */}
@@ -108,10 +108,14 @@ export default function ChildScreen() {
                     </View>
                     <View className="flex-1">
                       <CardHeader className="p-0">
-                        <CardTitle className="text-3xl">Weekly Average</CardTitle>
+                        <CardTitle className="text-3xl">
+                          Weekly Average
+                        </CardTitle>
                       </CardHeader>
                       <CardContent className="p-0 pt-2">
-                        <Text className="text-lg text-gray-800">Average Mood: 3.5/5</Text>
+                        <Text className="text-lg text-gray-800">
+                          Average Mood: 3.5/5
+                        </Text>
                       </CardContent>
                     </View>
                   </View>
@@ -128,7 +132,9 @@ export default function ChildScreen() {
                       </CardHeader>
                       <CardContent className="p-0 pt-2">
                         <Text className="text-lg text-gray-800">Mood: 4/5</Text>
-                        <Text className="text-sm text-gray-500 mt-1">Recorded on: 2024-06-20</Text>
+                        <Text className="text-sm text-gray-500 mt-1">
+                          Recorded on: 2024-06-20
+                        </Text>
                       </CardContent>
                     </View>
                   </View>
@@ -188,19 +194,28 @@ export default function ChildScreen() {
                 Today's Intakes
               </Text>
               <View className="mt-20 order-1 md:order-2">
-                <View className="flex-row justify-center gap-4 ">
-                  {todayIntakes && (
+                <View className="flex-row justify-center items-center gap-4 ">
+                  {/* {todayIntakes && ( */}
                     <NutritionRings
-                      values={todayIntakes}
+                      values={
+                        // child?.todayIntakes || 
+                        {
+                          vegetable: 3,
+                          protein: 4,
+                          fruit: 2,
+                          grain: 2,
+                          dairy: 1,
+                        }
+                      }
                       target={{
-                        vegetable: 6,
+                        dairy: 6,
                         protein: 5,
-                        fruit: 6,
-                        grain: 4,
-                        dairy: 4,
+                        grain: 5,
+                        vegetable: 6,
+                        fruit: 3,
                       }}
                     />
-                  )}
+                  {/* )} */}
                   <NutritionLabels />
                 </View>
               </View>
