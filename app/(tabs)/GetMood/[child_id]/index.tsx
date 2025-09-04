@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { View, ScrollView } from "react-native";
+import { View, ScrollView, Pressable } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Text } from "@/components/ui/text";
@@ -104,22 +104,21 @@ const GetMoodPage = () => {
           </Text>
           <View className="flex-row justify-center mt-5">
             {emotions.map((emotion) => (
-
-
-              <Button
+              <Pressable
                 key={emotion}
+                accessibilityRole="button"
                 onPress={() => handleEmojiSelect(emotion)}
-                className={`mx-1 justify-center items-center w-24 h-24 rounded-xl${
-                  selectedEmotion === emotion ? "border border-blue-500" : ""
-                }`}
-                variant="outline"
               >
-              <View className="">
-                <Emoji type={emotion} size={64} />
-              </View>
-              </Button>
-
-              
+                <Card
+                  className={`mx-1 justify-center items-center w-24 h-24 ${
+                    selectedEmotion === emotion ? "border border-blue-500" : ""
+                  }`}
+                >
+                  <CardContent className="p-0 mt-6 items-center justify-center">
+                    <Emoji type={emotion} size={64} className="justify-center" />
+                  </CardContent>
+                </Card>
+              </Pressable>
             ))}
           </View>
 
