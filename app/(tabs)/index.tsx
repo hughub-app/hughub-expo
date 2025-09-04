@@ -12,7 +12,15 @@ import ChildCard from "@/components/ChildCard";
 import { Link } from "expo-router";
 import PageContainer from "@/components/PageContainer";
 import { PageHead } from "@/components/PageHead";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger, DialogFooter } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+  DialogFooter,
+} from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 // removed Select dropdown for gender in favor of RadioGroup
 import { getAge } from "@/lib/utils";
@@ -21,23 +29,42 @@ import { getToken } from "@/lib/token";
 import { Toast } from "toastify-react-native";
 import { PortalHost } from "@rn-primitives/portal";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { useRouter } from "expo-router";
-
+// import { useRouter } from "expo-router";
+import { getChildIds } from "@/lib/storage/childIds";
 
 export default function HomeScreen() {
-  const [children, setChildren] = useState<Child[]>(mockChildren);
+  const [children, setChildren] = useState<Child[]>([]);
+  const [childrenIds, setChildrenIds] = useState<string[]>([]);
   const [submitting, setSubmitting] = useState(false);
   const [dialogOpen, setDialogOpen] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
-    (async () => {
-      try {
-        const items = await listChildren(undefined, { throwError: false });
-        if (Array.isArray(items) && items.length) setChildren(items as Child[]);
-      } catch {}
-    })();
+    const fetchChildrenIds = async () => {
+      const ids = await getChildIds();
+      console.log(ids);
+      setChildrenIds(ids);
+    };
+    fetchChildrenIds();
   }, []);
+
+  useEffect(() => {
+    const fetchChildren = async () => {
+      if (childrenIds.length > 0) {
+        try {
+          console.log("Fetching children with IDs:", childrenIds);
+          const items = await listChildren(
+            {
+              ids: childrenIds.join(","),
+            },
+            { throwError: false }
+          );
+          if (Array.isArray(items) && items.length)
+            setChildren(items as Child[]);
+        } catch {}
+      }
+    };
+    fetchChildren();
+  }, [childrenIds]);
 
   // dialog state
   const [name, setName] = useState("");
@@ -120,7 +147,9 @@ export default function HomeScreen() {
     setMealsError(mErr);
     if (nErr || dErr || gErr || mErr) return;
     // const nextId = (children.reduce((m, c) => Math.max(m, c.child_id), 0) || 0) + 1;
-    const isoDob = isNaN(Number(dob)) ? dob : new Date(Number(dob)).toISOString().slice(0, 10);
+    const isoDob = isNaN(Number(dob))
+      ? dob
+      : new Date(Number(dob)).toISOString().slice(0, 10);
     // const nowIso = new Date().toISOString();
     const newChild: Child = {
       // child_id: nextId,
@@ -132,9 +161,13 @@ export default function HomeScreen() {
     try {
       setSubmitting(true);
       const token = await getToken();
-      const res = await createChild(newChild, { throwError: true, auth: { token: token || undefined } });
+      const res = await createChild(newChild, {
+        throwError: true,
+        auth: { token: token || undefined },
+      });
       const created = res?.item ?? newChild; // fallback to local when API returns no body
-      setChildren((prev) => [...prev, created]);
+      setChildrenIds((prev) => [...prev, String(created.child_id)]);
+      // setChildren((prev) => [...prev, created]);
       Toast.success("Child added successfully");
       resetForm();
       setDialogOpen(false);
@@ -158,20 +191,29 @@ export default function HomeScreen() {
             Track your progress with beautiful charts and insights
           </Text>
 
-          <View className="gap-4">
-            {children.map((child) => (
-              <Link
-                key={child.child_id}
-                asChild
-                href={{
-                  pathname: "/child/[child_id]",
-                  params: { child_id: String(child.child_id) },
-                }}
-              >
-                <ChildCard child={child} />
-              </Link>
-            ))}
-          </View>
+          {children.length === 0 ? (
+            <View className="items-center mt-20">
+              <Text className="!text-3xl">
+                Welcome to <span className="font-bold">HugHub!</span>
+              </Text>
+              <Text className="text-gray-500 mb-4 mt-2">Let's add your children and see how HugHub can help you raise a healthier future!</Text>
+            </View>
+          ) : (
+            <View className="gap-4">
+              {children.map((child) => (
+                <Link
+                  key={child.child_id}
+                  asChild
+                  href={{
+                    pathname: "/child/[child_id]",
+                    params: { child_id: String(child.child_id) },
+                  }}
+                >
+                  <ChildCard child={child} />
+                </Link>
+              ))}
+            </View>
+          )}
 
           <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <PortalHost name="dialog" />
@@ -190,16 +232,19 @@ export default function HomeScreen() {
               </DialogHeader>
               <View className="gap-3 mt-2">
                 <View>
-                  <Text className="mb-1">Name</Text>
+                  <Text className="mb-1">Nick Name</Text>
                   <Input
                     value={name}
                     onChangeText={(v) => {
                       setName(v);
                       setNameError(validateName(v));
                     }}
-                    placeholder="e.g., Maya Chen"
+                    placeholder="e.g., Maya"
                     className={nameError ? "border-red-500" : undefined}
                   />
+                    <Text className="text-slate-300 text-sm mt-1">
+                      (for privacy, use a nickname or initials)
+                    </Text>
                   {nameError ? (
                     <Text className="text-red-500 text-sm mt-1">
                       {nameError}
