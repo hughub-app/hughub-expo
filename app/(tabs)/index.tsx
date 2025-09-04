@@ -119,11 +119,11 @@ export default function HomeScreen() {
     setGenderError(gErr);
     setMealsError(mErr);
     if (nErr || dErr || gErr || mErr) return;
-    const nextId = (children.reduce((m, c) => Math.max(m, c.child_id), 0) || 0) + 1;
+    // const nextId = (children.reduce((m, c) => Math.max(m, c.child_id), 0) || 0) + 1;
     const isoDob = isNaN(Number(dob)) ? dob : new Date(Number(dob)).toISOString().slice(0, 10);
-    const nowIso = new Date().toISOString();
+    // const nowIso = new Date().toISOString();
     const newChild: Child = {
-      child_id: nextId,
+      // child_id: nextId,
       name,
       date_of_birth: isoDob,
       gender: gender === "male" ? "M" : "F",
