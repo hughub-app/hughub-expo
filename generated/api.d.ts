@@ -335,6 +335,51 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/meals/range/{child_id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                child_id: number;
+            };
+            cookie?: never;
+        };
+        /** @description Get all meals for a child within a time range */
+        get: {
+            parameters: {
+                query: {
+                    start: string;
+                    end: string;
+                };
+                header?: never;
+                path: {
+                    child_id: number;
+                };
+                cookie?: never;
+            };
+            requestBody?: never;
+            responses: {
+                /** @description OK */
+                200: {
+                    headers: {
+                        [name: string]: unknown;
+                    };
+                    content: {
+                        "application/json": components["schemas"]["Meal"][];
+                    };
+                };
+                422: components["responses"]["UNPROCESSABLE_CONTENT"];
+                default: components["responses"]["DEFAULT_ERROR"];
+            };
+        };
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/mood_logs/": {
         parameters: {
             query?: never;
