@@ -12,6 +12,8 @@ import BackButton from "@/components/BackButton";
 import PageContainer from "@/components/PageContainer";
 import { PageHead } from "@/components/PageHead";
 import { mockChildren } from "@/mocks/mockChildren";
+import { Toast } from "toastify-react-native";
+import { logMood } from "@/lib/api/endpoints/moodLogs";
 
 const GetMoodPage = () => {
   const router = useRouter();
@@ -63,11 +65,46 @@ const GetMoodPage = () => {
     setCurrentEmoji(emotion);
   };
 
-  const handleSave = () => {
-    // Record the thoughts and selected emotion locally
-    console.log("Saved emotion:", selectedEmotion);
-    console.log("Saved thoughts:", thoughts);
-    // You can replace these console logs with actual state saving logic
+  const mapEmojiToMood = (e: EmojiType | null): string | null => {
+    if (!e) return null;
+    switch (e) {
+      case "smile":
+      case "laugh":
+        return "happy";
+      case "frown":
+        return "sad";
+      case "meh":
+        return "neutral";
+      case "angry":
+        return "angry";
+      default:
+        return null;
+    }
+  };
+
+  const handleSave = async () => {
+    const idNum = Number(child_id);
+    const mood = mapEmojiToMood(selectedEmotion);
+    if (!Number.isFinite(idNum)) {
+      Toast.error("Invalid child id");
+      return;
+    }
+    if (!mood) {
+      Toast.error("Please select an emotion");
+      return;
+    }
+    try {
+      const res = await logMood({ childId: idNum, mood, notes: thoughts || undefined });
+      if (!res.ok) {
+        Toast.error(`Failed (${res.status})`);
+        return;
+      }
+      Toast.success("Mood saved");
+      router.replace({ pathname: "/child/[child_id]", params: { child_id: String(child_id) } });
+    } catch (e) {
+      console.error(e);
+      Toast.error("Network error");
+    }
   };
 
   const handleCardChange = () => {
@@ -110,8 +147,10 @@ const GetMoodPage = () => {
                 onPress={() => handleEmojiSelect(emotion)}
               >
                 <Card
-                  className={`mx-1 justify-center items-center w-24 h-24 ${
-                    selectedEmotion === emotion ? "border border-blue-500" : ""
+                  className={`mx-1 justify-center items-center w-24 h-24 rounded-xl ${
+                    selectedEmotion === emotion
+                      ? "border border-blue-500 shadow-lg shadow-blue-300/50"
+                      : "border border-transparent shadow-none"
                   }`}
                 >
                   <CardContent className="p-0 mt-6 items-center justify-center">
@@ -132,7 +171,7 @@ const GetMoodPage = () => {
             className="mt-3 p-8 justify-center h-auto"
           />
 
-          <Button className="mt-10 text-white" onPress={handleSave}>
+          <Button className="mt-10 mb-10 text-white" onPress={handleSave}>
             Save
           </Button>
         </PageContainer>

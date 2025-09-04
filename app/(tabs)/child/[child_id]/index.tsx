@@ -173,7 +173,7 @@ export default function ChildScreen() {
                   });
                 }}
               >
-                <Text>Get Mood</Text>
+                <Text>Update Mood</Text>
               </Button>
             </CardContent>
           </Card>
