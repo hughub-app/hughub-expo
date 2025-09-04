@@ -1,10 +1,10 @@
 import { Intakes } from '@/types';
 import { makeCrud } from '../crud';
-import type { components } from '@/generated/api';
+import type { components, paths } from '@/generated/api';
 
 export type Child = components['schemas']['Child'] & { todayIntakes?: Intakes };
 export type ChildList = Child[];
-type ChildrenQuery = undefined; // no query params in the spec
+type ChildrenQuery = paths['/children/']['get']['parameters']['query']; // no query params in the spec
 
 // keep the literal paths so your api client matches correctly
 const crud = makeCrud<

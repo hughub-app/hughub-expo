@@ -3,7 +3,6 @@ import React, { useMemo, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { mockChildren } from "@/mocks/mockChildren";
 import {
   Select,
   SelectContent,
@@ -24,6 +23,7 @@ import { PageHead } from "@/components/PageHead";
 import { mockRecipes } from "@/mocks/mockRecipes";
 import { Ingredient } from "@/lib/api/endpoints/ingredients";
 import { mockIngredients } from "@/mocks/mockIngredients";
+import { useGetChild } from "@/hooks/useGetChild";
 
 type Params = { child_id?: string | string[] };
 
@@ -45,9 +45,7 @@ export default function CustomiseMenu() {
       </View>
     );
   }
-
-  const child = mockChildren.find((c) => c.child_id === Number(childId));
-
+  const child = useGetChild({ childId });
   if (!child) {
     return (
       <View className="flex-1 items-center justify-center bg-white">
@@ -145,7 +143,7 @@ export default function CustomiseMenu() {
                     ingredient={ingredient}
                     grams={0}
                     onSelectAlternative={(newIngredientId) =>
-                      handleSelectAlternative(ingredient.ingredient_id, newIngredientId)
+                      handleSelectAlternative(ingredient.ingredient_id, newIngredientId.ingredient_id)
                     }
                     onChangeAmount={function (
                       ingredientId: number,

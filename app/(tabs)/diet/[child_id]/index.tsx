@@ -1,7 +1,6 @@
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { View, ScrollView } from "react-native";
 import React, { useEffect, useMemo, useState } from "react";
-import { mockChildren } from "@/mocks/mockChildren";
 import { Text } from "@/components/ui/text";
 import { SafeAreaView } from "react-native-safe-area-context";
 import NutritionLabels from "@/components/diets/NutritionLabels";
@@ -16,6 +15,7 @@ import moment from "moment";
 import { DietaryGuideline, listDietaryGuidelines } from "@/lib/api/endpoints/dietaryGuidelines";
 import { getAge } from "@/lib/utils";
 import { Intakes } from "@/types";
+import { useGetChild } from "@/hooks/useGetChild";
 
 type Params = { child_id?: string | string[] };
 
@@ -53,9 +53,8 @@ export default function DietByChildPage() {
     return Array.isArray(v) ? v[0] : v;
   }, [params.child_id]);
 
-  const child = mockChildren.find((c) => c.child_id === Number(childId));
+  const child = useGetChild({ childId: childId || "" });
   const age = getAge(child?.date_of_birth ? new Date(child.date_of_birth) : new Date());
-
   
   useEffect(() => {
     if (childId) {

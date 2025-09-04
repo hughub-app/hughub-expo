@@ -15,6 +15,7 @@ import PageContainer from "@/components/PageContainer";
 import BackButton from "@/components/BackButton";
 import { PageHead } from "@/components/PageHead";
 import { mockChildren } from "@/mocks/mockChildren";
+import ChildDashboardTodayIntake from "@/components/ChildDashboardTodayIntake";
 
 export default function ChildScreen() {
   const { child_id } = useLocalSearchParams<{ child_id: string }>();
@@ -130,35 +131,7 @@ export default function ChildScreen() {
             </CardContent>
           </Card>
 
-          {/* Diet & Nutrition Section */}
-          <Card className="mb-6">
-            <CardHeader>
-              <Text className="!text-5xl">Diet & Nutrition</Text>
-            </CardHeader>
-            <CardContent>
-              <Text className="mt-4 ml-2 text-xl font-bold text-gray-800 mb-2">
-                Today's Intakes
-              </Text>
-              <RingChart
-                progress={0.75}
-                color="#FF8C00"
-                size={200}
-                strokeWidth={20}
-                title="Macronutrient Distribution"
-              />
-
-              <Button
-                onPress={() => {
-                  router.push({
-                    pathname: "/diet/[child_id]",
-                    params: { child_id },
-                  });
-                }}
-              >
-                <Text>View Diet Details</Text>
-              </Button>
-            </CardContent>
-          </Card>
+          <ChildDashboardTodayIntake childId={child_id} />
         </PageContainer>
       </ScrollView>
     </SafeAreaView>
