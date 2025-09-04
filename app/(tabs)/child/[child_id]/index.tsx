@@ -187,7 +187,7 @@ export default function ChildScreen() {
           {/* Diet & Nutrition Section */}
           <Card className="mb-6">
             <CardHeader>
-              <CardTitle className="text-5xl">Diet & Nutrition</CardTitle>
+              <Text className="!text-5xl">Diet & Nutrition</Text>
             </CardHeader>
             <CardContent>
               <Text className="mt-4 ml-2 text-xl font-bold text-gray-800 mb-2">

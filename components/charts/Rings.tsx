@@ -17,7 +17,7 @@ type Ring = {
   thickness?: number;
 };
 
-type Props = {
+export type RingsProps = {
   size?: number;
   thickness?: number;
   gap?: number;
@@ -37,7 +37,7 @@ export default function Rings({
   rotateStartDeg = -90,
   rings,
   trackOpacity = 0.15,
-}: Props) {
+}: RingsProps) {
   const cx = size / 2;
   const cy = size / 2;
 
@@ -131,7 +131,7 @@ export default function Rings({
                   fill="none"
                 /> */}
 
-                <Circle {...shadowProps} strokeWidth={2}  strokeDasharray={[]}/>
+                <Circle {...shadowProps} strokeWidth={1}  strokeDasharray={[]}/>
               {/* Animated projection */}
                 <AnimatedCircle
                   cx={cx}

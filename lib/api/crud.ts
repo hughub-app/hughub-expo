@@ -2,7 +2,6 @@
 import { api, withAuth } from "./client";
 import type { components } from "@/generated/api";
 import { Toast } from "toastify-react-native";
-import { router } from "expo-router";
 
 /* ============================= Types & helpers ============================= */
 
@@ -61,8 +60,6 @@ async function notifyHttpError(resp: Response, opts?: HandleErrorOpts) {
 }
 
 function notifyNetworkError(e: unknown) {
-  console.log("YHOO Error:", e);
-  
   // Prefer a generic message consistent with your Axios interceptor
   Toast.error("Network error. Please check your connection or server address.");
 }
@@ -104,7 +101,7 @@ export type ReadResource<
   /** On error: toast + (fallback TList) or throw if throwError */
   list(query?: TListQuery, opts?: CommonCallOpts): Promise<TList>;
   /** On error: toast + null or throw if throwError */
-  get?: (id: TId, opts?: CommonCallOpts) => Promise<{ item: TItem; etag?: string } | null>;
+  get?: (id: TId, query?: TListQuery, opts?: CommonCallOpts) => Promise<TItem | null>;
 };
 
 export function makeReadResource<
@@ -137,14 +134,14 @@ export function makeReadResource<
   }
 
   let get:
-    | ((id: TId, opts?: CommonCallOpts) => Promise<{ item: TItem; etag?: string } | null>)
+    | ((id: TId, query?: TListQuery, opts?: CommonCallOpts) => Promise<TItem | null>)
     | undefined;
 
   if (byIdPath && idParam) {
-    get = async (id: TId, optsArg?: CommonCallOpts) => {
+    get = async (id: TId, query?: TListQuery, optsArg?: CommonCallOpts) => {
       try {
         const res = await api.GET(byIdPath as any, {
-          params: { path: { [idParam]: id } as any },
+          params: { path: { [idParam]: id } as any, query: query ? query : undefined },
           ...(optsArg?.auth ? withAuth(optsArg.auth.token) : {}),
         });
         if (!res.response.ok) {
@@ -152,8 +149,8 @@ export function makeReadResource<
           if (optsArg?.throwError) throw new Error(await toErrorMessage(res.response));
           return null;
         }
-        const etag = res.response.headers.get("ETag") ?? undefined;
-        return { item: res.data as TItem, etag };
+        // const etag = res.response.headers.get("ETag") ?? undefined;
+        return res.data;
       } catch (e) {
         notifyNetworkError(e);
         if (optsArg?.throwError) throw new Error(errorToMessage(e));
@@ -166,7 +163,6 @@ export function makeReadResource<
 }
 
 /* ================================== CRUD ================================== */
-
 export type CrudOptions<
   TListQuery extends Record<string, any> | undefined,
   TId extends number | string
