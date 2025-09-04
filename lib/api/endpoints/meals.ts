@@ -1,29 +1,41 @@
-import { Intakes } from '@/types';
-import { makeCrud } from '../crud';
-import type { components } from '@/generated/api';
+import { makeCrud, makeReadResource } from '../crud';
+import type { components, paths } from '@/generated/api';
 
 export type Meal = components['schemas']['Meal'];
 export type CreateMeal = components['schemas']['CreateMeal'];
 export type UpdateMeal = components['schemas']['UpdateMeal'];
 export type MealList = Meal[];
-type MealrenQuery = undefined; // no query params in the spec
+type MealRangeQuery = paths['/meals/range/{child_id}']['get']['parameters']['query']; // query params in the spec
 
 // keep the literal paths so your api client matches correctly
 const crud = makeCrud<
-  Meal,        // TItem
-  CreateMeal,  // TCreate (your spec posts a Meal)
-  UpdateMeal,  // TUpdate (your spec puts a Meal)
-  MealList,    // TList (non-paginated array)
-  MealrenQuery,// TListQuery
-  number       // TId
+  Meal,
+  CreateMeal,
+  UpdateMeal,
+  MealList,
+  MealRangeQuery,
+  number
 >({
-  basePath: '/meal/',                // note the trailing slash if your spec has it
-  byIdPath: '/meal/{child_id}',      // matches the spec
+  basePath: '/meals/',                // note the trailing slash if your spec has it
+  byIdPath: '/meals/{child_id}',      // matches the spec
+  idParam: 'child_id',
+});
+
+const rangeRead = makeReadResource<
+  Meal[],
+  Meal[],
+  MealRangeQuery,
+  number
+>({
+  basePath: '/meals/range',
+  byIdPath: '/meals/range/{child_id}',
   idParam: 'child_id',
 });
 
 export const listMeals = crud.list;
 export const createMeal = crud.create;
-export const getMeal = crud.get;
+export const getMealByChild = crud.get;
 export const updateMeal = crud.update;
 export const deleteMeal = crud.remove;
+
+export const getMealsByChildInRange = rangeRead.get;
