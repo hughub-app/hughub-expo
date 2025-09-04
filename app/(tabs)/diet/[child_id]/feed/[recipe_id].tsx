@@ -1,5 +1,5 @@
 import { View, SafeAreaView, ScrollView } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 // import { mockRecipes } from "@/mocks/mockRecipes";
 import PageContainer from "@/components/PageContainer";
@@ -14,7 +14,7 @@ import {
 // import { mockRecipeIngredients } from "@/mocks/mockRecipeIngredients";
 // import { mockIngredients } from "@/mocks/mockIngredients";
 import IngredientCard from "@/components/feed/IngredientCard";
-import { CategoryType, IngredientType } from "@/types";
+import { CategoryType, IngredientType, Intakes } from "@/types";
 import { capitalCase } from "change-case";
 import NutritionRings from "@/components/diets/NutritionRings";
 import { mockChildren } from "@/mocks/mockChildren";
@@ -30,6 +30,13 @@ import {
   listRecipeIngredients,
   RecipeIngredient,
 } from "@/lib/api/endpoints/recipeIngredients";
+import {
+  DietaryGuideline,
+  listDietaryGuidelines,
+} from "@/lib/api/endpoints/dietaryGuidelines";
+import { getMealsByChildInRange, Meal } from "@/lib/api/endpoints/meals";
+import moment from "moment";
+import { getAge } from "@/lib/utils";
 
 export default function RecipePage() {
   const { child_id, recipe_id } = useLocalSearchParams<{
@@ -57,14 +64,39 @@ export default function RecipePage() {
     skipped: false,
   }));
 
-  const [menuIngredients, setMenuIngredients] =
-    React.useState<typeof ingredientsWithGrams>([]);
+  const [menuIngredients, setMenuIngredients] = React.useState<
+    typeof ingredientsWithGrams
+  >([]);
 
   useEffect(() => {
     setMenuIngredients(ingredientsWithGrams);
   }, [ingredients, recipeIngredients]);
 
   const child = mockChildren.find((c) => c.child_id === Number(child_id));
+  const age = getAge(child?.date_of_birth ? new Date(child.date_of_birth) : new Date());
+
+  const [guidelines, setGuidelines] = useState<DietaryGuideline[]>([]);
+  const guide = guidelines?.[0];
+  const target: Intakes = {
+    vegetable: guide?.servings_veg_legumes_beans || 0,
+    protein: guide?.servings_meat_fish_eggs_nuts_seeds || 0,
+    fruit: guide?.servings_fruit || 0,
+    grain: guide?.servings_grain || 0,
+    dairy: guide?.servings_milk_yoghurt_cheese || 0,
+  };
+
+  useEffect(() => {
+    if (child?.gender) {
+      listDietaryGuidelines({
+        age,
+        gender: child.gender,
+      }).then((res) => {
+        if (res) {
+          setGuidelines(res);
+        }
+      });
+    }
+  }, [child?.gender]);
 
   useEffect(() => {
     setLoadingRecipe(true);
@@ -85,37 +117,61 @@ export default function RecipePage() {
       const ingredientIds = res.map((ri) => ri.ingredient_id).join(",");
       listIngredients({
         ids: ingredientIds,
-      }).then((res) => {
-        setIngredients(res);
-      }).finally(() => {
-        setLoadingIngredients(false);
-      });
+      })
+        .then((res) => {
+          setIngredients(res);
+        })
+        .finally(() => {
+          setLoadingIngredients(false);
+        });
     });
   }, [recipe_id]);
 
-  if (loadingRecipe) {
-    return <HHSpinner />;
-  }
+  const childId = Number(child_id);
 
-  if (!child) {
+  const [meals, setMeals] = useState<Meal[]>([]);
+
+  const todaysMeals = meals.filter((meal) => {
+    if (!meal.created_at) return false;
+    const mealDate = new Date(meal.created_at);
+    const today = new Date();
     return (
-      <View>
-        <Text>Child not found</Text>
-      </View>
+      mealDate.getDate() === today.getDate() &&
+      mealDate.getMonth() === today.getMonth() &&
+      mealDate.getFullYear() === today.getFullYear()
     );
-  }
+  });
 
-  if (!recipe) {
-    return (
-      <View>
-        <Text>Recipe not found</Text>
-      </View>
-    );
-  }
+  const todaysIntake: Intakes = todaysMeals.reduce(
+    (acc, meal) => {
+      acc.vegetable += meal.servings_veg_legumes_beans || 0;
+      acc.protein += meal.servings_meat_fish_eggs_nuts_seeds || 0;
+      acc.fruit += meal.servings_fruit || 0;
+      acc.grain += meal.servings_grain || 0;
+      acc.dairy += meal.servings_milk_yoghurt_cheese || 0;
+      return acc;
+    },
+    { vegetable: 0, protein: 0, fruit: 0, grain: 0, dairy: 0 }
+  );
+  useEffect(() => {
+    console.log('Fetching meals for child', childId)
+    if (childId) {
+      const endOfToday = moment().endOf("day").toDate();
+      const startOfDay = moment().startOf("day").toDate();
+      getMealsByChildInRange?.(Number(childId), {
+        start: startOfDay.toISOString(),
+        end: endOfToday.toISOString(),
+      }).then((res) => {
+        if (res) {
+          setMeals(res);
+        }
+      });
+    }
+  }, [childId]);
 
-  const todayIntakes = child.todayIntakes;
-
-  const steps = recipe?.cooking_steps ? recipe.cooking_steps.split(/(?=\d+\.\s*)/) : [];
+  const steps = recipe?.cooking_steps
+    ? recipe.cooking_steps.split(/(?=\d+\.\s*)/)
+    : [];
 
   function handleChangeAmount(ingredientId: number, amount: number) {
     setMenuIngredients((prev) =>
@@ -164,7 +220,7 @@ export default function RecipePage() {
   );
 
   function calcServing(
-    servings: number | undefined,
+    servings: number | undefined | null,
     type: CategoryType,
     totalGrams: Record<CategoryType, number>,
     stateGrams: Record<CategoryType, number>
@@ -174,6 +230,26 @@ export default function RecipePage() {
     const ratio = denominator === 0 ? 0 : stateGrams[type] / denominator;
     const result = base * ratio;
     return isNaN(result) ? 0 : result;
+  }
+
+  if (loadingRecipe) {
+    return <HHSpinner />;
+  }
+
+  if (!child) {
+    return (
+      <View>
+        <Text>Child not found</Text>
+      </View>
+    );
+  }
+
+  if (!recipe) {
+    return (
+      <View>
+        <Text>Recipe not found</Text>
+      </View>
+    );
   }
 
   const servingPerIngredientType = {
@@ -209,14 +285,6 @@ export default function RecipePage() {
     ),
   };
 
-  // const projections = Object.values(CategoryType).reduce((acc, category) => {
-  //   acc[category] =
-  //     (todayIntakes?.[category] || 0) + (servingPerIngredientType[category] || 0);
-  //   return acc;
-  // }, {} as Record<CategoryType, number>);
-
-  // console.log('Today Intakes:', todayIntakes);
-  // console.log('Projections:', projections);
   function handleConfirm() {
     setHasConfirmed(true);
   }
@@ -295,17 +363,16 @@ export default function RecipePage() {
                 </AccordionItem>
                 <AccordionItem value="ingredients">
                   <AccordionTrigger>
-                    {
-                      loadingIngredients ? (
-                        <HHSpinner/>
-                      ) : (
-                        <Text className="!text-xl font-bold mb-4">Ingredients</Text>
-                      )
-                    }
+                    {loadingIngredients ? (
+                      <HHSpinner />
+                    ) : (
+                      <Text className="!text-xl font-bold mb-4">
+                        Ingredients
+                      </Text>
+                    )}
                   </AccordionTrigger>
                   <AccordionContent>
-                    {
-                      !loadingIngredients && (
+                    {!loadingIngredients && (
                       <View className="gap-2">
                         {menuIngredients.map((mi) => (
                           <IngredientCard
@@ -327,25 +394,18 @@ export default function RecipePage() {
                           />
                         ))}
                       </View>
-                      )
-                    }
+                    )}
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
             </View>
             <View className="order-1 md:order-2">
               <View className="flex-row justify-center gap-4 ">
-                {todayIntakes && (
+                {todaysIntake && (
                   <NutritionRings
-                    values={todayIntakes}
+                    values={todaysIntake}
                     projection={servingPerIngredientType}
-                    target={{
-                      vegetable: 6,
-                      protein: 5,
-                      fruit: 6,
-                      grain: 4,
-                      dairy: 4,
-                    }}
+                    target={target}
                   />
                 )}
                 <NutritionLabels />

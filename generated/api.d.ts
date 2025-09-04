@@ -829,7 +829,7 @@ export interface components {
             ingredient_name?: string;
             category?: string;
             emoji?: string | null;
-            readonly ingredient_id?: number;
+            readonly ingredient_id: number;
         };
         Recipe: {
             recipe_name?: string;
