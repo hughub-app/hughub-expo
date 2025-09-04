@@ -95,7 +95,6 @@ export default function DietByChildPage() {
           setGuidelines(res);
         }
       })
-      // Do something with the child data
     }
   }, [child]);
 
