@@ -189,7 +189,7 @@ export default function HomeScreen() {
             <img src="/HugHub.svg" width={32} height={32} alt="HugHub logo" />
             <Text className="!text-3xl font-bold text-gray-900">
               HugHub
-            </Text>
+          </Text>
           </View>
           <Text className="text-gray-600 mb-6">
           </Text>

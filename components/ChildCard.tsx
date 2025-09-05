@@ -12,7 +12,7 @@ type PressableProps = Omit<React.ComponentProps<typeof Pressable>, "children">;
 
 const ChildCard = forwardRef<View, { child: Child } & PressableProps>(
   ({ child, ...pressableProps }, ref) => {
-    const age = getAge(new Date(child.date_of_birth));
+    const age = getAge(new Date(child.date_of_birth ?? ""));
     const { onPress, ...rest } = pressableProps;
     const handlePress = (e: any) => {
       try {
@@ -34,7 +34,7 @@ const ChildCard = forwardRef<View, { child: Child } & PressableProps>(
               </View>
             </View>
           </CardHeader>
-          <CardContent>
+          {/* <CardContent>
             <View className="flex-row gap-4">
               <Card className="p-4 items-center flex-1 justify-center">
                 <Text className="!text-5xl mb-2">
@@ -54,7 +54,7 @@ const ChildCard = forwardRef<View, { child: Child } & PressableProps>(
               <Calendar size={18} />
               <Text className="!text-slate-400 text-sm">Last updated 45 Augusts 1978</Text>
             </View>
-          </CardContent>
+          </CardContent> */}
         </Card>
       </Pressable>
     );
