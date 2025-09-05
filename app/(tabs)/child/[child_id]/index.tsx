@@ -347,9 +347,9 @@ export default function ChildScreen() {
               </View>
 
               {/* Mood Static Card */}
-              <View className="flex-row space-x-6 top-6 mb-6">
+              <View className="md:flex-row gap-4 top-6 mb-6">
                 {/* Weekly Average Card */}
-                <Card className="flex-1 mr-2">
+                <Card className="flex-1">
                   <View className="flex-row items-center p-4">
                     <View className="mr-4">
                       <Emoji type={weeklyEmoji} size={40} />
@@ -369,7 +369,7 @@ export default function ChildScreen() {
                   </View>
                 </Card>
                 {/* Lastest Mood */}
-                <Card className="flex-1 ml-2">
+                <Card className="flex-1">
                   <View className="flex-row items-center p-4">
                     <View className="mr-4">
                       <Emoji type={currentEmoji} size={40} />
