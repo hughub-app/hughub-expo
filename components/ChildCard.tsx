@@ -12,7 +12,7 @@ type PressableProps = Omit<React.ComponentProps<typeof Pressable>, "children">;
 
 const ChildCard = forwardRef<View, { child: Child } & PressableProps>(
   ({ child, ...pressableProps }, ref) => {
-    const age = getAge(new Date(child.date_of_birth));
+    const age = getAge(new Date(child.date_of_birth ?? ""));
     const { onPress, ...rest } = pressableProps;
     const handlePress = (e: any) => {
       try {
